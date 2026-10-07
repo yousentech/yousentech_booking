@@ -56,6 +56,9 @@ class BookingFinanceMixin(models.AbstractModel):
 
     def _compute_finance(self):
         for rec in self:
+            draft_invoices=rec.invoice_ids.filtered(lambda m:m.state=="draft" and m.move_type=="out_invoice")
+            if draft_invoices:
+                raise UserError(_("Cancel draft booking invoices before cancelling or reopening this booking."))
             posted=rec.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type in ("out_invoice","out_refund"))
             invoices=posted.filtered(lambda m:m.move_type=="out_invoice")
             refunds=posted.filtered(lambda m:m.move_type=="out_refund")
