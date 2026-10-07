@@ -6,7 +6,7 @@
   <menuitem id="menu_stay_bookings" name="الحجوزات الفندقية" parent="menu_booking_root" action="action_stay_bookings" sequence="20"/>
 
   <menuitem id="menu_booking_configuration" name="التهيئة" parent="menu_booking_root" sequence="90" groups="yousentech_booking.group_booking_manager"/>
-  <menuitem id="menu_booking_settings" name="إعدادات النظام" parent="menu_booking_configuration" action="action_booking_settings" sequence="1" groups="yousentech_booking.group_booking_manager"/>
+  <menuitem id="menu_booking_settings" name="إعدادات النظام" parent="menu_booking_configuration" action="action_open_booking_settings" sequence="1" groups="yousentech_booking.group_booking_manager"/>
   <menuitem id="menu_booking_demo_setup" name="تهيئة البيانات التجريبية" parent="menu_booking_configuration" action="action_booking_demo_setup" sequence="2" groups="yousentech_booking.group_booking_manager"/>
   <menuitem id="menu_booking_event_configuration" name="إعدادات القاعات والمناسبات" parent="menu_booking_configuration" sequence="10"/>
   <menuitem id="menu_booking_halls" name="القاعات" parent="menu_booking_event_configuration" action="action_booking_halls" sequence="10"/>
