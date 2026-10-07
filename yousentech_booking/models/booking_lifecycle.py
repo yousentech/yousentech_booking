@@ -21,8 +21,10 @@ class BookingLifecycleMixin(models.AbstractModel):
             if target=="cancelled" and not reason: raise UserError(_("Cancellation reason is required."))
             if target=="draft" and rec.state=="cancelled":
                 rec._check_availability(lock=True)
-                if "invoice_ids" in rec._fields and rec.invoice_ids.filtered(lambda m:m.state=="posted"): raise UserError(_("Resolve posted accounting before reopening this booking."))
-            if target=="confirmed" and hasattr(rec,"_create_commercial_snapshot"): rec._create_commercial_snapshot()
+                if rec.invoice_ids.filtered(lambda m:m.state=="posted"): raise UserError(_("Resolve posted accounting before reopening this booking."))
+            if target=="confirmed":
+                rec._create_commercial_snapshot()
+                rec._apply_confirmation_invoice_policy()
             vals={"state":target}
             if target=="cancelled": vals.update(cancel_reason=reason,cancelled_by_id=self.env.user.id,cancelled_at=fields.Datetime.now())
             elif target=="draft": vals.update(cancel_reason=False,cancelled_by_id=False,cancelled_at=False)
