@@ -79,15 +79,40 @@
     <field name="arch" type="xml">
       <form string="إعدادات نظام الحجوزات">
         <sheet>
-          <group string="الإعدادات العامة">
-            <field name="company_id" string="الشركة / الفرع"/>
-            <field name="activity_type" string="نوع نشاط الحجز"/>
-          </group>
-          <group string="إعدادات الحجوزات الفندقية" invisible="activity_type == 'events'">
-            <field name="allow_open_stay" string="السماح بإقامة مفتوحة بدون تاريخ خروج"/>
-          </group>
-          <div class="alert alert-warning" role="alert">
-            بعد بدء عمليات الحجز لا يمكن تغيير نوع النشاط. يمكن إضافة خيارات إعدادات أخرى لهذه الشاشة مستقبلًا.
+          <div class="oe_title mb-4">
+            <h1>إعدادات نظام الحجوزات</h1>
+            <p class="text-muted">إدارة إعدادات التشغيل الخاصة بكل شركة / فرع من مكان واحد.</p>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-lg-6">
+              <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                  <h3 class="card-title mb-1">الإعدادات العامة</h3>
+                  <p class="text-muted mb-4">حدد الشركة ونوع نشاط الحجوزات المستخدم.</p>
+                  <group>
+                    <field name="company_id" string="الشركة / الفرع"/>
+                    <field name="activity_type" string="نوع نشاط الحجز"/>
+                  </group>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-6" invisible="activity_type == 'events'">
+              <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                  <h3 class="card-title mb-1">إعدادات الحجوزات الفندقية</h3>
+                  <p class="text-muted mb-4">تحكم في سياسات الإقامة والحجز الفندقي.</p>
+                  <group>
+                    <field name="allow_open_stay" string="السماح بإقامة مفتوحة بدون تاريخ خروج"/>
+                  </group>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-warning mt-4" role="alert">
+            بعد بدء عمليات الحجز لا يمكن تغيير نوع النشاط حفاظًا على سلامة البيانات.
           </div>
         </sheet>
       </form>
