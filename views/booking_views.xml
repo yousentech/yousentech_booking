@@ -14,7 +14,7 @@
           <button name="action_prepare" type="object" string="بدء التجهيز" invisible="state != 'confirmed'"/>
           <button name="action_start_event" type="object" string="بدء المناسبة" invisible="state != 'preparing'"/>
           <button name="action_complete" type="object" string="إكمال المناسبة" invisible="state != 'event'"/>
-          <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'manual' or invoice_count &gt; 0"/>
+          <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'manual' or amount_to_invoice &lt;= 0"/>
           <button name="action_create_final_invoice" type="object" string="فاتورة الرصيد" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'deposit'"/>
           <button name="action_register_payment" type="object" string="تسجيل دفعة" class="btn-primary" invisible="invoice_count == 0 or amount_due &lt;= 0"/>
           <button name="action_cancel" type="object" string="إلغاء الحجز" groups="yousentech_booking.group_booking_supervisor" invisible="state in ('draft','cancelled')"/>
@@ -69,6 +69,7 @@
                 <field name="amount_total" string="الإجمالي" readonly="1"/>
             <field name="invoice_count" invisible="1"/>
             <field name="amount_due" invisible="1"/>
+            <field name="amount_to_invoice" invisible="1"/>
             <field name="invoice_policy" invisible="1"/>
               </group>
             </page>
@@ -91,6 +92,7 @@
                   <field name="amount_remaining" string="المطلوب من العميل" readonly="1"/>
                   <field name="invoice_count" invisible="1"/>
                   <field name="amount_due" invisible="1"/>
+            <field name="amount_to_invoice" invisible="1"/>
                 </group>
               </group>
               <field name="payment_schedule_ids" string="جدول الدفعات" invisible="invoice_policy != 'schedule'" readonly="state not in ('draft','hold') or invoice_count &gt; 0">
@@ -138,7 +140,7 @@
           <button name="action_confirm" type="object" string="تأكيد الحجز" class="btn-primary" invisible="state not in ('draft','hold')"/>
           <button name="action_check_in" type="object" string="تسجيل الدخول" invisible="state != 'confirmed'"/>
           <button name="action_check_out" type="object" string="تسجيل الخروج" invisible="state != 'checked_in'"/>
-          <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','checked_in','checked_out') or invoice_policy != 'manual' or invoice_count &gt; 0"/>
+          <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','checked_in','checked_out') or invoice_policy != 'manual' or amount_to_invoice &lt;= 0"/>
           <button name="action_register_payment" type="object" string="تسجيل دفعة" class="btn-primary" invisible="invoice_count == 0 or amount_due &lt;= 0"/>
           <button name="action_reopen" type="object" string="إعادة فتح" groups="yousentech_booking.group_booking_supervisor" invisible="state != 'cancelled'"/>
           <field name="state" widget="statusbar" statusbar_visible="draft,hold,confirmed,checked_in,checked_out,cancelled"/>
@@ -147,6 +149,7 @@
           <field name="invoice_policy" invisible="1"/>
           <field name="invoice_count" invisible="1"/>
           <field name="amount_due" invisible="1"/>
+            <field name="amount_to_invoice" invisible="1"/>
           <div class="oe_button_box" name="button_box">
             <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="invoice_count == 0">
               <field name="invoice_count" widget="statinfo" string="الفواتير"/>
