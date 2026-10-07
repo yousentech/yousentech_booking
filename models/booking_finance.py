@@ -278,9 +278,14 @@ class StayBooking(models.Model):
     amount_remaining=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     invoice_ids=fields.One2many("account.move","yousentech_stay_booking_id",string="Invoices")
     payment_schedule_ids=fields.One2many("yousentech.booking.payment.schedule","stay_booking_id")
-    invoice_count=fields.Integer(compute="_compute_invoice_count")
-    def _compute_invoice_count(self):
-        for rec in self: rec.invoice_count=len(rec.invoice_ids)
+    invoice_count=fields.Integer(compute="_compute_finance_document_counts")
+    refund_count=fields.Integer(compute="_compute_finance_document_counts")
+    payment_count=fields.Integer(compute="_compute_finance_document_counts")
+    def _compute_finance_document_counts(self):
+        for rec in self:
+            rec.invoice_count=len(rec.invoice_ids.filtered(lambda m:m.move_type=="out_invoice"))
+            rec.refund_count=len(rec.invoice_ids.filtered(lambda m:m.move_type=="out_refund"))
+            rec.payment_count=len(rec._booking_payments())
     def unlink(self):
         self._check_unlink_finance()
         if self.filtered(lambda r:r.state not in ("draft","cancelled")):
