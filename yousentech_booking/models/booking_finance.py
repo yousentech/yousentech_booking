@@ -60,6 +60,13 @@ class BookingFinanceMixin(models.AbstractModel):
     def _create_invoice(self,ratio=1.0,label=None,schedule=None):
         self.ensure_one()
         if not self.partner_id: raise UserError(_("A customer is required."))
+        if schedule and schedule.invoice_id and schedule.invoice_id.state!="cancel":
+            raise UserError(_("This installment already has an active invoice."))
+        if self.amount_total<=0:
+            raise UserError(_("Cannot create an invoice for a zero-total booking."))
+        active_total=sum(self.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice").mapped("amount_total"))
+        if not schedule and active_total and ratio>=1.0:
+            raise UserError(_("This booking already has an active invoice. Use the remaining-balance action instead."))
         vals={"move_type":"out_invoice","company_id":self.company_id.id,"journal_id":self._sale_journal().id,"partner_id":self.partner_id.id,"invoice_origin":self.name,"invoice_line_ids":self._invoice_lines(ratio,label),**self._booking_link()}
         if schedule: vals["yousentech_schedule_id"]=schedule.id
         move=self.env["account.move"].with_company(self.company_id).create(vals)
@@ -101,8 +108,13 @@ class BookingFinanceMixin(models.AbstractModel):
     def action_create_final_invoice(self):
         self.ensure_one()
         if self.invoice_policy!="deposit": raise UserError(_("Final invoice is only available for deposit policy."))
-        ratio=max(0.0,1.0-self.deposit_percent/100.0)
-        if not ratio: raise UserError(_("Nothing remains to invoice."))
+        active=self.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice")
+        if not active: raise UserError(_("Create the deposit invoice first."))
+        already=sum(active.mapped("amount_total"))
+        remaining=self.amount_total-already
+        if self.currency_id.is_zero(remaining) or remaining<0:
+            raise UserError(_("Nothing remains to invoice."))
+        ratio=remaining/self.amount_total
         return {"type":"ir.actions.act_window","res_model":"account.move","res_id":self._create_invoice(ratio,_("Booking balance")).id,"view_mode":"form","target":"current"}
 
 class BookingEvent(models.Model):
