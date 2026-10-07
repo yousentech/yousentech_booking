@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_booking_period_user,booking.period user,model_yousentech_booking_period,yousentech_booking.group_booking_user,1,0,0,0
+access_booking_period_manager,booking.period manager,model_yousentech_booking_period,yousentech_booking.group_booking_manager,1,1,1,1
+access_booking_hall_user,booking.hall user,model_yousentech_booking_hall,yousentech_booking.group_booking_user,1,0,0,0
+access_booking_hall_manager,booking.hall manager,model_yousentech_booking_hall,yousentech_booking.group_booking_manager,1,1,1,1
+access_booking_event_user,booking.event user,model_yousentech_booking_event,yousentech_booking.group_booking_user,1,1,1,0
+access_booking_event_manager,booking.event manager,model_yousentech_booking_event,yousentech_booking.group_booking_manager,1,1,1,1
+access_stay_resource_user,stay.resource user,model_yousentech_stay_resource,yousentech_booking.group_booking_user,1,0,0,0
+access_stay_resource_manager,stay.resource manager,model_yousentech_stay_resource,yousentech_booking.group_booking_manager,1,1,1,1
+access_stay_booking_user,stay.booking user,model_yousentech_stay_booking,yousentech_booking.group_booking_user,1,1,1,0
+access_stay_booking_manager,stay.booking manager,model_yousentech_stay_booking,yousentech_booking.group_booking_manager,1,1,1,1
