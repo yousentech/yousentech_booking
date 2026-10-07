@@ -119,6 +119,13 @@
     </field>
   </record>
 
+  <record id="action_open_booking_settings" model="ir.actions.server">
+    <field name="name">إعدادات النظام</field>
+    <field name="model_id" ref="model_yousentech_booking_settings"/>
+    <field name="state">code</field>
+    <field name="code">action = model.action_open_settings()</field>
+  </record>
+
   <record id="action_booking_settings" model="ir.actions.act_window">
     <field name="name">إعدادات النظام</field>
     <field name="res_model">yousentech.booking.settings</field>
