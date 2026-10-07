@@ -208,6 +208,8 @@ class BookingFinanceMixin(models.AbstractModel):
         for rec in self:
             if rec.invoice_ids:
                 raise UserError(_("A booking linked to accounting documents cannot be deleted."))
+            if rec.payment_schedule_ids:
+                raise UserError(_("Delete the booking payment schedule before deleting this booking."))
             if rec.commercial_snapshot_ids:
                 raise UserError(_("A booking with confirmed commercial history cannot be deleted."))
 
