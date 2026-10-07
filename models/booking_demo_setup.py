@@ -8,7 +8,7 @@ class BookingDemoSetup(models.TransientModel):
 
     company_id = fields.Many2one(
         "res.company",
-        string="Branch / Company",
+        string="الشركة / الفرع",
         required=True,
         default=lambda self: self.env.company,
     )
@@ -41,7 +41,7 @@ class BookingDemoSetup(models.TransientModel):
     def action_seed_demo(self):
         self.ensure_one()
         if not self.env.user.has_group("yousentech_booking.group_booking_manager"):
-            raise UserError(_("Only Booking Managers can initialize demo configuration."))
+            raise UserError(_("تهيئة البيانات التجريبية متاحة لمدير الحجوزات فقط."))
 
         company = self.company_id
         activity_type = company.booking_activity_type
@@ -149,8 +149,8 @@ class BookingDemoSetup(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Demo configuration ready"),
-                "message": _("Demo booking configuration was initialized for %s without duplicating existing demo records.") % company.display_name,
+                "title": _("تمت تهيئة البيانات التجريبية"),
+                "message": _("تم إنشاء بيانات الحجز التجريبية للشركة / الفرع %s دون تكرار السجلات الموجودة.") % company.display_name,
                 "type": "success",
                 "sticky": False,
                 "next": {"type": "ir.actions.act_window_close"},
