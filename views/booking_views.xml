@@ -1,62 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <record id="view_event_booking_list" model="ir.ui.view"><field name="name">yousentech.booking.event.tree</field><field name="model">yousentech.booking.event</field><field name="arch" type="xml"><tree><field name="name"/><field name="company_id"/><field name="booking_date"/><field name="partner_id"/><field name="hall_id"/><field name="state"/></tree></field></record>
-  <record id="view_stay_booking_list" model="ir.ui.view"><field name="name">yousentech.stay.booking.tree</field><field name="model">yousentech.stay.booking</field><field name="arch" type="xml"><tree><field name="name"/><field name="company_id"/><field name="checkin_date"/><field name="checkout_date"/><field name="partner_id"/><field name="resource_id"/><field name="state"/></tree></field></record>
+  <record id="view_event_booking_list" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.event.tree</field><field name="model">yousentech.booking.event</field><field name="arch" type="xml"><tree><field name="name" string="الاسم"/><field name="company_id" string="الشركة / الفرع"/><field name="booking_date" string="تاريخ الحجز"/><field name="partner_id" string="العميل"/><field name="hall_id" string="القاعة"/><field name="state" string="الحالة"/></tree></field></record>
+  <record id="view_stay_booking_list" model="ir.ui.view"><field name="name" string="الاسم">yousentech.stay.booking.tree</field><field name="model">yousentech.stay.booking</field><field name="arch" type="xml"><tree><field name="name" string="الاسم"/><field name="company_id" string="الشركة / الفرع"/><field name="checkin_date" string="تاريخ الدخول"/><field name="checkout_date" string="تاريخ الخروج"/><field name="partner_id" string="العميل"/><field name="resource_id" string="مورد الإقامة"/><field name="state" string="الحالة"/></tree></field></record>
 
-  <record id="view_booking_period_tree" model="ir.ui.view"><field name="name">yousentech.booking.period.tree</field><field name="model">yousentech.booking.period</field><field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="name"/><field name="company_id"/><field name="active"/></tree></field></record>
-  <record id="view_booking_period_form" model="ir.ui.view"><field name="name">yousentech.booking.period.form</field><field name="model">yousentech.booking.period</field><field name="arch" type="xml"><form string="Booking Period"><sheet><group><field name="name"/><field name="sequence"/><field name="company_id"/><field name="active"/></group></sheet></form></field></record>
+  <record id="view_booking_period_tree" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.period.tree</field><field name="model">yousentech.booking.period</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_booking_period_form" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.period.form</field><field name="model">yousentech.booking.period</field><field name="arch" type="xml"><form string="فترة الحجز"><sheet><group><field name="name" string="الاسم"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
-  <record id="view_booking_hall_tree" model="ir.ui.view"><field name="name">yousentech.booking.hall.tree</field><field name="model">yousentech.booking.hall</field><field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="name"/><field name="capacity"/><field name="list_price"/><field name="company_id"/><field name="active"/></tree></field></record>
-  <record id="view_booking_hall_form" model="ir.ui.view"><field name="name">yousentech.booking.hall.form</field><field name="model">yousentech.booking.hall</field><field name="arch" type="xml"><form string="Booking Hall"><sheet><group><field name="name"/><field name="capacity"/><field name="list_price"/><field name="sequence"/><field name="company_id"/><field name="active"/></group></sheet></form></field></record>
+  <record id="view_booking_hall_tree" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.hall.tree</field><field name="model">yousentech.booking.hall</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="capacity" string="السعة"/><field name="list_price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_booking_hall_form" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.hall.form</field><field name="model">yousentech.booking.hall</field><field name="arch" type="xml"><form string="القاعة"><sheet><group><field name="name" string="الاسم"/><field name="capacity" string="السعة"/><field name="list_price" string="السعر"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
-  <record id="view_booking_service_tree" model="ir.ui.view"><field name="name">yousentech.booking.service.tree</field><field name="model">yousentech.booking.service</field><field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="name"/><field name="product_id"/><field name="price"/><field name="company_id"/><field name="active"/></tree></field></record>
-  <record id="view_booking_service_form" model="ir.ui.view"><field name="name">yousentech.booking.service.form</field><field name="model">yousentech.booking.service</field><field name="arch" type="xml"><form string="Booking Service"><sheet><group><field name="name"/><field name="product_id"/><field name="price"/><field name="tax_ids" widget="many2many_tags"/><field name="sequence"/><field name="company_id"/><field name="active"/></group></sheet></form></field></record>
+  <record id="view_booking_service_tree" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.service.tree</field><field name="model">yousentech.booking.service</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_booking_service_form" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.service.form</field><field name="model">yousentech.booking.service</field><field name="arch" type="xml"><form string="خدمة الحجز"><sheet><group><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="price" string="السعر"/><field name="tax_ids" string="الضرائب" widget="many2many_tags"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
-  <record id="view_booking_package_tree" model="ir.ui.view"><field name="name">yousentech.booking.package.tree</field><field name="model">yousentech.booking.package</field><field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="name"/><field name="pricing_type"/><field name="price"/><field name="company_id"/><field name="active"/></tree></field></record>
-  <record id="view_booking_package_form" model="ir.ui.view"><field name="name">yousentech.booking.package.form</field><field name="model">yousentech.booking.package</field><field name="arch" type="xml"><form string="Booking Package"><sheet><group><field name="name"/><field name="pricing_type"/><field name="fixed_price" invisible="pricing_type != 'fixed'"/><field name="services_total" readonly="1"/><field name="price" readonly="1"/><field name="sequence"/><field name="company_id"/><field name="active"/></group><field name="line_ids"><tree editable="bottom"><field name="company_id" column_invisible="True"/><field name="sequence" widget="handle"/><field name="service_id"/><field name="quantity"/><field name="price_unit" readonly="1"/><field name="subtotal" readonly="1"/></tree></field></sheet></form></field></record>
+  <record id="view_booking_package_tree" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.package.tree</field><field name="model">yousentech.booking.package</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="pricing_type" string="طريقة التسعير"/><field name="price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_booking_package_form" model="ir.ui.view"><field name="name" string="الاسم">yousentech.booking.package.form</field><field name="model">yousentech.booking.package</field><field name="arch" type="xml"><form string="باقة الحجز"><sheet><group><field name="name" string="الاسم"/><field name="pricing_type" string="طريقة التسعير"/><field name="fixed_price" string="السعر الثابت" invisible="pricing_type != 'fixed'"/><field name="services_total" string="إجمالي الخدمات" readonly="1"/><field name="price" string="السعر" readonly="1"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group><field name="line_ids" string="الخدمات"><tree editable="bottom"><field name="company_id" string="الشركة / الفرع" column_invisible="True"/><field name="sequence" string="الترتيب" widget="handle"/><field name="service_id" string="الخدمة"/><field name="quantity" string="الكمية"/><field name="price_unit" string="سعر الوحدة" readonly="1"/><field name="subtotal" string="الإجمالي" readonly="1"/></tree></field></sheet></form></field></record>
 
-  <record id="view_stay_resource_tree" model="ir.ui.view"><field name="name">yousentech.stay.resource.tree</field><field name="model">yousentech.stay.resource</field><field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="name"/><field name="resource_type"/><field name="capacity"/><field name="nightly_price"/><field name="company_id"/><field name="active"/></tree></field></record>
-  <record id="view_stay_resource_form" model="ir.ui.view"><field name="name">yousentech.stay.resource.form</field><field name="model">yousentech.stay.resource</field><field name="arch" type="xml"><form string="Stay Resource"><sheet><group><field name="name"/><field name="resource_type"/><field name="capacity"/><field name="nightly_price"/><field name="sequence"/><field name="company_id"/><field name="active"/></group></sheet></form></field></record>
+  <record id="view_stay_resource_tree" model="ir.ui.view"><field name="name" string="الاسم">yousentech.stay.resource.tree</field><field name="model">yousentech.stay.resource</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="resource_type" string="نوع المورد"/><field name="capacity" string="السعة"/><field name="nightly_price" string="سعر الليلة"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_stay_resource_form" model="ir.ui.view"><field name="name" string="الاسم">yousentech.stay.resource.form</field><field name="model">yousentech.stay.resource</field><field name="arch" type="xml"><form string="مورد الإقامة"><sheet><group><field name="name" string="الاسم"/><field name="resource_type" string="نوع المورد"/><field name="capacity" string="السعة"/><field name="nightly_price" string="سعر الليلة"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
-  <record id="view_stay_rate_plan_tree" model="ir.ui.view"><field name="name">yousentech.stay.rate.plan.tree</field><field name="model">yousentech.stay.rate.plan</field><field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="name"/><field name="pricing_type"/><field name="fixed_price"/><field name="percent_adjustment"/><field name="company_id"/><field name="active"/></tree></field></record>
-  <record id="view_stay_rate_plan_form" model="ir.ui.view"><field name="name">yousentech.stay.rate.plan.form</field><field name="model">yousentech.stay.rate.plan</field><field name="arch" type="xml"><form string="Stay Rate Plan"><sheet><group><field name="name"/><field name="pricing_type"/><field name="fixed_price" invisible="pricing_type != 'fixed'"/><field name="percent_adjustment" invisible="pricing_type != 'percent'"/><field name="sequence"/><field name="company_id"/><field name="active"/></group></sheet></form></field></record>
+  <record id="view_stay_rate_plan_tree" model="ir.ui.view"><field name="name" string="الاسم">yousentech.stay.rate.plan.tree</field><field name="model">yousentech.stay.rate.plan</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="pricing_type" string="طريقة التسعير"/><field name="fixed_price" string="السعر الثابت"/><field name="percent_adjustment" string="نسبة التعديل"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_stay_rate_plan_form" model="ir.ui.view"><field name="name" string="الاسم">yousentech.stay.rate.plan.form</field><field name="model">yousentech.stay.rate.plan</field><field name="arch" type="xml"><form string="خطة سعر الإقامة"><sheet><group><field name="name" string="الاسم"/><field name="pricing_type" string="طريقة التسعير"/><field name="fixed_price" string="السعر الثابت" invisible="pricing_type != 'fixed'"/><field name="percent_adjustment" string="نسبة التعديل" invisible="pricing_type != 'percent'"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
-  <record id="view_stay_addon_tree" model="ir.ui.view"><field name="name">yousentech.stay.addon.tree</field><field name="model">yousentech.stay.addon</field><field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="name"/><field name="product_id"/><field name="charge_type"/><field name="price"/><field name="company_id"/><field name="active"/></tree></field></record>
-  <record id="view_stay_addon_form" model="ir.ui.view"><field name="name">yousentech.stay.addon.form</field><field name="model">yousentech.stay.addon</field><field name="arch" type="xml"><form string="Stay Add-on"><sheet><group><field name="name"/><field name="product_id"/><field name="charge_type"/><field name="price"/><field name="tax_ids" widget="many2many_tags"/><field name="sequence"/><field name="company_id"/><field name="active"/></group></sheet></form></field></record>
+  <record id="view_stay_addon_tree" model="ir.ui.view"><field name="name" string="الاسم">yousentech.stay.addon.tree</field><field name="model">yousentech.stay.addon</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="charge_type" string="طريقة الاحتساب"/><field name="price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_stay_addon_form" model="ir.ui.view"><field name="name" string="الاسم">yousentech.stay.addon.form</field><field name="model">yousentech.stay.addon</field><field name="arch" type="xml"><form string="إضافة الإقامة"><sheet><group><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="charge_type" string="طريقة الاحتساب"/><field name="price" string="السعر"/><field name="tax_ids" string="الضرائب" widget="many2many_tags"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
-  <record id="action_event_bookings" model="ir.actions.act_window"><field name="name">Event Bookings</field><field name="res_model">yousentech.booking.event</field><field name="view_mode">tree,form</field></record>
-  <record id="action_stay_bookings" model="ir.actions.act_window"><field name="name">Stay Bookings</field><field name="res_model">yousentech.stay.booking</field><field name="view_mode">tree,form</field></record>
-  <record id="action_booking_periods" model="ir.actions.act_window"><field name="name">Booking Periods</field><field name="res_model">yousentech.booking.period</field><field name="view_mode">tree,form</field></record>
-  <record id="action_booking_halls" model="ir.actions.act_window"><field name="name">Booking Halls</field><field name="res_model">yousentech.booking.hall</field><field name="view_mode">tree,form</field></record>
-  <record id="action_booking_services" model="ir.actions.act_window"><field name="name">Booking Services</field><field name="res_model">yousentech.booking.service</field><field name="view_mode">tree,form</field></record>
-  <record id="action_booking_packages" model="ir.actions.act_window"><field name="name">Booking Packages</field><field name="res_model">yousentech.booking.package</field><field name="view_mode">tree,form</field></record>
-  <record id="action_stay_resources" model="ir.actions.act_window"><field name="name">Stay Resources</field><field name="res_model">yousentech.stay.resource</field><field name="view_mode">tree,form</field></record>
-  <record id="action_stay_rate_plans" model="ir.actions.act_window"><field name="name">Stay Rate Plans</field><field name="res_model">yousentech.stay.rate.plan</field><field name="view_mode">tree,form</field></record>
-  <record id="action_stay_addons" model="ir.actions.act_window"><field name="name">Stay Add-ons</field><field name="res_model">yousentech.stay.addon</field><field name="view_mode">tree,form</field></record>
-  <record id="action_booking_os" model="ir.actions.client"><field name="name">Booking OS</field><field name="tag">yousentech_booking.BookingOS</field></record>
+  <record id="action_event_bookings" model="ir.actions.act_window"><field name="name" string="الاسم">حجوزات القاعات والمناسبات</field><field name="res_model">yousentech.booking.event</field><field name="view_mode">tree,form</field></record>
+  <record id="action_stay_bookings" model="ir.actions.act_window"><field name="name" string="الاسم">الحجوزات الفندقية</field><field name="res_model">yousentech.stay.booking</field><field name="view_mode">tree,form</field></record>
+  <record id="action_booking_periods" model="ir.actions.act_window"><field name="name" string="الاسم">الفترات</field><field name="res_model">yousentech.booking.period</field><field name="view_mode">tree,form</field></record>
+  <record id="action_booking_halls" model="ir.actions.act_window"><field name="name" string="الاسم">القاعات</field><field name="res_model">yousentech.booking.hall</field><field name="view_mode">tree,form</field></record>
+  <record id="action_booking_services" model="ir.actions.act_window"><field name="name" string="الاسم">الخدمات</field><field name="res_model">yousentech.booking.service</field><field name="view_mode">tree,form</field></record>
+  <record id="action_booking_packages" model="ir.actions.act_window"><field name="name" string="الاسم">الباقات</field><field name="res_model">yousentech.booking.package</field><field name="view_mode">tree,form</field></record>
+  <record id="action_stay_resources" model="ir.actions.act_window"><field name="name" string="الاسم">الغرف وموارد الإقامة</field><field name="res_model">yousentech.stay.resource</field><field name="view_mode">tree,form</field></record>
+  <record id="action_stay_rate_plans" model="ir.actions.act_window"><field name="name" string="الاسم">خطط الأسعار</field><field name="res_model">yousentech.stay.rate.plan</field><field name="view_mode">tree,form</field></record>
+  <record id="action_stay_addons" model="ir.actions.act_window"><field name="name" string="الاسم">إضافات الإقامة</field><field name="res_model">yousentech.stay.addon</field><field name="view_mode">tree,form</field></record>
+  <record id="action_booking_os" model="ir.actions.client"><field name="name" string="الاسم">نظام الحجوزات</field><field name="tag">yousentech_booking.BookingOS</field></record>
   <record id="view_booking_demo_setup_form" model="ir.ui.view">
-    <field name="name">yousentech.booking.demo.setup.form</field>
+    <field name="name" string="الاسم">yousentech.booking.demo.setup.form</field>
     <field name="model">yousentech.booking.demo.setup</field>
     <field name="arch" type="xml">
-      <form string="Initialize Demo Configuration">
+      <form string="تهيئة البيانات التجريبية">
         <sheet>
           <group>
-            <field name="company_id"/>
+            <field name="company_id" string="الشركة / الفرع"/>
           </group>
           <div class="alert alert-info" role="alert">
-            This action creates reusable demo configuration for the selected company. Running it again will not duplicate existing demo records.
+            سيتم إنشاء بيانات تجريبية حسب نوع نشاط الحجز للشركة المحددة، ويمكن تشغيل التهيئة مرة أخرى دون تكرار السجلات الموجودة.
           </div>
         </sheet>
         <footer>
-          <button name="action_seed_demo" type="object" string="Initialize Demo Data" class="btn-primary"/>
-          <button string="Cancel" special="cancel" class="btn-secondary"/>
+          <button name="action_seed_demo" type="object" string="تهيئة البيانات التجريبية" class="btn-primary"/>
+          <button string="إلغاء" special="cancel" class="btn-secondary"/>
         </footer>
       </form>
     </field>
   </record>
   <record id="action_booking_demo_setup" model="ir.actions.act_window">
-    <field name="name">Initialize Demo Data</field>
+    <field name="name" string="الاسم">تهيئة البيانات التجريبية</field>
     <field name="res_model">yousentech.booking.demo.setup</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <record id="view_booking_activity_setup_form" model="ir.ui.view">
+    <field name="name">yousentech.booking.activity.setup.form</field>
+    <field name="model">yousentech.booking.activity.setup</field>
+    <field name="arch" type="xml">
+      <form string="تهيئة نوع نشاط الحجز">
+        <sheet>
+          <group>
+            <field name="company_id" string="الشركة / الفرع"/>
+            <field name="activity_type" string="نوع نشاط الحجز"/>
+          </group>
+          <div class="alert alert-warning" role="alert">
+            بعد وجود عمليات فعلية لن يسمح النظام بإلغاء نوع النشاط المرتبط بتلك العمليات.
+          </div>
+        </sheet>
+        <footer>
+          <button name="action_save" type="object" string="حفظ الإعداد" class="btn-primary"/>
+          <button string="إلغاء" special="cancel" class="btn-secondary"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+  <record id="action_booking_activity_setup" model="ir.actions.act_window">
+    <field name="name">نوع نشاط الحجز</field>
+    <field name="res_model">yousentech.booking.activity.setup</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
   </record>
