@@ -25,3 +25,5 @@ access_package_line_user,booking.package.line user,model_yousentech_booking_pack
 access_package_line_manager,booking.package.line manager,model_yousentech_booking_package_line,yousentech_booking.group_booking_manager,1,1,1,1
 access_payment_schedule_user,booking.payment.schedule user,model_yousentech_booking_payment_schedule,yousentech_booking.group_booking_user,1,1,1,0
 access_payment_schedule_manager,booking.payment.schedule manager,model_yousentech_booking_payment_schedule,yousentech_booking.group_booking_manager,1,1,1,1
+
+access_booking_demo_setup_manager,booking.demo.setup manager,model_yousentech_booking_demo_setup,yousentech_booking.group_booking_manager,1,1,1,1
