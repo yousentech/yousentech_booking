@@ -230,6 +230,23 @@ class BookingFinanceMixin(models.AbstractModel):
         moves=self.invoice_ids.filtered(lambda m:m.move_type=="out_refund")
         return {"name":_("Credit Notes"),"type":"ir.actions.act_window","res_model":"account.move","view_mode":"tree,form","domain":[("id","in",moves.ids)],"context":{"create":False}}
 
+    def action_register_payment(self):
+        self.ensure_one()
+        invoices=self.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type=="out_invoice" and m.amount_residual>0)
+        if not invoices:
+            raise UserError(_("There is no posted invoice with an outstanding amount to pay."))
+        return {
+            "name": _("Register Payment"),
+            "type": "ir.actions.act_window",
+            "res_model": "account.payment.register",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "active_model": "account.move",
+                "active_ids": invoices.ids,
+            },
+        }
+
     def action_view_payments(self):
         self.ensure_one()
         payments=self._booking_payments()
