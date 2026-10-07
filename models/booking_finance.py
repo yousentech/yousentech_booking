@@ -59,8 +59,8 @@ class AccountPayment(models.Model):
             received,refunded=booking._cash_totals()
             booking._audit(
                 "finance",
-                _("Payment posted"),
-                _("Booking payments updated. Received: %.2f %s, Refunded: %.2f %s.") % (
+                _("تم ترحيل الدفعة"),
+                _("تم تحديث مدفوعات الحجز. المقبوض: %.2f %s، المسترد: %.2f %s.") % (
                     received, booking.currency_id.name, refunded, booking.currency_id.name
                 ),
             )
@@ -68,8 +68,8 @@ class AccountPayment(models.Model):
             received,refunded=booking._cash_totals()
             booking._audit(
                 "finance",
-                _("Payment posted"),
-                _("Booking payments updated. Received: %.2f %s, Refunded: %.2f %s.") % (
+                _("تم ترحيل الدفعة"),
+                _("تم تحديث مدفوعات الحجز. المقبوض: %.2f %s، المسترد: %.2f %s.") % (
                     received, booking.currency_id.name, refunded, booking.currency_id.name
                 ),
             )
@@ -215,8 +215,8 @@ class BookingFinanceMixin(models.AbstractModel):
             schedule.with_context(booking_schedule_system_write=True).write({"invoice_id":move.id})
         self._audit(
             "finance",
-            _("Invoice created"),
-            _("Draft invoice %s was created for %.2f %s (commercial revision %s).") % (
+            _("تم إنشاء الفاتورة"),
+            _("تم إنشاء مسودة الفاتورة %s بمبلغ %.2f %s (المراجعة التجارية %s).") % (
                 move.name or move.display_name,
                 move.amount_total,
                 self.currency_id.name,
