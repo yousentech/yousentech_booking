@@ -5,7 +5,7 @@ from odoo.exceptions import UserError, ValidationError
 class BookingCommercialSnapshot(models.Model):
     _name="yousentech.booking.commercial.snapshot"
     _description="Booking Commercial Snapshot"
-    _order="revision desc, id desc"
+    _order="revision desc, id desc"\n    _sql_constraints=[\n        ("event_revision_unique","unique(event_booking_id, revision)","Event commercial revision must be unique."),\n        ("stay_revision_unique","unique(stay_booking_id, revision)","Stay commercial revision must be unique."),\n    ]
 
     company_id=fields.Many2one("res.company",required=True,index=True)
     event_booking_id=fields.Many2one("yousentech.booking.event",ondelete="restrict",index=True)
