@@ -13,12 +13,12 @@ class BookingLifecycleMixin(models.AbstractModel):
 
     def _audit(self,action,reason=None,details=None):
         labels={
-            "create":_("Created"),
-            "update":_("Updated"),
-            "state":_("State Change"),
-            "cancel":_("Cancellation"),
-            "reopen":_("Reopen"),
-            "finance":_("Finance"),
+            "create":_("إنشاء"),
+            "update":_("تعديل"),
+            "state":_("تغيير الحالة"),
+            "cancel":_("إلغاء الحجز"),
+            "reopen":_("إعادة فتح الحجز"),
+            "finance":_("عملية مالية"),
         }
         for rec in self:
             self.env["yousentech.booking.audit.log"].sudo().create({
@@ -35,7 +35,7 @@ class BookingLifecycleMixin(models.AbstractModel):
                 if details:
                     parts.append(str(details))
                 if reason and reason not in (details, action):
-                    parts.append(_("Reason: %s") % reason)
+                    parts.append(_("السبب: %s") % reason)
                 rec.message_post(
                     body="<br/>".join(parts),
                     message_type="comment",
