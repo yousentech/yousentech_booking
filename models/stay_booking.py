@@ -14,7 +14,7 @@ class StayBooking(models.Model):
     partner_id = fields.Many2one("res.partner", string="العميل", required=True, tracking=True)
     resource_id = fields.Many2one("yousentech.stay.resource", string="مورد الإقامة", required=True, domain="[('company_id','=',company_id)]", tracking=True)
     checkin_date = fields.Date(string="تاريخ الدخول", required=True, index=True, tracking=True)
-    checkout_date = fields.Date(string="تاريخ الخروج", required=True, index=True, tracking=True)
+    checkout_date = fields.Date(string="تاريخ الخروج", required=False, index=True, tracking=True)
     state = fields.Selection([("draft","مسودة"),("hold","حجز مؤقت"),("confirmed","مؤكد"),("checked_in","تم الدخول"),("checked_out","تم الخروج"),("cancelled","ملغي")], string="الحالة", default="draft", required=True, tracking=True, index=True)
     amount_total = fields.Monetary(string="الإجمالي", tracking=True)
     currency_id = fields.Many2one(related="company_id.currency_id", store=True, readonly=True)
@@ -23,7 +23,9 @@ class StayBooking(models.Model):
     def _check_dates(self):
         for rec in self:
             if rec.checkin_date and rec.checkout_date and rec.checkout_date <= rec.checkin_date:
-                raise ValidationError(_("Checkout must be after check-in."))
+                raise ValidationError(_("تاريخ الخروج يجب أن يكون بعد تاريخ الدخول."))
+            if rec.checkin_date and not rec.checkout_date and not rec.company_id.booking_allow_open_stay:
+                raise ValidationError(_("تاريخ الخروج إجباري حسب إعدادات الشركة / الفرع."))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -58,9 +60,18 @@ class StayBooking(models.Model):
                 raise ValidationError(_("The stay resource must belong to the booking branch/company."))
 
     def _check_availability(self, lock=False):
-        for rec in self.filtered(lambda r: r.state in BLOCKING_STATES and r.resource_id and r.checkin_date and r.checkout_date):
+        for rec in self.filtered(lambda r: r.state in BLOCKING_STATES and r.resource_id and r.checkin_date):
             if lock:
                 self.env.cr.execute("SELECT id FROM yousentech_stay_resource WHERE id = %s FOR UPDATE", [rec.resource_id.id])
-            conflict = self.search([("id","!=",rec.id),("company_id","=",rec.company_id.id),("resource_id","=",rec.resource_id.id),("state","in",BLOCKING_STATES),("checkin_date","<",rec.checkout_date),("checkout_date",">",rec.checkin_date)], limit=1)
+            domain = [
+                ("id", "!=", rec.id),
+                ("company_id", "=", rec.company_id.id),
+                ("resource_id", "=", rec.resource_id.id),
+                ("state", "in", BLOCKING_STATES),
+                "|", ("checkout_date", "=", False), ("checkout_date", ">", rec.checkin_date),
+            ]
+            if rec.checkout_date:
+                domain.append(("checkin_date", "<", rec.checkout_date))
+            conflict = self.search(domain, limit=1)
             if conflict:
-                raise ValidationError(_("The resource is not available for this stay; conflict with %s.") % conflict.display_name)
+                raise ValidationError(_("مورد الإقامة غير متاح لهذه الفترة بسبب تعارضه مع الحجز %s.") % conflict.display_name)
