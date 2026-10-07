@@ -1,5 +1,5 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError\n\nLOCKED_STATES=("confirmed","checked_in","checked_out")
 
 class StayBookingAddonLine(models.Model):
     _name = "yousentech.stay.booking.addon.line"
@@ -62,3 +62,4 @@ class StayBooking(models.Model):
         for rec in self:
             if rec.rate_plan_id and rec.rate_plan_id.company_id!=rec.company_id: raise ValidationError(_("Rate plan must belong to the booking branch/company."))
             if rec.addon_line_ids.filtered(lambda l:l.company_id!=rec.company_id or l.addon_id.company_id!=rec.company_id): raise ValidationError(_("All add-ons must belong to the booking branch/company."))
+\n    def write(self,vals):\n        if {"rate_plan_id","addon_line_ids","resource_id","checkin_date","checkout_date"} & set(vals) and self.filtered(lambda r:r.state in LOCKED_STATES): raise ValidationError(_("Confirmed commercial terms are locked. Cancel and reopen the booking before changing them."))\n        return super().write(vals)\n

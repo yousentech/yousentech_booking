@@ -1,6 +1,6 @@
 {
     "name": "YousenTech Booking",
-    "version": "17.0.7.0.0",
+    "version": "17.0.8.0.0",
     "summary": "Modern event and stay booking operations",
     "category": "Services/Booking",
     "author": "YousenTech",

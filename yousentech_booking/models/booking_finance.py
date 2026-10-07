@@ -107,7 +107,7 @@ class BookingFinanceMixin(models.AbstractModel):
             raise UserError(_("Invoice ratio must be greater than zero."))
         if self._name=="yousentech.booking.event":
             lines=[(0,0,{"name":label or _("Hall: %s")%self.hall_id.display_name,"quantity":1.0,"price_unit":self.hall_id.list_price*ratio})]
-            lines += [(0,0,{"product_id":l.service_id.product_id.id,"name":l.service_id.display_name,"quantity":l.quantity,"price_unit":l.price_unit*ratio,"tax_ids":[(6,0,l.service_id.tax_ids.ids)]}) for l in self.service_line_ids]
+            if self.package_id and self.package_id.pricing_type=="fixed":\n                lines.append((0,0,{"name":_("Package: %s")%self.package_id.display_name,"quantity":1.0,"price_unit":self.package_id.price*ratio}))\n            else:\n                lines += [(0,0,{"product_id":l.service_id.product_id.id,"name":l.service_id.display_name,"quantity":l.quantity,"price_unit":l.price_unit*ratio,"tax_ids":[(6,0,l.service_id.tax_ids.ids)]}) for l in self.service_line_ids]
             if self.discount_amount:
                 lines.append((0,0,{"name":_("Booking discount"),"quantity":1.0,"price_unit":-self.discount_amount*ratio}))
             return lines
