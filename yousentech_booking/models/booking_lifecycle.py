@@ -51,6 +51,9 @@ class BookingLifecycleMixin(models.AbstractModel):
 
     def _transition(self,target,graph,reason=None):
         for rec in self:
+            rec.flush_recordset(["state"])
+            rec.env.cr.execute("SELECT id FROM %s WHERE id = %%s FOR UPDATE" % rec._table,[rec.id])
+            rec.invalidate_recordset(["state"],flush=False)
             if target not in graph.get(rec.state,set()):
                 raise UserError(_("This booking transition is not allowed."))
             if target in ("cancelled","draft"):
