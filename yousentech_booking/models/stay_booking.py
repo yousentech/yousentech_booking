@@ -28,6 +28,8 @@ class StayBooking(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            if vals.get("state") not in (None, "draft"):
+                raise ValidationError(_("New bookings must start in Draft and use lifecycle actions."))
             if vals.get("name", "New") == "New":
                 vals["name"] = self.env["ir.sequence"].next_by_code("yousentech.stay.booking") or "New"
         records = super().create(vals_list)
@@ -36,6 +38,8 @@ class StayBooking(models.Model):
         return records
 
     def write(self, vals):
+        if "state" in vals and not self.env.context.get("booking_system_transition"):
+            raise ValidationError(_("Booking state can only be changed through lifecycle actions."))
         result = super().write(vals)
         if {"company_id","resource_id","checkin_date","checkout_date","state"} & set(vals):
             self._check_company_integrity()
