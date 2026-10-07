@@ -4,4 +4,16 @@
   <menuitem id="menu_booking_os" name="Operations" parent="menu_booking_root" action="action_booking_os" sequence="1"/>
   <menuitem id="menu_event_bookings" name="Events" parent="menu_booking_root" action="action_event_bookings" sequence="10"/>
   <menuitem id="menu_stay_bookings" name="Stays" parent="menu_booking_root" action="action_stay_bookings" sequence="20"/>
+
+  <menuitem id="menu_booking_configuration" name="Configuration" parent="menu_booking_root" sequence="90" groups="yousentech_booking.group_booking_manager"/>
+  <menuitem id="menu_booking_event_configuration" name="Event Booking" parent="menu_booking_configuration" sequence="10"/>
+  <menuitem id="menu_booking_halls" name="Halls" parent="menu_booking_event_configuration" action="action_booking_halls" sequence="10"/>
+  <menuitem id="menu_booking_periods" name="Periods" parent="menu_booking_event_configuration" action="action_booking_periods" sequence="20"/>
+  <menuitem id="menu_booking_services" name="Services" parent="menu_booking_event_configuration" action="action_booking_services" sequence="30"/>
+  <menuitem id="menu_booking_packages" name="Packages" parent="menu_booking_event_configuration" action="action_booking_packages" sequence="40"/>
+
+  <menuitem id="menu_booking_stay_configuration" name="Stay Booking" parent="menu_booking_configuration" sequence="20"/>
+  <menuitem id="menu_stay_resources" name="Resources" parent="menu_booking_stay_configuration" action="action_stay_resources" sequence="10"/>
+  <menuitem id="menu_stay_rate_plans" name="Rate Plans" parent="menu_booking_stay_configuration" action="action_stay_rate_plans" sequence="20"/>
+  <menuitem id="menu_stay_addons" name="Add-ons" parent="menu_booking_stay_configuration" action="action_stay_addons" sequence="30"/>
 </odoo>
