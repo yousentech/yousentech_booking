@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_event_booking_list" model="ir.ui.view"><field name="name">yousentech.booking.event.list</field><field name="model">yousentech.booking.event</field><field name="arch" type="xml"><list><field name="name"/><field name="company_id"/><field name="booking_date"/><field name="partner_id"/><field name="hall_id"/><field name="state"/></list></field></record>
+  <record id="view_stay_booking_list" model="ir.ui.view"><field name="name">yousentech.stay.booking.list</field><field name="model">yousentech.stay.booking</field><field name="arch" type="xml"><list><field name="name"/><field name="company_id"/><field name="checkin_date"/><field name="checkout_date"/><field name="partner_id"/><field name="resource_id"/><field name="state"/></list></field></record>
+  <record id="action_event_bookings" model="ir.actions.act_window"><field name="name">Event Bookings</field><field name="res_model">yousentech.booking.event</field><field name="view_mode">list,form</field></record>
+  <record id="action_stay_bookings" model="ir.actions.act_window"><field name="name">Stay Bookings</field><field name="res_model">yousentech.stay.booking</field><field name="view_mode">list,form</field></record>
+  <record id="action_booking_os" model="ir.actions.client"><field name="name">Booking OS</field><field name="tag">yousentech_booking.BookingOS</field></record>
+</odoo>
