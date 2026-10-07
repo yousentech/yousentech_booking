@@ -68,6 +68,7 @@
                 <field name="amount_total" string="الإجمالي" readonly="1"/>
             <field name="invoice_count" invisible="1"/>
             <field name="amount_due" invisible="1"/>
+            <field name="invoice_policy" invisible="1"/>
               </group>
             </page>
 
