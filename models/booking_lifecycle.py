@@ -12,6 +12,14 @@ class BookingLifecycleMixin(models.AbstractModel):
     cancelled_at=fields.Datetime(copy=False,readonly=True)
 
     def _audit(self,action,reason=None,details=None):
+        labels={
+            "create":_("Created"),
+            "update":_("Updated"),
+            "state":_("State Change"),
+            "cancel":_("Cancellation"),
+            "reopen":_("Reopen"),
+            "finance":_("Finance"),
+        }
         for rec in self:
             self.env["yousentech.booking.audit.log"].sudo().create({
                 "company_id":rec.company_id.id,
@@ -22,6 +30,17 @@ class BookingLifecycleMixin(models.AbstractModel):
                 "details":details or False,
                 "user_id":self.env.user.id,
             })
+            if hasattr(rec, "message_post"):
+                parts=[labels.get(action,action)]
+                if details:
+                    parts.append(str(details))
+                if reason and reason not in (details, action):
+                    parts.append(_("Reason: %s") % reason)
+                rec.message_post(
+                    body="<br/>".join(parts),
+                    message_type="comment",
+                    subtype_xmlid="mail.mt_note",
+                )
 
     def _require_group(self,xmlid,message):
         if not self.env.user.has_group(xmlid):
