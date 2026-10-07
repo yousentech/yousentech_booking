@@ -44,9 +44,10 @@ class StayBooking(models.Model):
     nights = fields.Integer(compute="_compute_commercial", store=True)
     nightly_price = fields.Monetary(compute="_compute_commercial", store=True)
     amount_untaxed = fields.Monetary(compute="_compute_commercial", store=True)
+    tax_amount = fields.Monetary(compute="_compute_commercial", store=True)
     amount_total = fields.Monetary(compute="_compute_commercial", store=True, tracking=True)
 
-    @api.depends("checkin_date","checkout_date","resource_id.nightly_price","rate_plan_id.pricing_type","rate_plan_id.fixed_price","rate_plan_id.percent_adjustment","addon_line_ids.subtotal")
+    @api.depends("checkin_date","checkout_date","resource_id.nightly_price","rate_plan_id.pricing_type","rate_plan_id.fixed_price","rate_plan_id.percent_adjustment","addon_line_ids.subtotal","addon_line_ids.addon_id.tax_ids","partner_id")
     def _compute_commercial(self):
         for rec in self:
             nights=(rec.checkout_date-rec.checkin_date).days if rec.checkin_date and rec.checkout_date and rec.checkout_date>rec.checkin_date else 0
@@ -55,7 +56,13 @@ class StayBooking(models.Model):
             elif rec.rate_plan_id.pricing_type=="percent": base_price*=1.0+(rec.rate_plan_id.percent_adjustment or 0.0)/100.0
             rec.nights=nights; rec.nightly_price=base_price
             rec.amount_untaxed=nights*base_price+sum(rec.addon_line_ids.mapped("subtotal"))
-            rec.amount_total=rec.amount_untaxed
+            tax_amount=0.0
+            for line in rec.addon_line_ids:
+                quantity=line.quantity*(nights if line.addon_id.charge_type=="night" else 1)
+                taxes=line.addon_id.tax_ids.compute_all(line.price_unit,currency=rec.currency_id,quantity=quantity,product=line.addon_id.product_id,partner=rec.partner_id)
+                tax_amount+=taxes["total_included"]-taxes["total_excluded"]
+            rec.tax_amount=tax_amount
+            rec.amount_total=rec.amount_untaxed+tax_amount
 
     @api.constrains("rate_plan_id","addon_line_ids")
     def _check_commercial_company(self):

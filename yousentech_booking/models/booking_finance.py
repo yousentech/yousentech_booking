@@ -107,13 +107,14 @@ class BookingFinanceMixin(models.AbstractModel):
         if ratio<=0:
             raise UserError(_("Invoice ratio must be greater than zero."))
         if self._name=="yousentech.booking.event":
-            lines=[(0,0,{"name":label or _("Hall: %s")%self.hall_id.display_name,"quantity":1.0,"price_unit":self.hall_id.list_price*ratio})]
+            base=(self.amount_untaxed or 0.0)+(self.discount_amount or 0.0)
+            discount_factor=(self.amount_untaxed/base) if base else 1.0
+            event_ratio=ratio*discount_factor
+            lines=[(0,0,{"name":label or _("Hall: %s")%self.hall_id.display_name,"quantity":1.0,"price_unit":self.hall_id.list_price*event_ratio})]
             if self.package_id and self.package_id.pricing_type=="fixed":
-                lines.append((0,0,{"name":_("Package: %s")%self.package_id.display_name,"quantity":1.0,"price_unit":self.package_id.price*ratio}))
+                lines.append((0,0,{"name":_("Package: %s")%self.package_id.display_name,"quantity":1.0,"price_unit":self.package_id.price*event_ratio}))
             else:
-                lines += [(0,0,{"product_id":l.service_id.product_id.id,"name":l.service_id.display_name,"quantity":l.quantity,"price_unit":l.price_unit*ratio,"tax_ids":[(6,0,l.service_id.tax_ids.ids)]}) for l in self.service_line_ids]
-            if self.discount_amount:
-                lines.append((0,0,{"name":_("Booking discount"),"quantity":1.0,"price_unit":-self.discount_amount*ratio}))
+                lines += [(0,0,{"product_id":l.service_id.product_id.id,"name":l.service_id.display_name,"quantity":l.quantity,"price_unit":l.price_unit*event_ratio,"tax_ids":[(6,0,l.service_id.tax_ids.ids)]}) for l in self.service_line_ids]
             return lines
         lines=[(0,0,{"name":label or _("Stay: %s")%self.resource_id.display_name,"quantity":self.nights or 1,"price_unit":self.nightly_price*ratio})]
         lines += [(0,0,{"product_id":l.addon_id.product_id.id,"name":l.addon_id.display_name,"quantity":l.quantity*(self.nights if l.addon_id.charge_type=="night" else 1),"price_unit":l.price_unit*ratio,"tax_ids":[(6,0,l.addon_id.tax_ids.ids)]}) for l in self.addon_line_ids]

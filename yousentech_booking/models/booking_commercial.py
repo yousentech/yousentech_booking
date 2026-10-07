@@ -61,6 +61,7 @@ class BookingEvent(models.Model):
     discount_value=fields.Float(default=0.0)
     amount_untaxed=fields.Monetary(compute="_compute_amounts",store=True)
     discount_amount=fields.Monetary(compute="_compute_amounts",store=True)
+    tax_amount=fields.Monetary(compute="_compute_amounts",store=True)
     amount_total=fields.Monetary(compute="_compute_amounts",store=True,tracking=True)
 
     @staticmethod
@@ -72,17 +73,25 @@ class BookingEvent(models.Model):
         if self.package_id:
             self.service_line_ids=[fields.Command.clear()]+self._package_commands(self.package_id)
 
-    @api.depends("hall_id.list_price","package_id.price","service_line_ids.subtotal","discount_type","discount_value")
+    @api.depends("hall_id.list_price","package_id.price","package_id.pricing_type","service_line_ids.subtotal","service_line_ids.service_id.tax_ids","discount_type","discount_value","partner_id")
     def _compute_amounts(self):
         for rec in self:
             services=sum(rec.service_line_ids.mapped("subtotal"))
             base=(rec.hall_id.list_price or 0.0)+services
-            if rec.package_id and rec.package_id.pricing_type=="fixed":
+            fixed_package=rec.package_id and rec.package_id.pricing_type=="fixed"
+            if fixed_package:
                 base=(rec.hall_id.list_price or 0.0)+(rec.package_id.price or 0.0)
             discount=base*min(max(rec.discount_value,0.0),100.0)/100.0 if rec.discount_type=="percent" else min(max(rec.discount_value,0.0),base) if rec.discount_type=="fixed" else 0.0
-            rec.amount_untaxed=base
+            factor=(base-discount)/base if base else 1.0
+            tax_amount=0.0
+            if not fixed_package:
+                for line in rec.service_line_ids:
+                    taxes=line.service_id.tax_ids.compute_all(line.price_unit*factor,currency=rec.currency_id,quantity=line.quantity,product=line.service_id.product_id,partner=rec.partner_id)
+                    tax_amount+=taxes["total_included"]-taxes["total_excluded"]
+            rec.amount_untaxed=base-discount
             rec.discount_amount=discount
-            rec.amount_total=base-discount
+            rec.tax_amount=tax_amount
+            rec.amount_total=rec.amount_untaxed+tax_amount
 
     @api.constrains("discount_type","discount_value","package_id")
     def _check_commercial(self):
