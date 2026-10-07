@@ -70,13 +70,18 @@ class BookingFinanceMixin(models.AbstractModel):
             posted=rec.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type in ("out_invoice","out_refund"))
             invoices=posted.filtered(lambda m:m.move_type=="out_invoice")
             refunds=posted.filtered(lambda m:m.move_type=="out_refund")
-            invoiced=sum(invoices.mapped("amount_total"))-sum(refunds.mapped("amount_total"))
+            gross_invoiced=sum(invoices.mapped("amount_total"))
+            gross_credited=sum(refunds.mapped("amount_total"))
+            # Keep the accounting balance signed.  This matters when a credit note
+            # is partial (or even larger than the original invoice): clamping the
+            # balance before comparing it with cash would hide money still owed
+            # to the customer.
+            document_balance=gross_invoiced-gross_credited
             received,refunded=rec._cash_totals()
-            net_invoiced=max(invoiced,0.0)
             net_cash=received-refunded
-            due=max(net_invoiced-net_cash,0.0)
-            to_refund=max(net_cash-net_invoiced,0.0)
-            rec.amount_invoiced=net_invoiced
+            due=max(document_balance-net_cash,0.0)
+            to_refund=max(net_cash-document_balance,0.0)
+            rec.amount_invoiced=max(document_balance,0.0)
             latest=rec.commercial_snapshot_ids.sorted(lambda s:(s.revision,s.id),reverse=True)[:1]
             active_coverage=sum(rec.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice" and (not latest or m.yousentech_snapshot_id==latest)).mapped("amount_total"))
             rec.amount_to_invoice=max(rec.amount_total-active_coverage,0.0)
@@ -89,9 +94,11 @@ class BookingFinanceMixin(models.AbstractModel):
                 rec.finance_state="not_invoiced"
             elif not rec.currency_id.is_zero(to_refund):
                 rec.finance_state="refund_required"
-            elif rec.currency_id.is_zero(net_invoiced) and rec.currency_id.is_zero(net_cash):
+            elif rec.currency_id.is_zero(document_balance) and rec.currency_id.is_zero(net_cash):
                 rec.finance_state="settled"
-            elif rec.currency_id.is_zero(due) and rec.currency_id.is_zero(rec.amount_to_invoice):
+            elif rec.currency_id.is_zero(due) and rec.currency_id.is_zero(to_refund):
+                # A partial credit note is a valid settled position when the net
+                # cash held equals the net posted customer balance.
                 rec.finance_state="paid"
             elif net_cash>0:
                 rec.finance_state="partial"
@@ -207,9 +214,15 @@ class BookingFinanceMixin(models.AbstractModel):
             net_cash=received-refunded
             unsettled=posted.filtered(lambda m:not rec.currency_id.is_zero(m.amount_residual))
             if not rec.currency_id.is_zero(net_total):
-                raise UserError(_("Reverse all posted booking invoices with credit notes before cancelling this booking."))
+                raise UserError(_(
+                    "The booking cannot be cancelled while a posted customer balance remains. "
+                    "Create credit notes for the remaining %.2f %s first."
+                ) % (net_total, rec.currency_id.name))
             if not rec.currency_id.is_zero(net_cash):
-                raise UserError(_("Refund all customer money before cancelling this booking. Amount still held: %s") % "%.2f %s" % (net_cash, rec.currency_id.name))
+                raise UserError(_(
+                    "The booking cannot be cancelled until all customer money is refunded. "
+                    "Amount still held: %.2f %s."
+                ) % (net_cash, rec.currency_id.name))
             if unsettled:
                 raise UserError(_("Reconcile all booking invoices and credit notes before cancelling this booking."))
 
@@ -321,9 +334,6 @@ class BookingEvent(models.Model):
     def write(self,vals):
         self._check_finance_fields_write(vals)
         return super().write(vals)
-    def write(self,vals):
-        self._check_finance_fields_write(vals)
-        return super().write(vals)
     def unlink(self):
         self._check_unlink_finance()
         if self.filtered(lambda r:r.state not in ("draft","cancelled")):
@@ -350,6 +360,9 @@ class StayBooking(models.Model):
             rec.invoice_count=len(rec.invoice_ids.filtered(lambda m:m.move_type=="out_invoice"))
             rec.refund_count=len(rec.invoice_ids.filtered(lambda m:m.move_type=="out_refund"))
             rec.payment_count=len(rec._booking_payments())
+    def write(self,vals):
+        self._check_finance_fields_write(vals)
+        return super().write(vals)
     def unlink(self):
         self._check_unlink_finance()
         if self.filtered(lambda r:r.state not in ("draft","cancelled")):
