@@ -14,9 +14,9 @@
           <button name="action_prepare" type="object" string="بدء التجهيز" invisible="state != 'confirmed'"/>
           <button name="action_start_event" type="object" string="بدء المناسبة" invisible="state != 'preparing'"/>
           <button name="action_complete" type="object" string="إكمال المناسبة" invisible="state != 'event'"/>
-          <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'manual'"/>
+          <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'manual' or invoice_count &gt; 0"/>
           <button name="action_create_final_invoice" type="object" string="فاتورة الرصيد" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'deposit'"/>
-          <button name="action_create_credit_note" type="object" string="إنشاء إشعار دائن" groups="yousentech_booking.group_booking_manager" invisible="invoice_count == 0"/>
+          <button name="action_create_credit_note" type="object" string="إنشاء إشعار دائن" groups="yousentech_booking.group_booking_manager" invisible="invoice_count == 0 or refund_count &gt; 0"/>
           <button name="action_reopen" type="object" string="إعادة فتح" groups="yousentech_booking.group_booking_supervisor" invisible="state != 'cancelled'"/>
           <field name="state" widget="statusbar" statusbar_visible="draft,hold,confirmed,preparing,event,completed,cancelled"/>
         </header>
