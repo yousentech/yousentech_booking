@@ -11,9 +11,17 @@ class BookingLifecycleMixin(models.AbstractModel):
     cancelled_by_id=fields.Many2one("res.users",copy=False,readonly=True)
     cancelled_at=fields.Datetime(copy=False,readonly=True)
 
-    def _audit(self,action,reason=None):
+    def _audit(self,action,reason=None,details=None):
         for rec in self:
-            self.env["yousentech.booking.audit.log"].sudo().create({"company_id":rec.company_id.id,"model_name":rec._name,"record_id":rec.id,"action":action,"reason":reason or False,"user_id":self.env.user.id})
+            self.env["yousentech.booking.audit.log"].sudo().create({
+                "company_id":rec.company_id.id,
+                "model_name":rec._name,
+                "record_id":rec.id,
+                "action":action,
+                "reason":reason or False,
+                "details":details or False,
+                "user_id":self.env.user.id,
+            })
 
     def _require_group(self,xmlid,message):
         if not self.env.user.has_group(xmlid):
@@ -85,7 +93,12 @@ class BookingLifecycleMixin(models.AbstractModel):
             rec.with_context(booking_system_transition=True).write(vals)
             if apply_confirmation_policy:
                 rec._apply_confirmation_invoice_policy()
-            rec._audit("cancel" if target=="cancelled" else ("reopen" if target=="draft" else "state"),reason or target)
+            previous_state = next((source for source, targets in graph.items() if target in targets and source != target and source == rec._origin.state), False)
+            rec._audit(
+                "cancel" if target=="cancelled" else ("reopen" if target=="draft" else "state"),
+                reason or target,
+                _("State changed to %s") % target,
+            )
         return True
 
 class BookingEvent(models.Model):
