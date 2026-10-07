@@ -47,11 +47,6 @@ class BookingFinanceMixin(models.AbstractModel):
     _description="Booking Finance Mixin"
     invoice_policy=fields.Selection(POLICIES,default="manual",required=True,tracking=True)
     deposit_percent=fields.Float(default=30.0)
-    amount_invoiced=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
-    amount_to_invoice=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
-    amount_paid=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
-    amount_due=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
-    amount_remaining=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     finance_state=fields.Selection([("not_invoiced","Not Invoiced"),("invoiced","Invoiced"),("partial","Partially Paid"),("paid","Paid")],compute="_compute_finance")
 
     def _compute_finance(self):
@@ -228,6 +223,11 @@ class BookingFinanceMixin(models.AbstractModel):
 
 class BookingEvent(models.Model):
     _inherit=["yousentech.booking.event","yousentech.booking.finance.mixin"]
+    amount_invoiced=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_to_invoice=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_paid=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_due=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_remaining=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     invoice_ids=fields.One2many("account.move","yousentech_event_booking_id",string="Invoices")
     payment_schedule_ids=fields.One2many("yousentech.booking.payment.schedule","event_booking_id")
     invoice_count=fields.Integer(compute="_compute_invoice_count")
@@ -241,6 +241,11 @@ class BookingEvent(models.Model):
 
 class StayBooking(models.Model):
     _inherit=["yousentech.stay.booking","yousentech.booking.finance.mixin"]
+    amount_invoiced=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_to_invoice=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_paid=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_due=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_remaining=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     invoice_ids=fields.One2many("account.move","yousentech_stay_booking_id",string="Invoices")
     payment_schedule_ids=fields.One2many("yousentech.booking.payment.schedule","stay_booking_id")
     invoice_count=fields.Integer(compute="_compute_invoice_count")
