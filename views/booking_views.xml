@@ -160,41 +160,118 @@
           <button name="action_check_in" type="object" string="تسجيل الدخول" invisible="state != 'confirmed'"/>
           <button name="action_check_out" type="object" string="تسجيل الخروج" invisible="state != 'checked_in'"/>
           <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','checked_in','checked_out') or invoice_policy != 'manual' or amount_to_invoice &lt;= 0"/>
+          <button name="action_create_final_invoice" type="object" string="فاتورة الرصيد" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','checked_in','checked_out') or invoice_policy != 'deposit'"/>
           <button name="action_register_payment" type="object" string="تسجيل دفعة" class="btn-primary" invisible="invoice_count == 0 or amount_due &lt;= 0"/>
+          <button name="action_cancel" type="object" string="إلغاء الحجز" groups="yousentech_booking.group_booking_supervisor" invisible="state in ('draft','cancelled','checked_in','checked_out')"/>
+          <button name="action_create_credit_note" type="object" string="إنشاء مرتجع" groups="yousentech_booking.group_booking_manager" invisible="invoice_count == 0"/>
           <button name="action_reopen" type="object" string="إعادة فتح" groups="yousentech_booking.group_booking_supervisor" invisible="state != 'cancelled'"/>
           <field name="state" widget="statusbar" statusbar_visible="draft,hold,confirmed,checked_in,checked_out,cancelled"/>
         </header>
         <sheet>
-          <field name="invoice_policy" invisible="1"/>
           <field name="invoice_count" invisible="1"/>
+          <field name="refund_count" invisible="1"/>
+          <field name="payment_count" invisible="1"/>
           <field name="amount_due" invisible="1"/>
-            <field name="amount_to_invoice" invisible="1"/>
-          <div class="oe_button_box" name="button_box"><button name="action_view_history" type="object" class="oe_stat_button" icon="fa-history"><field name="audit_log_count" widget="statinfo" string="السجل"/></button>
-            <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="invoice_count == 0">
-              <field name="invoice_count" widget="statinfo" string="الفواتير"/>
-            </button>
-            <button name="action_view_refunds" type="object" class="oe_stat_button" icon="fa-undo" invisible="refund_count == 0">
-              <field name="refund_count" widget="statinfo" string="المرتجعات"/>
-            </button>
-            <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-money" invisible="payment_count == 0">
-              <field name="payment_count" widget="statinfo" string="المدفوعات"/>
-            </button>
+          <field name="amount_to_invoice" invisible="1"/>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_history" type="object" class="oe_stat_button" icon="fa-history"><field name="audit_log_count" widget="statinfo" string="السجل"/></button>
+            <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="invoice_count == 0"><field name="invoice_count" widget="statinfo" string="الفواتير"/></button>
+            <button name="action_view_refunds" type="object" class="oe_stat_button" icon="fa-undo" invisible="refund_count == 0"><field name="refund_count" widget="statinfo" string="المرتجعات"/></button>
+            <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-money" invisible="payment_count == 0"><field name="payment_count" widget="statinfo" string="المدفوعات"/></button>
           </div>
-          <group>
+
+          <group string="بيانات الحجز الأساسية">
             <group>
               <field name="name" string="رقم الحجز" readonly="1"/>
               <field name="partner_id" string="العميل" readonly="state not in ('draft','hold')"/>
               <field name="company_id" string="الشركة / الفرع" readonly="state not in ('draft','hold')"/>
             </group>
             <group>
-              <field name="resource_id" string="مورد الإقامة" readonly="state not in ('draft','hold')"/>
+              <field name="resource_id" string="الغرفة / مورد الإقامة" readonly="state not in ('draft','hold')"/>
               <field name="checkin_date" string="تاريخ الدخول" readonly="state not in ('draft','hold')"/>
               <field name="checkout_date" string="تاريخ الخروج" readonly="state not in ('draft','hold')"/>
             </group>
           </group>
-          <group>
-            <field name="amount_total" string="الإجمالي" readonly="1"/>
-          </group>
+
+          <notebook>
+            <page string="الإقامة والإضافات">
+              <group>
+                <group>
+                  <field name="rate_plan_id" string="خطة السعر" readonly="state not in ('draft','hold')"/>
+                  <field name="nights" string="عدد الليالي" readonly="1"/>
+                  <field name="nightly_price" string="سعر الليلة" readonly="1"/>
+                </group>
+                <group>
+                  <field name="amount_untaxed" string="قبل الضريبة" readonly="1"/>
+                  <field name="tax_amount" string="الضريبة" readonly="1"/>
+                  <field name="amount_total" string="الإجمالي" readonly="1"/>
+                </group>
+              </group>
+              <field name="addon_line_ids" string="الإضافات" readonly="state not in ('draft','hold')">
+                <tree editable="bottom">
+                  <field name="company_id" column_invisible="True"/>
+                  <field name="addon_id" string="الإضافة"/>
+                  <field name="quantity" string="الكمية"/>
+                  <field name="price_unit" string="سعر الوحدة"/>
+                  <field name="subtotal" string="الإجمالي" readonly="1"/>
+                </tree>
+              </field>
+            </page>
+
+            <page string="الإلغاء" invisible="state != 'cancelled'">
+              <group>
+                <field name="cancel_reason" string="سبب الإلغاء" readonly="1"/>
+                <field name="cancelled_by_id" string="ألغاه" readonly="1"/>
+                <field name="cancelled_at" string="تاريخ الإلغاء" readonly="1"/>
+              </group>
+            </page>
+
+            <page string="المالية والفواتير">
+              <group>
+                <group>
+                  <field name="invoice_policy" string="سياسة الفوترة" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/>
+                  <field name="deposit_percent" string="نسبة العربون" invisible="invoice_policy != 'deposit'" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/>
+                  <field name="finance_state" string="الحالة المالية" readonly="1"/>
+                </group>
+                <group>
+                  <field name="amount_invoiced" string="صافي المفوتر" readonly="1"/>
+                  <field name="amount_paid" string="إجمالي المقبوض" readonly="1"/>
+                  <field name="amount_refunded" string="المبلغ المسترد" readonly="1"/>
+                  <field name="amount_to_refund" string="مطلوب رده للعميل" readonly="1"/>
+                  <field name="amount_remaining" string="المطلوب من العميل" readonly="1"/>
+                </group>
+              </group>
+              <field name="payment_schedule_ids" string="جدول الدفعات" invisible="invoice_policy != 'schedule'" readonly="state not in ('draft','hold') or invoice_count &gt; 0">
+                <tree editable="bottom">
+                  <field name="name" string="الدفعة"/>
+                  <field name="due_date" string="تاريخ الاستحقاق"/>
+                  <field name="amount" string="المبلغ"/>
+                  <field name="state" string="الحالة" readonly="1"/>
+                  <field name="invoice_id" string="الفاتورة" readonly="1"/>
+                </tree>
+              </field>
+              <field name="invoice_ids" string="الفواتير والمرتجعات" readonly="1">
+                <tree>
+                  <field name="name" string="المستند"/>
+                  <field name="move_type" string="النوع"/>
+                  <field name="invoice_date" string="التاريخ"/>
+                  <field name="amount_total" string="الإجمالي"/>
+                  <field name="payment_state" string="حالة الدفع"/>
+                  <field name="state" string="الحالة"/>
+                </tree>
+              </field>
+            </page>
+
+            <page string="السجل التجاري">
+              <field name="commercial_snapshot_ids" string="نسخ الشروط التجارية" readonly="1">
+                <tree>
+                  <field name="revision" string="المراجعة"/>
+                  <field name="amount_total" string="الإجمالي"/>
+                  <field name="locked" string="مقفلة"/>
+                </tree>
+              </field>
+            </page>
+          </notebook>
         </sheet>
         <div class="oe_chatter">
           <field name="message_follower_ids"/>
