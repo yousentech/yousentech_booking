@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_booking_root" name="Booking" sequence="10" groups="yousentech_booking.group_booking_user"/>
+  <menuitem id="menu_booking_os" name="Operations" parent="menu_booking_root" action="action_booking_os" sequence="1"/>
+  <menuitem id="menu_event_bookings" name="Events" parent="menu_booking_root" action="action_event_bookings" sequence="10"/>
+  <menuitem id="menu_stay_bookings" name="Stays" parent="menu_booking_root" action="action_stay_bookings" sequence="20"/>
+</odoo>
