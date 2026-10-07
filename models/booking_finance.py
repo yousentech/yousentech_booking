@@ -281,6 +281,14 @@ class BookingFinanceMixin(models.AbstractModel):
         payments=self._booking_payments()
         return {"name":_("Payments"),"type":"ir.actions.act_window","res_model":"account.payment","view_mode":"tree,form","domain":[("id","in",payments.ids)],"context":{"create":False}}
 
+    def _check_finance_fields_write(self, vals):
+        protected={"invoice_policy","deposit_percent","payment_schedule_ids"}
+        if not protected & set(vals):
+            return
+        for rec in self:
+            if rec.state not in ("draft","hold") or rec.invoice_ids:
+                raise ValidationError(_("Booking finance policy and schedule are locked after confirmation or once accounting documents exist."))
+
     def _check_unlink_finance(self):
         for rec in self:
             if rec.invoice_ids:
@@ -310,6 +318,12 @@ class BookingEvent(models.Model):
             rec.invoice_count=len(rec.invoice_ids.filtered(lambda m:m.move_type=="out_invoice"))
             rec.refund_count=len(rec.invoice_ids.filtered(lambda m:m.move_type=="out_refund"))
             rec.payment_count=len(rec._booking_payments())
+    def write(self,vals):
+        self._check_finance_fields_write(vals)
+        return super().write(vals)
+    def write(self,vals):
+        self._check_finance_fields_write(vals)
+        return super().write(vals)
     def unlink(self):
         self._check_unlink_finance()
         if self.filtered(lambda r:r.state not in ("draft","cancelled")):
