@@ -87,6 +87,7 @@ class BookingLifecycleMixin(models.AbstractModel):
         return True
 
 class BookingEvent(models.Model):
+    _name="yousentech.booking.event"
     _inherit=["yousentech.booking.event","yousentech.booking.lifecycle.mixin"]
     def action_hold(self): return self._transition("hold",EVENT_TRANSITIONS)
     def action_confirm(self): return self._transition("confirmed",EVENT_TRANSITIONS)
@@ -97,6 +98,7 @@ class BookingEvent(models.Model):
     def action_reopen(self): return self._transition("draft",EVENT_TRANSITIONS)
 
 class StayBooking(models.Model):
+    _name="yousentech.stay.booking"
     _inherit=["yousentech.stay.booking","yousentech.booking.lifecycle.mixin"]
     def action_hold(self): return self._transition("hold",STAY_TRANSITIONS)
     def action_confirm(self): return self._transition("confirmed",STAY_TRANSITIONS)
