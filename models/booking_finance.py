@@ -179,7 +179,16 @@ class BookingFinanceMixin(models.AbstractModel):
         move=self.env["account.move"].sudo().with_company(self.company_id).create(vals)
         if schedule:
             schedule.with_context(booking_schedule_system_write=True).write({"invoice_id":move.id})
-        self._audit("finance",_("Draft %s invoice created.")%kind)
+        self._audit(
+            "finance",
+            _("Invoice created"),
+            _("Draft invoice %s was created for %.2f %s (commercial revision %s).") % (
+                move.name or move.display_name,
+                move.amount_total,
+                self.currency_id.name,
+                snapshot.revision,
+            ),
+        )
         return move
 
     def action_create_invoice(self):
