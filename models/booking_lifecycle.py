@@ -1,4 +1,4 @@
-from odoo import fields, models, _
+from markupsafe import Markup, escape\n\nfrom odoo import fields, models, _
 from odoo.exceptions import AccessError, UserError
 
 EVENT_TRANSITIONS={"draft":{"hold","confirmed","cancelled"},"hold":{"confirmed","cancelled"},"confirmed":{"preparing","cancelled"},"preparing":{"event","cancelled"},"event":{"completed","cancelled"},"completed":{"cancelled"},"cancelled":{"draft"}}
@@ -37,7 +37,7 @@ class BookingLifecycleMixin(models.AbstractModel):
                 if reason and reason not in (details, action):
                     parts.append(_("السبب: %s") % reason)
                 rec.message_post(
-                    body="<br/>".join(parts),
+                    body=Markup("<br/>").join(escape(part) for part in parts),
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                 )
