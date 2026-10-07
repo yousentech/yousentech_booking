@@ -222,6 +222,7 @@ class BookingFinanceMixin(models.AbstractModel):
                 raise UserError(_("A booking with confirmed commercial history cannot be deleted."))
 
 class BookingEvent(models.Model):
+    _name="yousentech.booking.event"
     _inherit=["yousentech.booking.event","yousentech.booking.finance.mixin"]
     amount_invoiced=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_to_invoice=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
@@ -240,6 +241,7 @@ class BookingEvent(models.Model):
         return super().unlink()
 
 class StayBooking(models.Model):
+    _name="yousentech.stay.booking"
     _inherit=["yousentech.stay.booking","yousentech.booking.finance.mixin"]
     amount_invoiced=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_to_invoice=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
