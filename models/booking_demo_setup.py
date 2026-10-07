@@ -45,10 +45,14 @@ class BookingDemoSetup(models.TransientModel):
 
         company = self.company_id
         common = {"company_id": company.id, "active": True}
+        is_arabic = (self.env.user.lang or "").lower().startswith("ar")
+
+        def tr(arabic, english):
+            return arabic if is_arabic else english
 
         periods = [
-            ("Morning", 10),
-            ("Evening", 20),
+            (tr("صباحي", "Morning"), 10),
+            (tr("مسائي", "Evening"), 20),
         ]
         for name, sequence in periods:
             self._get_or_create(
@@ -58,9 +62,9 @@ class BookingDemoSetup(models.TransientModel):
             )
 
         halls = [
-            ("Main Hall", 300, 5000.0, 10),
-            ("Family Hall", 150, 3000.0, 20),
-            ("Meeting Hall", 50, 1500.0, 30),
+            (tr("القاعة الرئيسية", "Main Hall"), 300, 5000.0, 10),
+            (tr("قاعة العائلات", "Family Hall"), 150, 3000.0, 20),
+            (tr("قاعة الاجتماعات", "Meeting Hall"), 50, 1500.0, 30),
         ]
         for name, capacity, price, sequence in halls:
             self._get_or_create(
@@ -70,25 +74,26 @@ class BookingDemoSetup(models.TransientModel):
             )
 
         service_specs = [
-            ("Hospitality", 750.0, 10),
-            ("Decoration", 1200.0, 20),
-            ("Sound System", 500.0, 30),
+            (tr("الضيافة", "Hospitality"), 750.0, 10),
+            (tr("الديكور", "Decoration"), 1200.0, 20),
+            (tr("النظام الصوتي", "Sound System"), 500.0, 30),
         ]
         services = {}
         for name, price, sequence in service_specs:
-            product = self._demo_product("Booking - %s" % name, price)
+            product = self._demo_product("%s - %s" % (tr("حجوزات", "Booking"), name), price)
             services[name] = self._get_or_create(
                 "yousentech.booking.service",
                 [("company_id", "=", company.id), ("name", "=", name)],
                 {**common, "name": name, "sequence": sequence, "product_id": product.id, "price": price},
             )
 
+        package_name = tr("باقة المناسبات القياسية", "Standard Event Package")
         package = self._get_or_create(
             "yousentech.booking.package",
-            [("company_id", "=", company.id), ("name", "=", "Standard Event Package")],
-            {**common, "name": "Standard Event Package", "sequence": 10, "pricing_type": "fixed", "fixed_price": 2000.0},
+            [("company_id", "=", company.id), ("name", "=", package_name)],
+            {**common, "name": package_name, "sequence": 10, "pricing_type": "fixed", "fixed_price": 2000.0},
         )
-        for sequence, service_name in enumerate(("Hospitality", "Decoration", "Sound System"), start=1):
+        for sequence, service_name in enumerate(services, start=1):
             service = services[service_name]
             self._get_or_create(
                 "yousentech.booking.package.line",
@@ -97,10 +102,10 @@ class BookingDemoSetup(models.TransientModel):
             )
 
         resources = [
-            ("Room 101", "room", 2, 350.0, 10),
-            ("Room 102", "room", 2, 350.0, 20),
-            ("Suite 201", "suite", 4, 650.0, 30),
-            ("Chalet 1", "chalet", 6, 900.0, 40),
+            (tr("غرفة 101", "Room 101"), "room", 2, 350.0, 10),
+            (tr("غرفة 102", "Room 102"), "room", 2, 350.0, 20),
+            (tr("جناح 201", "Suite 201"), "suite", 4, 650.0, 30),
+            (tr("شاليه 1", "Chalet 1"), "chalet", 6, 900.0, 40),
         ]
         for name, resource_type, capacity, price, sequence in resources:
             self._get_or_create(
@@ -110,9 +115,9 @@ class BookingDemoSetup(models.TransientModel):
             )
 
         rate_plans = [
-            ("Standard Rate", "resource", 0.0, 0.0, 10),
-            ("Weekend +10%", "percent", 0.0, 10.0, 20),
-            ("Demo Fixed Rate", "fixed", 400.0, 0.0, 30),
+            (tr("السعر القياسي", "Standard Rate"), "resource", 0.0, 0.0, 10),
+            (tr("نهاية الأسبوع +10%", "Weekend +10%"), "percent", 0.0, 10.0, 20),
+            (tr("سعر ديمو ثابت", "Demo Fixed Rate"), "fixed", 400.0, 0.0, 30),
         ]
         for name, pricing_type, fixed_price, adjustment, sequence in rate_plans:
             self._get_or_create(
@@ -123,12 +128,12 @@ class BookingDemoSetup(models.TransientModel):
             )
 
         addon_specs = [
-            ("Extra Bed", 100.0, "night", 10),
-            ("Breakfast", 50.0, "night", 20),
-            ("Airport Transfer", 150.0, "once", 30),
+            (tr("سرير إضافي", "Extra Bed"), 100.0, "night", 10),
+            (tr("الإفطار", "Breakfast"), 50.0, "night", 20),
+            (tr("توصيل المطار", "Airport Transfer"), 150.0, "once", 30),
         ]
         for name, price, charge_type, sequence in addon_specs:
-            product = self._demo_product("Stay - %s" % name, price)
+            product = self._demo_product("%s - %s" % (tr("إقامة", "Stay"), name), price)
             self._get_or_create(
                 "yousentech.stay.addon",
                 [("company_id", "=", company.id), ("name", "=", name)],
