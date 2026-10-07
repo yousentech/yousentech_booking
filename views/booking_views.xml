@@ -66,6 +66,8 @@
                 <field name="discount_amount" string="الخصم" readonly="1"/>
                 <field name="tax_amount" string="الضريبة" readonly="1"/>
                 <field name="amount_total" string="الإجمالي" readonly="1"/>
+            <field name="invoice_count" invisible="1"/>
+            <field name="amount_due" invisible="1"/>
               </group>
             </page>
 
@@ -81,6 +83,7 @@
                   <field name="amount_paid" string="المدفوع" readonly="1"/>
                   <field name="amount_remaining" string="المتبقي" readonly="1"/>
                   <field name="invoice_count" invisible="1"/>
+                  <field name="amount_due" invisible="1"/>
                 </group>
               </group>
               <field name="payment_schedule_ids" string="جدول الدفعات" invisible="invoice_policy != 'schedule'">
