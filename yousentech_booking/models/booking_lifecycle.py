@@ -29,6 +29,7 @@ class BookingLifecycleMixin(models.AbstractModel):
             vals={"state":target}
             if target=="cancelled": vals.update(cancel_reason=reason,cancelled_by_id=self.env.user.id,cancelled_at=fields.Datetime.now())
             elif target=="draft": vals.update(cancel_reason=False,cancelled_by_id=False,cancelled_at=False)
+            if target!="hold" and "hold_expires_at" in rec._fields: vals["hold_expires_at"]=False
             rec.with_context(booking_system_transition=True).write(vals)
             rec._audit("cancel" if target=="cancelled" else ("reopen" if target=="draft" else "state"),reason or target)
         return True
