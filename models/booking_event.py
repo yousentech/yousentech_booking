@@ -10,13 +10,13 @@ class BookingEvent(models.Model):
     _order = "booking_date desc, id desc"
 
     name = fields.Char(default="New", readonly=True, copy=False, index=True)
-    company_id = fields.Many2one("res.company", string="Branch", required=True, default=lambda self: self.env.company, index=True, tracking=True)
-    partner_id = fields.Many2one("res.partner", required=True, tracking=True)
-    booking_date = fields.Date(required=True, index=True, tracking=True)
-    hall_id = fields.Many2one("yousentech.booking.hall", required=True, domain="[('company_id', '=', company_id)]", tracking=True)
-    period_ids = fields.Many2many("yousentech.booking.period", string="Periods", domain="[('company_id', '=', company_id)]")
-    state = fields.Selection([("draft","Draft"),("hold","Hold"),("confirmed","Confirmed"),("preparing","Preparing"),("event","Event"),("completed","Completed"),("cancelled","Cancelled")], default="draft", required=True, tracking=True, index=True)
-    amount_total = fields.Monetary(tracking=True)
+    company_id = fields.Many2one("res.company", string="الشركة / الفرع", required=True, default=lambda self: self.env.company, index=True, tracking=True)
+    partner_id = fields.Many2one("res.partner", string="العميل", required=True, tracking=True)
+    booking_date = fields.Date(string="تاريخ الحجز", required=True, index=True, tracking=True)
+    hall_id = fields.Many2one("yousentech.booking.hall", string="القاعة", required=True, domain="[('company_id', '=', company_id)]", tracking=True)
+    period_ids = fields.Many2many("yousentech.booking.period", string="الفترات", domain="[('company_id', '=', company_id)]")
+    state = fields.Selection([("draft","مسودة"),("hold","حجز مؤقت"),("confirmed","مؤكد"),("preparing","قيد التجهيز"),("event","الفعالية قائمة"),("completed","مكتمل"),("cancelled","ملغي")], string="الحالة", default="draft", required=True, tracking=True, index=True)
+    amount_total = fields.Monetary(string="الإجمالي", tracking=True)
     currency_id = fields.Many2one(related="company_id.currency_id", store=True, readonly=True)
 
     @api.model_create_multi
