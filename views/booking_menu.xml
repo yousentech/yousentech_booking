@@ -6,6 +6,7 @@
   <menuitem id="menu_stay_bookings" name="Stays" parent="menu_booking_root" action="action_stay_bookings" sequence="20"/>
 
   <menuitem id="menu_booking_configuration" name="Configuration" parent="menu_booking_root" sequence="90" groups="yousentech_booking.group_booking_manager"/>
+  <menuitem id="menu_booking_demo_setup" name="Initialize Demo Data" parent="menu_booking_configuration" action="action_booking_demo_setup" sequence="1" groups="yousentech_booking.group_booking_manager"/>
   <menuitem id="menu_booking_event_configuration" name="Event Booking" parent="menu_booking_configuration" sequence="10"/>
   <menuitem id="menu_booking_halls" name="Halls" parent="menu_booking_event_configuration" action="action_booking_halls" sequence="10"/>
   <menuitem id="menu_booking_periods" name="Periods" parent="menu_booking_event_configuration" action="action_booking_periods" sequence="20"/>
