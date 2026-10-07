@@ -80,9 +80,11 @@
                   <field name="finance_state" string="الحالة المالية" readonly="1"/>
                 </group>
                 <group>
-                  <field name="amount_invoiced" string="المفوتر" readonly="1"/>
-                  <field name="amount_paid" string="المدفوع" readonly="1"/>
-                  <field name="amount_remaining" string="المتبقي" readonly="1"/>
+                  <field name="amount_invoiced" string="صافي المفوتر" readonly="1"/>
+                  <field name="amount_paid" string="إجمالي المقبوض" readonly="1"/>
+                  <field name="amount_refunded" string="المبلغ المسترد" readonly="1"/>
+                  <field name="amount_to_refund" string="مطلوب رده للعميل" readonly="1"/>
+                  <field name="amount_remaining" string="المطلوب من العميل" readonly="1"/>
                   <field name="invoice_count" invisible="1"/>
                   <field name="amount_due" invisible="1"/>
                 </group>
