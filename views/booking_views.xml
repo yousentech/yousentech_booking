@@ -34,4 +34,31 @@
   <record id="action_stay_rate_plans" model="ir.actions.act_window"><field name="name">Stay Rate Plans</field><field name="res_model">yousentech.stay.rate.plan</field><field name="view_mode">tree,form</field></record>
   <record id="action_stay_addons" model="ir.actions.act_window"><field name="name">Stay Add-ons</field><field name="res_model">yousentech.stay.addon</field><field name="view_mode">tree,form</field></record>
   <record id="action_booking_os" model="ir.actions.client"><field name="name">Booking OS</field><field name="tag">yousentech_booking.BookingOS</field></record>
+  <record id="view_booking_demo_setup_form" model="ir.ui.view">
+    <field name="name">yousentech.booking.demo.setup.form</field>
+    <field name="model">yousentech.booking.demo.setup</field>
+    <field name="arch" type="xml">
+      <form string="Initialize Demo Configuration">
+        <sheet>
+          <group>
+            <field name="company_id"/>
+          </group>
+          <div class="alert alert-info" role="alert">
+            This action creates reusable demo configuration for the selected company. Running it again will not duplicate existing demo records.
+          </div>
+        </sheet>
+        <footer>
+          <button name="action_seed_demo" type="object" string="Initialize Demo Data" class="btn-primary"/>
+          <button string="Cancel" special="cancel" class="btn-secondary"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+  <record id="action_booking_demo_setup" model="ir.actions.act_window">
+    <field name="name">Initialize Demo Data</field>
+    <field name="res_model">yousentech.booking.demo.setup</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
 </odoo>
