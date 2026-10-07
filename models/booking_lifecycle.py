@@ -96,7 +96,11 @@ class BookingEvent(models.Model):
     def action_prepare(self): return self._transition("preparing",EVENT_TRANSITIONS)
     def action_start_event(self): return self._transition("event",EVENT_TRANSITIONS)
     def action_complete(self): return self._transition("completed",EVENT_TRANSITIONS)
-    def action_cancel(self,reason=None): return self._transition("cancelled",EVENT_TRANSITIONS,reason or self.cancel_reason)
+    def action_cancel(self,reason=None):
+        self.ensure_one()
+        if reason:
+            return self._transition("cancelled",EVENT_TRANSITIONS,reason)
+        return {"name":_("إلغاء الحجز"),"type":"ir.actions.act_window","res_model":"yousentech.booking.cancel.wizard","view_mode":"form","target":"new","context":{"active_model":self._name,"active_id":self.id}}
     def action_reopen(self): return self._transition("draft",EVENT_TRANSITIONS)
 
 class StayBooking(models.Model):
@@ -106,5 +110,9 @@ class StayBooking(models.Model):
     def action_confirm(self): return self._transition("confirmed",STAY_TRANSITIONS)
     def action_check_in(self): return self._transition("checked_in",STAY_TRANSITIONS)
     def action_check_out(self): return self._transition("checked_out",STAY_TRANSITIONS)
-    def action_cancel(self,reason=None): return self._transition("cancelled",STAY_TRANSITIONS,reason)
+    def action_cancel(self,reason=None):
+        self.ensure_one()
+        if reason:
+            return self._transition("cancelled",STAY_TRANSITIONS,reason)
+        return {"name":_("إلغاء الحجز"),"type":"ir.actions.act_window","res_model":"yousentech.booking.cancel.wizard","view_mode":"form","target":"new","context":{"active_model":self._name,"active_id":self.id}}
     def action_reopen(self): return self._transition("draft",STAY_TRANSITIONS)
