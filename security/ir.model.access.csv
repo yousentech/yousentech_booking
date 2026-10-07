@@ -27,3 +27,4 @@ access_payment_schedule_user,booking.payment.schedule user,model_yousentech_book
 access_payment_schedule_manager,booking.payment.schedule manager,model_yousentech_booking_payment_schedule,yousentech_booking.group_booking_manager,1,1,1,1
 
 access_booking_demo_setup_manager,booking.demo.setup manager,model_yousentech_booking_demo_setup,yousentech_booking.group_booking_manager,1,1,1,1
+access_booking_activity_setup_manager,booking.activity.setup manager,model_yousentech_booking_activity_setup,yousentech_booking.group_booking_manager,1,1,1,1
