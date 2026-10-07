@@ -26,3 +26,46 @@ class BookingAuditLog(models.Model):
 
     def unlink(self):
         raise AccessError(_("Booking audit entries cannot be deleted."))
+
+
+class BookingAuditMixin(models.AbstractModel):
+    _name="yousentech.booking.audit.mixin"
+    _description="Booking Audit Mixin"
+
+    audit_log_ids=fields.One2many(
+        "yousentech.booking.audit.log",
+        compute="_compute_audit_logs",
+        string="History",
+    )
+    audit_log_count=fields.Integer(compute="_compute_audit_logs")
+
+    def _compute_audit_logs(self):
+        Audit=self.env["yousentech.booking.audit.log"]
+        for rec in self:
+            logs=Audit.search([
+                ("model_name","=",rec._name),
+                ("record_id","=",rec.id),
+            ],order="create_date desc,id desc") if rec.id else Audit
+            rec.audit_log_ids=logs
+            rec.audit_log_count=len(logs)
+
+    def action_view_history(self):
+        self.ensure_one()
+        return {
+            "name":_("Booking History"),
+            "type":"ir.actions.act_window",
+            "res_model":"yousentech.booking.audit.log",
+            "view_mode":"tree,form",
+            "domain":[("model_name","=",self._name),("record_id","=",self.id)],
+            "context":{"create":False,"delete":False},
+        }
+
+
+class BookingEventAudit(models.Model):
+    _name="yousentech.booking.event"
+    _inherit=["yousentech.booking.event","yousentech.booking.audit.mixin"]
+
+
+class StayBookingAudit(models.Model):
+    _name="yousentech.stay.booking"
+    _inherit=["yousentech.stay.booking","yousentech.booking.audit.mixin"]
