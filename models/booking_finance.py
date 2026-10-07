@@ -47,18 +47,15 @@ class BookingFinanceMixin(models.AbstractModel):
     _description="Booking Finance Mixin"
     invoice_policy=fields.Selection(POLICIES,default="manual",required=True,tracking=True)
     deposit_percent=fields.Float(default=30.0)
-    amount_invoiced=fields.Monetary(compute="_compute_finance")
-    amount_to_invoice=fields.Monetary(compute="_compute_finance")
-    amount_paid=fields.Monetary(compute="_compute_finance")
-    amount_due=fields.Monetary(compute="_compute_finance")
-    amount_remaining=fields.Monetary(compute="_compute_finance")
+    amount_invoiced=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_to_invoice=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_paid=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_due=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_remaining=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     finance_state=fields.Selection([("not_invoiced","Not Invoiced"),("invoiced","Invoiced"),("partial","Partially Paid"),("paid","Paid")],compute="_compute_finance")
 
     def _compute_finance(self):
         for rec in self:
-            draft_invoices=rec.invoice_ids.filtered(lambda m:m.state=="draft" and m.move_type=="out_invoice")
-            if draft_invoices:
-                raise UserError(_("Cancel draft booking invoices before cancelling or reopening this booking."))
             posted=rec.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type in ("out_invoice","out_refund"))
             invoices=posted.filtered(lambda m:m.move_type=="out_invoice")
             refunds=posted.filtered(lambda m:m.move_type=="out_refund")
@@ -179,6 +176,9 @@ class BookingFinanceMixin(models.AbstractModel):
 
     def _check_finance_before_cancel(self):
         for rec in self:
+            draft_invoices=rec.invoice_ids.filtered(lambda m:m.state=="draft" and m.move_type=="out_invoice")
+            if draft_invoices:
+                raise UserError(_("Cancel draft booking invoices before cancelling or reopening this booking."))
             posted=rec.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type in ("out_invoice","out_refund"))
             if not posted:
                 continue
