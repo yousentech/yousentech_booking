@@ -101,8 +101,15 @@ class BookingFinanceMixin(models.AbstractModel):
 
     def _check_finance_before_cancel(self):
         for rec in self:
-            if rec.invoice_ids.filtered(lambda m:m.state=="posted"):
-                raise UserError(_("This booking has posted accounting documents. Reverse/refund them before cancelling the booking."))
+            posted=rec.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type in ("out_invoice","out_refund"))
+            if not posted:
+                continue
+            invoices=posted.filtered(lambda m:m.move_type=="out_invoice")
+            refunds=posted.filtered(lambda m:m.move_type=="out_refund")
+            net_total=sum(invoices.mapped("amount_total"))-sum(refunds.mapped("amount_total"))
+            unsettled=posted.filtered(lambda m:not rec.currency_id.is_zero(m.amount_residual))
+            if not rec.currency_id.is_zero(net_total) or unsettled:
+                raise UserError(_("Accounting must be fully reversed/refunded and reconciled before cancelling this booking."))
 
     def action_create_credit_note(self):
         self.ensure_one()
