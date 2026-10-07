@@ -90,7 +90,17 @@ class BookingFinanceMixin(models.AbstractModel):
             rec.amount_to_refund=to_refund
             rec.amount_due=due
             rec.amount_remaining=due
-            if not posted:
+            current_invoices=rec.invoice_ids.filtered(
+                lambda m:m.state!="cancel"
+                and m.move_type=="out_invoice"
+                and latest
+                and m.yousentech_snapshot_id==latest
+            )
+            # Historical invoices/credit notes remain attached to the booking, but
+            # a newly confirmed commercial revision starts its own invoicing cycle.
+            if not rec.currency_id.is_zero(rec.amount_to_invoice) and not current_invoices:
+                rec.finance_state="not_invoiced"
+            elif not posted:
                 rec.finance_state="not_invoiced"
             elif not rec.currency_id.is_zero(to_refund):
                 rec.finance_state="refund_required"
