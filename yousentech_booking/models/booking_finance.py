@@ -65,7 +65,8 @@ class BookingFinanceMixin(models.AbstractModel):
             paid=sum((m.amount_total-m.amount_residual) for m in invoices)-sum((m.amount_total-m.amount_residual) for m in refunds)
             due=max(invoice_residual-refund_residual,0.0)
             rec.amount_invoiced=max(invoiced,0.0)
-            active_coverage=sum(rec.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice").mapped("amount_total"))
+            latest=rec.commercial_snapshot_ids.sorted(lambda s:(s.revision,s.id),reverse=True)[:1]
+            active_coverage=sum(rec.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice" and (not latest or m.yousentech_snapshot_id==latest)).mapped("amount_total"))
             rec.amount_to_invoice=max(rec.amount_total-active_coverage,0.0)
             rec.amount_paid=max(paid,0.0)
             rec.amount_due=due
@@ -131,12 +132,12 @@ class BookingFinanceMixin(models.AbstractModel):
             raise UserError(_("This installment already has an active invoice."))
         if self.amount_total<=0:
             raise UserError(_("Cannot create an invoice for a zero-total booking."))
-        active=self.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice")
+        snapshot=self._latest_snapshot()
+        active=self.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice" and m.yousentech_snapshot_id==snapshot)
         if kind in ("full","deposit","balance") and active.filtered(lambda m:m.yousentech_booking_invoice_kind==kind):
             raise UserError(_("This invoice stage already has an active invoice."))
         if kind=="manual" and active:
             raise UserError(_("This booking already has an active invoice. Use the applicable balance/installment action."))
-        snapshot=self._latest_snapshot()
         vals={"move_type":"out_invoice","company_id":self.company_id.id,"journal_id":self._sale_journal().id,"partner_id":self.partner_id.id,"invoice_origin":self.name,"invoice_line_ids":self._invoice_lines(ratio,label),"yousentech_snapshot_id":snapshot.id,"yousentech_booking_invoice_kind":kind,**self._booking_link()}
         if schedule:
             vals["yousentech_schedule_id"]=schedule.id
@@ -153,7 +154,8 @@ class BookingFinanceMixin(models.AbstractModel):
 
     def _apply_confirmation_invoice_policy(self):
         for rec in self:
-            active=rec.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice")
+            snapshot=rec._latest_snapshot()
+            active=rec.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice" and m.yousentech_snapshot_id==snapshot)
             if active:
                 continue
             if rec.invoice_policy=="full":
@@ -163,13 +165,13 @@ class BookingFinanceMixin(models.AbstractModel):
                     raise UserError(_("Deposit percentage is required."))
                 rec._create_invoice(rec.deposit_percent/100.0,_("Booking deposit"),kind="deposit")
             elif rec.invoice_policy=="schedule":
-                lines=rec.payment_schedule_ids.filtered(lambda l:l.state!="cancelled")
+                lines=rec.payment_schedule_ids.filtered(lambda l:l.state=="pending")
                 total=sum(lines.mapped("amount"))
                 if not rec.currency_id.is_zero(total-rec.amount_total):
                     raise UserError(_("Payment schedule total must equal booking total."))
                 if rec.currency_id.is_zero(rec.amount_total):
                     raise UserError(_("Cannot invoice a zero-total booking by schedule."))
-                for line in lines.filtered(lambda l:l.state=="pending"):
+                for line in lines:
                     rec._create_invoice(line.amount/rec.amount_total,line.name,line,kind="installment")
 
     def _check_finance_before_cancel(self):
@@ -197,7 +199,8 @@ class BookingFinanceMixin(models.AbstractModel):
         self.ensure_one()
         if self.invoice_policy!="deposit":
             raise UserError(_("Final invoice is only available for deposit policy."))
-        active=self.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice")
+        snapshot=self._latest_snapshot()
+        active=self.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice" and m.yousentech_snapshot_id==snapshot)
         deposits=active.filtered(lambda m:m.yousentech_booking_invoice_kind=="deposit")
         if not deposits:
             raise UserError(_("Create the deposit invoice first."))
