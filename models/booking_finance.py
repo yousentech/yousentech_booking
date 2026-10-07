@@ -197,7 +197,7 @@ class BookingFinanceMixin(models.AbstractModel):
             if not rec.currency_id.is_zero(net_total):
                 raise UserError(_("Reverse all posted booking invoices with credit notes before cancelling this booking."))
             if not rec.currency_id.is_zero(net_cash):
-                raise UserError(_("Refund all customer money before cancelling this booking. Amount still held: %s") % rec.currency_id.format(net_cash))
+                raise UserError(_("Refund all customer money before cancelling this booking. Amount still held: %s") % "%.2f %s" % (net_cash, rec.currency_id.name))
             if unsettled:
                 raise UserError(_("Reconcile all booking invoices and credit notes before cancelling this booking."))
 
@@ -310,6 +310,8 @@ class StayBooking(models.Model):
     amount_invoiced=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_to_invoice=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_paid=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_refunded=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_to_refund=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_due=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_remaining=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     invoice_ids=fields.One2many("account.move","yousentech_stay_booking_id",string="Invoices")
