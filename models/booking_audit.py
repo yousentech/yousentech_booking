@@ -10,8 +10,9 @@ class BookingAuditLog(models.Model):
     company_id=fields.Many2one("res.company",required=True,index=True)
     model_name=fields.Char(required=True,index=True)
     record_id=fields.Integer(required=True,index=True)
-    action=fields.Selection([("state","State Change"),("cancel","Cancellation"),("reopen","Reopen"),("finance","Finance")],required=True)
+    action=fields.Selection([("create","Created"),("update","Updated"),("state","State Change"),("cancel","Cancellation"),("reopen","Reopen"),("finance","Finance")],required=True)
     reason=fields.Text()
+    details=fields.Text(readonly=True)
     user_id=fields.Many2one("res.users",required=True,default=lambda self:self.env.user)
 
     @api.model_create_multi
