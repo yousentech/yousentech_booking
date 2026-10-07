@@ -1,0 +1,48 @@
+import json
+from odoo import fields, models
+
+class BookingCommercialSnapshot(models.Model):
+    _name = "yousentech.booking.commercial.snapshot"
+    _description = "Booking Commercial Snapshot"
+    _order = "create_date desc, id desc"
+
+    company_id = fields.Many2one("res.company", required=True, index=True)
+    event_booking_id = fields.Many2one("yousentech.booking.event", ondelete="cascade", index=True)
+    stay_booking_id = fields.Many2one("yousentech.stay.booking", ondelete="cascade", index=True)
+    currency_id = fields.Many2one("res.currency", required=True)
+    amount_total = fields.Monetary()
+    payload = fields.Text(required=True, readonly=True)
+    locked = fields.Boolean(default=True, readonly=True)
+
+    def unlink(self):
+        if self.filtered("locked"):
+            return False
+        return super().unlink()
+
+    @classmethod
+    def _json(cls, payload):
+        return json.dumps(payload, ensure_ascii=False, sort_keys=True, default=str)
+
+class BookingEvent(models.Model):
+    _inherit = "yousentech.booking.event"
+    commercial_snapshot_ids = fields.One2many("yousentech.booking.commercial.snapshot","event_booking_id", readonly=True)
+
+    def _create_commercial_snapshot(self):
+        Snapshot=self.env["yousentech.booking.commercial.snapshot"].sudo()
+        for rec in self:
+            if rec.commercial_snapshot_ids:
+                continue
+            payload={"kind":"event","booking":rec.name,"hall":{"id":rec.hall_id.id,"name":rec.hall_id.display_name,"price":rec.hall_id.list_price},"period_ids":rec.period_ids.ids,"package":{"id":rec.package_id.id,"name":rec.package_id.display_name,"price":rec.package_id.fixed_price} if rec.package_id else None,"services":[{"service_id":l.service_id.id,"name":l.service_id.display_name,"qty":l.quantity,"price_unit":l.price_unit,"subtotal":l.subtotal} for l in rec.service_line_ids],"discount_type":rec.discount_type,"discount_value":rec.discount_value,"discount_amount":rec.discount_amount,"amount_total":rec.amount_total}
+            Snapshot.create({"company_id":rec.company_id.id,"event_booking_id":rec.id,"currency_id":rec.currency_id.id,"amount_total":rec.amount_total,"payload":Snapshot._json(payload)})
+
+class StayBooking(models.Model):
+    _inherit = "yousentech.stay.booking"
+    commercial_snapshot_ids = fields.One2many("yousentech.booking.commercial.snapshot","stay_booking_id", readonly=True)
+
+    def _create_commercial_snapshot(self):
+        Snapshot=self.env["yousentech.booking.commercial.snapshot"].sudo()
+        for rec in self:
+            if rec.commercial_snapshot_ids:
+                continue
+            payload={"kind":"stay","booking":rec.name,"resource":{"id":rec.resource_id.id,"name":rec.resource_id.display_name},"rate_plan":{"id":rec.rate_plan_id.id,"name":rec.rate_plan_id.display_name} if rec.rate_plan_id else None,"nights":rec.nights,"nightly_price":rec.nightly_price,"addons":[{"addon_id":l.addon_id.id,"name":l.addon_id.display_name,"qty":l.quantity,"price_unit":l.price_unit,"subtotal":l.subtotal} for l in rec.addon_line_ids],"amount_total":rec.amount_total}
+            Snapshot.create({"company_id":rec.company_id.id,"stay_booking_id":rec.id,"currency_id":rec.currency_id.id,"amount_total":rec.amount_total,"payload":Snapshot._json(payload)})
