@@ -63,7 +63,7 @@ class BookingFinanceMixin(models.AbstractModel):
         vals={"move_type":"out_invoice","company_id":self.company_id.id,"journal_id":self._sale_journal().id,"partner_id":self.partner_id.id,"invoice_origin":self.name,"invoice_line_ids":self._invoice_lines(ratio,label),**self._booking_link()}
         if schedule: vals["yousentech_schedule_id"]=schedule.id
         move=self.env["account.move"].with_company(self.company_id).create(vals)
-        if schedule: schedule.write({"invoice_id":move.id,"state":"invoiced"})
+        if schedule: schedule.write({"invoice_id":move.id})
         self._audit("finance",_("Draft invoice created."))
         return move
 
@@ -82,8 +82,21 @@ class BookingFinanceMixin(models.AbstractModel):
             elif rec.invoice_policy=="schedule":
                 total=sum(rec.payment_schedule_ids.filtered(lambda l:l.state!="cancelled").mapped("amount"))
                 if not rec.currency_id.is_zero(total-rec.amount_total): raise UserError(_("Payment schedule total must equal booking total."))
+                if rec.currency_id.is_zero(rec.amount_total): raise UserError(_("Cannot invoice a zero-total booking by schedule."))
                 for line in rec.payment_schedule_ids.filtered(lambda l:l.state=="pending"):
                     rec._create_invoice(line.amount/rec.amount_total,line.name,line)
+
+    def _check_finance_before_cancel(self):
+        for rec in self:
+            posted=rec.invoice_ids.filtered(lambda m:m.state=="posted")
+            if posted:
+                raise UserError(_("This booking has posted accounting documents. Reverse/refund them before cancelling the booking."))
+
+    def action_create_credit_note(self):
+        self.ensure_one()
+        posted=self.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type=="out_invoice" and m.payment_state!="reversed")
+        if not posted: raise UserError(_("There is no posted customer invoice to reverse."))
+        return {"name":_("Reverse Booking Invoice"),"type":"ir.actions.act_window","res_model":"account.move.reversal","view_mode":"form","target":"new","context":{"active_model":"account.move","active_ids":posted.ids,"default_reason":_("Booking %s cancellation/refund")%self.name}}
 
     def action_create_final_invoice(self):
         self.ensure_one()
