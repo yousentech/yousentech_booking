@@ -31,17 +31,28 @@ class StayBooking(models.Model):
             if vals.get("name", "New") == "New":
                 vals["name"] = self.env["ir.sequence"].next_by_code("yousentech.stay.booking") or "New"
         records = super().create(vals_list)
-        records._check_availability()
+        records._check_company_integrity()
+        records._check_availability(lock=True)
         return records
 
     def write(self, vals):
         result = super().write(vals)
         if {"company_id","resource_id","checkin_date","checkout_date","state"} & set(vals):
-            self._check_availability()
+            self._check_company_integrity()
+            self._check_availability(lock=True)
         return result
 
-    def _check_availability(self):
+    def _check_company_integrity(self):
+        for rec in self:
+            if rec.company_id not in self.env.companies:
+                raise ValidationError(_("You are not allowed to operate this branch/company."))
+            if rec.resource_id and rec.resource_id.company_id != rec.company_id:
+                raise ValidationError(_("The stay resource must belong to the booking branch/company."))
+
+    def _check_availability(self, lock=False):
         for rec in self.filtered(lambda r: r.state in BLOCKING_STATES and r.resource_id and r.checkin_date and r.checkout_date):
+            if lock:
+                self.env.cr.execute("SELECT id FROM yousentech_stay_resource WHERE id = %s FOR UPDATE", [rec.resource_id.id])
             conflict = self.search([("id","!=",rec.id),("company_id","=",rec.company_id.id),("resource_id","=",rec.resource_id.id),("state","in",BLOCKING_STATES),("checkin_date","<",rec.checkout_date),("checkout_date",">",rec.checkin_date)], limit=1)
             if conflict:
                 raise ValidationError(_("The resource is not available for this stay; conflict with %s.") % conflict.display_name)
