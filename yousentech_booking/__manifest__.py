@@ -1,11 +1,11 @@
 {
     "name": "YousenTech Booking",
-    "version": "17.0.1.0.0",
+    "version": "17.0.2.0.0",
     "summary": "Modern event and stay booking operations",
     "category": "Services/Booking",
     "author": "YousenTech",
     "license": "LGPL-3",
-    "depends": ["base", "web", "mail", "account"],
+    "depends": ["base", "web", "mail", "account", "product"],
     "data": [
         "security/booking_security.xml",
         "security/ir.model.access.csv",
@@ -18,6 +18,6 @@
             "yousentech_booking/static/src/booking_os/**/*"
         ]
     },
-    "application": True,
-    "installable": True
+    "application": true,
+    "installable": true
 }
