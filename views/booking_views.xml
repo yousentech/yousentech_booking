@@ -17,6 +17,7 @@
           <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'manual' or invoice_count &gt; 0"/>
           <button name="action_create_final_invoice" type="object" string="فاتورة الرصيد" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'deposit'"/>
           <button name="action_register_payment" type="object" string="تسجيل دفعة" class="btn-primary" invisible="invoice_count == 0 or amount_due &lt;= 0"/>
+          <button name="action_cancel" type="object" string="إلغاء الحجز" groups="yousentech_booking.group_booking_supervisor" invisible="state in ('draft','cancelled')"/>
           <button name="action_reopen" type="object" string="إعادة فتح" groups="yousentech_booking.group_booking_supervisor" invisible="state != 'cancelled'"/>
           <field name="state" widget="statusbar" statusbar_visible="draft,hold,confirmed,preparing,event,completed,cancelled"/>
         </header>
