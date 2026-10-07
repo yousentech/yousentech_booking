@@ -17,20 +17,31 @@ class BookingLifecycleMixin(models.AbstractModel):
 
     def _transition(self,target,graph,reason=None):
         for rec in self:
-            if target not in graph.get(rec.state,set()): raise UserError(_("This booking transition is not allowed."))
-            if target=="cancelled" and not reason: raise UserError(_("Cancellation reason is required."))
-            if target=="cancelled": rec._check_finance_before_cancel()
+            if target not in graph.get(rec.state,set()):
+                raise UserError(_("This booking transition is not allowed."))
+            if target=="cancelled" and not reason:
+                raise UserError(_("Cancellation reason is required."))
+            if target=="cancelled":
+                rec._check_finance_before_cancel()
             if target=="draft" and rec.state=="cancelled":
                 rec._check_availability(lock=True)
-                if rec.invoice_ids.filtered(lambda m:m.state=="posted"): raise UserError(_("Resolve posted accounting before reopening this booking."))
-            if target=="confirmed":
+                rec._check_finance_before_cancel()
+
+            apply_confirmation_policy=target=="confirmed"
+            if apply_confirmation_policy:
                 rec._create_commercial_snapshot()
-                rec._apply_confirmation_invoice_policy()
+
             vals={"state":target}
-            if target=="cancelled": vals.update(cancel_reason=reason,cancelled_by_id=self.env.user.id,cancelled_at=fields.Datetime.now())
-            elif target=="draft": vals.update(cancel_reason=False,cancelled_by_id=False,cancelled_at=False)
-            if target!="hold" and "hold_expires_at" in rec._fields: vals["hold_expires_at"]=False
+            if target=="cancelled":
+                vals.update(cancel_reason=reason,cancelled_by_id=self.env.user.id,cancelled_at=fields.Datetime.now())
+            elif target=="draft":
+                vals.update(cancel_reason=False,cancelled_by_id=False,cancelled_at=False)
+            if target!="hold" and "hold_expires_at" in rec._fields:
+                vals["hold_expires_at"]=False
+
             rec.with_context(booking_system_transition=True).write(vals)
+            if apply_confirmation_policy:
+                rec._apply_confirmation_invoice_policy()
             rec._audit("cancel" if target=="cancelled" else ("reopen" if target=="draft" else "state"),reason or target)
         return True
 
