@@ -15,6 +15,12 @@ class BookingPackageLine(models.Model):
     subtotal = fields.Monetary(compute="_compute_subtotal", store=True)
     currency_id = fields.Many2one(related="package_id.currency_id", store=True, readonly=True)
 
+    @api.constrains("quantity")
+    def _check_quantity(self):
+        for line in self:
+            if line.quantity<=0:
+                raise ValidationError(_("Package service quantity must be greater than zero."))
+
     @api.depends("quantity","price_unit")
     def _compute_subtotal(self):
         for line in self:

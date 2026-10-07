@@ -20,6 +20,12 @@ class StayBookingAddonLine(models.Model):
             multiplier=nights if line.addon_id.charge_type=="night" else 1
             line.subtotal=line.quantity*line.price_unit*multiplier
 
+    @api.constrains("addon_id","quantity")
+    def _check_line_values(self):
+        for line in self:
+            if line.quantity<=0: raise ValidationError(_("Add-on quantity must be greater than zero."))
+            if line.addon_id and line.booking_id and line.addon_id.company_id!=line.booking_id.company_id: raise ValidationError(_("Add-on must belong to the booking branch/company."))
+
     @api.onchange("addon_id")
     def _onchange_addon_id(self):
         if self.addon_id: self.price_unit=self.addon_id.price
