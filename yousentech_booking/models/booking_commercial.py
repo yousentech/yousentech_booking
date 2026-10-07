@@ -46,15 +46,15 @@ class BookingEvent(models.Model):
             if rec.discount_value<0 or (rec.discount_type=="percent" and rec.discount_value>100): raise ValidationError(_("Invalid discount value."))
 
     def write(self,vals):
-        if {"discount_type","discount_value"} & set(vals) and not self.env.user.has_group("yousentech_booking.group_booking_supervisor"):
+        if {"discount_type","discount_value"} & set(vals) and not self.env.user.has_group("yousentech_booking.group_booking_manager"):
             for rec in self:
                 new_type=vals.get("discount_type",rec.discount_type); new_value=vals.get("discount_value",rec.discount_value)
-                if new_type!="none" and new_value: raise AccessError(_("Only a booking supervisor or manager can apply discounts."))
+                if new_type!="none" and new_value: raise AccessError(_("Only a booking manager can apply discounts."))
         return super().write(vals)
 
     @api.model_create_multi
     def create(self,vals_list):
-        if not self.env.user.has_group("yousentech_booking.group_booking_supervisor"):
+        if not self.env.user.has_group("yousentech_booking.group_booking_manager"):
             for vals in vals_list:
-                if vals.get("discount_type","none")!="none" and vals.get("discount_value",0): raise AccessError(_("Only a booking supervisor or manager can apply discounts."))
+                if vals.get("discount_type","none")!="none" and vals.get("discount_value",0): raise AccessError(_("Only a booking manager can apply discounts."))
         return super().create(vals_list)
