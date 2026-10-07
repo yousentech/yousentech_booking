@@ -73,6 +73,9 @@
               </group>
             </page>
 
+            <page string="الإلغاء" invisible="state == 'cancelled'">
+              <group><field name="cancel_reason" string="سبب الإلغاء"/></group>
+            </page>
             <page string="المالية والفواتير">
               <group>
                 <group>
