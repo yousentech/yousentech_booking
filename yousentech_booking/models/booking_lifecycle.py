@@ -19,6 +19,7 @@ class BookingLifecycleMixin(models.AbstractModel):
         for rec in self:
             if target not in graph.get(rec.state,set()): raise UserError(_("This booking transition is not allowed."))
             if target=="cancelled" and not reason: raise UserError(_("Cancellation reason is required."))
+            if target=="cancelled": rec._check_finance_before_cancel()
             if target=="draft" and rec.state=="cancelled":
                 rec._check_availability(lock=True)
                 if rec.invoice_ids.filtered(lambda m:m.state=="posted"): raise UserError(_("Resolve posted accounting before reopening this booking."))
