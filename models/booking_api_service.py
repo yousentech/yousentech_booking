@@ -37,13 +37,20 @@ class BookingApiService(models.AbstractModel):
             return self._error("COMPANY_NOT_ALLOWED","Branch/company is not allowed.")
         try:
             checkin=fields.Date.to_date(checkin_date)
-            checkout=fields.Date.to_date(checkout_date)
+            checkout=fields.Date.to_date(checkout_date) if checkout_date else False
         except Exception:
             return self._error("INVALID_PAYLOAD","Invalid stay dates.")
-        if not checkin or not checkout or checkout<=checkin:
-            return self._error("INVALID_PAYLOAD","Checkout must be after check-in.")
+        if not checkin:
+            return self._error("INVALID_PAYLOAD","تاريخ الدخول غير صالح.")
+        if not checkout and not company.booking_allow_open_stay:
+            return self._error("INVALID_PAYLOAD","تاريخ الخروج إجباري حسب إعدادات الشركة / الفرع.")
+        if checkout and checkout<=checkin:
+            return self._error("INVALID_PAYLOAD","تاريخ الخروج يجب أن يكون بعد تاريخ الدخول.")
         resources=self.env["yousentech.stay.resource"].with_company(company).search([("company_id","=",company.id),("active","=",True)])
-        blocked=self.env["yousentech.stay.booking"].with_company(company).search([("company_id","=",company.id),("state","in",["hold","confirmed","checked_in","checked_out"]),("checkin_date","<",checkout),("checkout_date",">",checkin)])
+        domain=[("company_id","=",company.id),("state","in",["hold","confirmed","checked_in","checked_out"]),"|",("checkout_date","=",False),("checkout_date",">",checkin)]
+        if checkout:
+            domain.append(("checkin_date","<",checkout))
+        blocked=self.env["yousentech.stay.booking"].with_company(company).search(domain)
         blocked_ids=set(blocked.mapped("resource_id").ids)
         return self._ok({"resources":[{"id":r.id,"name":r.name,"resource_type":r.resource_type,"capacity":r.capacity,"available":r.id not in blocked_ids} for r in resources]})
 
@@ -76,7 +83,7 @@ class BookingApiService(models.AbstractModel):
         if not company:
             return self._error("COMPANY_NOT_ALLOWED","Branch/company is not allowed.")
         try:
-            vals={"company_id":company.id,"partner_id":int(payload["partner_id"]),"resource_id":int(payload["resource_id"]),"checkin_date":payload["checkin_date"],"checkout_date":payload["checkout_date"],"invoice_policy":payload.get("invoice_policy","manual")}
+            vals={"company_id":company.id,"partner_id":int(payload["partner_id"]),"resource_id":int(payload["resource_id"]),"checkin_date":payload["checkin_date"],"checkout_date":payload.get("checkout_date") or False,"invoice_policy":payload.get("invoice_policy","manual")}
             if payload.get("rate_plan_id"): vals["rate_plan_id"]=int(payload["rate_plan_id"])
             if payload.get("addon_lines"): vals["addon_line_ids"]=[fields.Command.create({"addon_id":int(line["addon_id"]),"quantity":float(line.get("quantity",1))}) for line in payload["addon_lines"]]
             if "deposit_percent" in payload: vals["deposit_percent"]=float(payload["deposit_percent"])
@@ -94,7 +101,7 @@ class BookingApiService(models.AbstractModel):
         if rec._name=="yousentech.booking.event":
             data.update({"kind":"event","booking_date":fields.Date.to_string(rec.booking_date),"hall_id":rec.hall_id.id,"period_ids":rec.period_ids.ids})
         else:
-            data.update({"kind":"stay","checkin_date":fields.Date.to_string(rec.checkin_date),"checkout_date":fields.Date.to_string(rec.checkout_date),"resource_id":rec.resource_id.id,"nights":rec.nights})
+            data.update({"kind":"stay","checkin_date":fields.Date.to_string(rec.checkin_date),"checkout_date":fields.Date.to_string(rec.checkout_date) if rec.checkout_date else False,"resource_id":rec.resource_id.id,"nights":rec.nights})
         return data
 
     @api.model
