@@ -138,6 +138,9 @@
           <field name="state" widget="statusbar" statusbar_visible="draft,hold,confirmed,checked_in,checked_out,cancelled"/>
         </header>
         <sheet>
+          <field name="invoice_policy" invisible="1"/>
+          <field name="invoice_count" invisible="1"/>
+          <field name="amount_due" invisible="1"/>
           <div class="oe_button_box" name="button_box">
             <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="invoice_count == 0">
               <field name="invoice_count" widget="statinfo" string="الفواتير"/>
