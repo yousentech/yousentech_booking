@@ -47,7 +47,7 @@ class BookingFinanceMixin(models.AbstractModel):
     _description="Booking Finance Mixin"
     invoice_policy=fields.Selection(POLICIES,default="manual",required=True,tracking=True)
     deposit_percent=fields.Float(default=30.0)
-    finance_state=fields.Selection([("not_invoiced","Not Invoiced"),("invoiced","Invoiced"),("partial","Partially Paid"),("paid","Paid")],compute="_compute_finance")
+    finance_state=fields.Selection([("not_invoiced","Not Invoiced"),("invoiced","Invoiced"),("partial","Partially Paid"),("paid","Paid"),("refund_required","Refund Required"),("settled","Settled")],compute="_compute_finance")
 
     def _compute_finance(self):
         for rec in self:
@@ -55,22 +55,31 @@ class BookingFinanceMixin(models.AbstractModel):
             invoices=posted.filtered(lambda m:m.move_type=="out_invoice")
             refunds=posted.filtered(lambda m:m.move_type=="out_refund")
             invoiced=sum(invoices.mapped("amount_total"))-sum(refunds.mapped("amount_total"))
-            invoice_residual=sum(invoices.mapped("amount_residual"))
-            refund_residual=sum(refunds.mapped("amount_residual"))
-            paid=sum((m.amount_total-m.amount_residual) for m in invoices)-sum((m.amount_total-m.amount_residual) for m in refunds)
-            due=max(invoice_residual-refund_residual,0.0)
-            rec.amount_invoiced=max(invoiced,0.0)
+            payments=rec._booking_payments()
+            received=sum(p.amount for p in payments.filtered(lambda p:p.payment_type=="inbound" and p.state not in ("draft","cancel")))
+            refunded=sum(p.amount for p in payments.filtered(lambda p:p.payment_type=="outbound" and p.state not in ("draft","cancel")))
+            net_invoiced=max(invoiced,0.0)
+            net_cash=received-refunded
+            due=max(net_invoiced-net_cash,0.0)
+            to_refund=max(net_cash-net_invoiced,0.0)
+            rec.amount_invoiced=net_invoiced
             latest=rec.commercial_snapshot_ids.sorted(lambda s:(s.revision,s.id),reverse=True)[:1]
             active_coverage=sum(rec.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice" and (not latest or m.yousentech_snapshot_id==latest)).mapped("amount_total"))
             rec.amount_to_invoice=max(rec.amount_total-active_coverage,0.0)
-            rec.amount_paid=max(paid,0.0)
+            rec.amount_paid=max(received,0.0)
+            rec.amount_refunded=max(refunded,0.0)
+            rec.amount_to_refund=to_refund
             rec.amount_due=due
             rec.amount_remaining=due
             if not posted:
                 rec.finance_state="not_invoiced"
+            elif not rec.currency_id.is_zero(to_refund):
+                rec.finance_state="refund_required"
+            elif rec.currency_id.is_zero(net_invoiced) and rec.currency_id.is_zero(net_cash):
+                rec.finance_state="settled"
             elif rec.currency_id.is_zero(due) and rec.currency_id.is_zero(rec.amount_to_invoice):
                 rec.finance_state="paid"
-            elif rec.amount_paid>0:
+            elif net_cash>0:
                 rec.finance_state="partial"
             else:
                 rec.finance_state="invoiced"
@@ -180,9 +189,17 @@ class BookingFinanceMixin(models.AbstractModel):
             invoices=posted.filtered(lambda m:m.move_type=="out_invoice")
             refunds=posted.filtered(lambda m:m.move_type=="out_refund")
             net_total=sum(invoices.mapped("amount_total"))-sum(refunds.mapped("amount_total"))
+            payments=rec._booking_payments()
+            received=sum(p.amount for p in payments.filtered(lambda p:p.payment_type=="inbound" and p.state not in ("draft","cancel")))
+            refunded=sum(p.amount for p in payments.filtered(lambda p:p.payment_type=="outbound" and p.state not in ("draft","cancel")))
+            net_cash=received-refunded
             unsettled=posted.filtered(lambda m:not rec.currency_id.is_zero(m.amount_residual))
-            if not rec.currency_id.is_zero(net_total) or unsettled:
-                raise UserError(_("Accounting must be fully reversed/refunded and reconciled before cancelling this booking."))
+            if not rec.currency_id.is_zero(net_total):
+                raise UserError(_("Reverse all posted booking invoices with credit notes before cancelling this booking."))
+            if not rec.currency_id.is_zero(net_cash):
+                raise UserError(_("Refund all customer money before cancelling this booking. Amount still held: %s") % rec.currency_id.format(net_cash))
+            if unsettled:
+                raise UserError(_("Reconcile all booking invoices and credit notes before cancelling this booking."))
 
     def action_create_credit_note(self):
         self.ensure_one()
@@ -267,6 +284,8 @@ class BookingEvent(models.Model):
     amount_invoiced=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_to_invoice=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_paid=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_refunded=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
+    amount_to_refund=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_due=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     amount_remaining=fields.Monetary(compute="_compute_finance",currency_field="currency_id")
     invoice_ids=fields.One2many("account.move","yousentech_event_booking_id",string="Invoices")
