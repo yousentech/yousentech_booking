@@ -18,6 +18,11 @@ class ResCompany(models.Model):
         default=False,
         required=False,
     )
+    booking_allow_open_stay = fields.Boolean(
+        string="السماح بإقامة مفتوحة بدون تاريخ خروج",
+        default=False,
+        help="عند التفعيل يمكن إنشاء حجز إقامة بدون تاريخ خروج. يبقى مورد الإقامة محجوزًا من تاريخ الدخول حتى تحديد تاريخ الخروج.",
+    )
 
     def write(self, vals):
         if "booking_activity_type" in vals:
@@ -54,10 +59,14 @@ class BookingActivitySetup(models.TransientModel):
         string="نوع نشاط الحجز",
         required=True,
     )
+    allow_open_stay = fields.Boolean(
+        string="السماح بإقامة مفتوحة بدون تاريخ خروج",
+    )
 
     @api.onchange("company_id")
     def _onchange_company_id(self):
         self.activity_type = self.company_id.booking_activity_type if self.company_id else False
+        self.allow_open_stay = self.company_id.booking_allow_open_stay if self.company_id else False
 
     @api.model
     def default_get(self, fields_list):
@@ -67,6 +76,8 @@ class BookingActivitySetup(models.TransientModel):
             values["company_id"] = company.id
         if "activity_type" in fields_list:
             values["activity_type"] = company.booking_activity_type
+        if "allow_open_stay" in fields_list:
+            values["allow_open_stay"] = company.booking_allow_open_stay
         return values
 
     def action_save(self):
@@ -75,7 +86,10 @@ class BookingActivitySetup(models.TransientModel):
             raise ValidationError(_("هذه العملية متاحة لمدير الحجوزات فقط."))
         if self.company_id not in self.env.companies:
             raise ValidationError(_("لا تملك صلاحية تهيئة هذه الشركة / الفرع."))
-        self.company_id.booking_activity_type = self.activity_type
+        self.company_id.write({
+            "booking_activity_type": self.activity_type,
+            "booking_allow_open_stay": self.allow_open_stay,
+        })
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
