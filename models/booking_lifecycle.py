@@ -30,7 +30,9 @@ class BookingLifecycleMixin(models.AbstractModel):
             if not self.period_ids: errors.append(_("At least one period is required."))
         else:
             if not self.resource_id: errors.append(_("Stay resource is required."))
-            if not self.checkin_date or not self.checkout_date: errors.append(_("Check-in and checkout dates are required."))
+            if not self.checkin_date: errors.append(_("تاريخ الدخول إجباري."))
+            if not self.checkout_date and not self.company_id.booking_allow_open_stay: errors.append(_("تاريخ الخروج إجباري حسب إعدادات الشركة / الفرع."))
+            if target in ("confirmed","checked_in","checked_out") and not self.checkout_date: errors.append(_("يجب تحديد تاريخ الخروج قبل تأكيد الحجز أو تسجيل الدخول حتى يمكن تثبيت المدة والتسعير."))
         if target=="confirmed" and self.amount_total<=0:
             errors.append(_("Booking total must be greater than zero before confirmation."))
         if target in ("preparing","event","checked_in") and self.finance_state=="not_invoiced" and self.invoice_policy!="manual":
