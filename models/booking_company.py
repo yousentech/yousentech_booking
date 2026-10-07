@@ -31,10 +31,11 @@ class ResCompany(models.Model):
                     has_stays = bool(self.env["yousentech.stay.booking"].sudo().search_count([
                         ("company_id", "=", company.id),
                     ]))
-                    if has_events and new_type == "stays":
-                        raise ValidationError(_("لا يمكن إلغاء نشاط القاعات والمناسبات لأن الشركة لديها حجوزات مناسبات مسجلة."))
-                    if has_stays and new_type == "events":
-                        raise ValidationError(_("لا يمكن إلغاء النشاط الفندقي لأن الشركة لديها حجوزات إقامة مسجلة."))
+                    if has_events or has_stays:
+                        raise ValidationError(_(
+                            "لا يمكن تغيير نوع نشاط الحجز بعد بدء العمليات ووجود حجوزات على الشركة / الفرع. "
+                            "نوع النشاط الحالي سيبقى كما هو حفاظًا على سلامة البيانات."
+                        ))
         return super().write(vals)
 
 
