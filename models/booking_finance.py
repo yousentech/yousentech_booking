@@ -42,6 +42,40 @@ class AccountMove(models.Model):
                 if snapshot_booking!=booking:
                     raise ValidationError(_("Commercial snapshot must belong to the same booking as the accounting document."))
 
+class AccountPayment(models.Model):
+    _inherit="account.payment"
+
+    def action_post(self):
+        result=super().action_post()
+        bookings=self.env["yousentech.booking.event"]
+        stays=self.env["yousentech.stay.booking"]
+        for payment in self:
+            for move in payment.reconciled_invoice_ids:
+                if move.yousentech_event_booking_id:
+                    bookings |= move.yousentech_event_booking_id
+                if move.yousentech_stay_booking_id:
+                    stays |= move.yousentech_stay_booking_id
+        for booking in bookings:
+            received,refunded=booking._cash_totals()
+            booking._audit(
+                "finance",
+                _("Payment posted"),
+                _("Booking payments updated. Received: %.2f %s, Refunded: %.2f %s.") % (
+                    received, booking.currency_id.name, refunded, booking.currency_id.name
+                ),
+            )
+        for booking in stays:
+            received,refunded=booking._cash_totals()
+            booking._audit(
+                "finance",
+                _("Payment posted"),
+                _("Booking payments updated. Received: %.2f %s, Refunded: %.2f %s.") % (
+                    received, booking.currency_id.name, refunded, booking.currency_id.name
+                ),
+            )
+        return result
+
+
 class BookingFinanceMixin(models.AbstractModel):
     _name="yousentech.booking.finance.mixin"
     _description="Booking Finance Mixin"
