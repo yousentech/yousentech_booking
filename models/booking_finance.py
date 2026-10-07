@@ -49,15 +49,29 @@ class BookingFinanceMixin(models.AbstractModel):
     deposit_percent=fields.Float(default=30.0)
     finance_state=fields.Selection([("not_invoiced","Not Invoiced"),("invoiced","Invoiced"),("partial","Partially Paid"),("paid","Paid"),("refund_required","Refund Required"),("settled","Settled")],compute="_compute_finance")
 
+    def _payment_amount_in_booking_currency(self,payment):
+        self.ensure_one()
+        return payment.currency_id._convert(
+            payment.amount,
+            self.currency_id,
+            self.company_id,
+            payment.date or fields.Date.context_today(self),
+        )
+
+    def _cash_totals(self):
+        self.ensure_one()
+        payments=self._booking_payments().filtered(lambda p:p.state not in ("draft","cancel","canceled"))
+        received=sum(self._payment_amount_in_booking_currency(p) for p in payments.filtered(lambda p:p.payment_type=="inbound"))
+        refunded=sum(self._payment_amount_in_booking_currency(p) for p in payments.filtered(lambda p:p.payment_type=="outbound"))
+        return received,refunded
+
     def _compute_finance(self):
         for rec in self:
             posted=rec.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type in ("out_invoice","out_refund"))
             invoices=posted.filtered(lambda m:m.move_type=="out_invoice")
             refunds=posted.filtered(lambda m:m.move_type=="out_refund")
             invoiced=sum(invoices.mapped("amount_total"))-sum(refunds.mapped("amount_total"))
-            payments=rec._booking_payments()
-            received=sum(p.amount for p in payments.filtered(lambda p:p.payment_type=="inbound" and p.state not in ("draft","cancel")))
-            refunded=sum(p.amount for p in payments.filtered(lambda p:p.payment_type=="outbound" and p.state not in ("draft","cancel")))
+            received,refunded=rec._cash_totals()
             net_invoiced=max(invoiced,0.0)
             net_cash=received-refunded
             due=max(net_invoiced-net_cash,0.0)
@@ -189,9 +203,7 @@ class BookingFinanceMixin(models.AbstractModel):
             invoices=posted.filtered(lambda m:m.move_type=="out_invoice")
             refunds=posted.filtered(lambda m:m.move_type=="out_refund")
             net_total=sum(invoices.mapped("amount_total"))-sum(refunds.mapped("amount_total"))
-            payments=rec._booking_payments()
-            received=sum(p.amount for p in payments.filtered(lambda p:p.payment_type=="inbound" and p.state not in ("draft","cancel")))
-            refunded=sum(p.amount for p in payments.filtered(lambda p:p.payment_type=="outbound" and p.state not in ("draft","cancel")))
+            received,refunded=rec._cash_totals()
             net_cash=received-refunded
             unsettled=posted.filtered(lambda m:not rec.currency_id.is_zero(m.amount_residual))
             if not rec.currency_id.is_zero(net_total):
