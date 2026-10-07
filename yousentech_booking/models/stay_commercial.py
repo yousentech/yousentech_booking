@@ -1,5 +1,7 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError\n\nLOCKED_STATES=("confirmed","checked_in","checked_out")
+from odoo.exceptions import ValidationError
+
+LOCKED_STATES=("confirmed","checked_in","checked_out")
 
 class StayBookingAddonLine(models.Model):
     _name = "yousentech.stay.booking.addon.line"
@@ -33,9 +35,19 @@ class StayBookingAddonLine(models.Model):
     @api.model_create_multi
     def create(self,vals_list):
         for vals in vals_list:
+            booking=self.env["yousentech.stay.booking"].browse(vals.get("booking_id")) if vals.get("booking_id") else False
+            if booking and booking.state in LOCKED_STATES: raise ValidationError(_("Confirmed booking add-ons cannot be changed."))
             addon=self.env["yousentech.stay.addon"].browse(vals.get("addon_id")) if vals.get("addon_id") else False
             if addon and "price_unit" not in vals: vals["price_unit"]=addon.price
         return super().create(vals_list)
+
+    def write(self,vals):
+        if self.filtered(lambda l:l.booking_id.state in LOCKED_STATES): raise ValidationError(_("Confirmed booking add-ons cannot be changed."))
+        return super().write(vals)
+
+    def unlink(self):
+        if self.filtered(lambda l:l.booking_id.state in LOCKED_STATES): raise ValidationError(_("Confirmed booking add-ons cannot be deleted."))
+        return super().unlink()
 
 class StayBooking(models.Model):
     _inherit = "yousentech.stay.booking"
@@ -69,4 +81,7 @@ class StayBooking(models.Model):
         for rec in self:
             if rec.rate_plan_id and rec.rate_plan_id.company_id!=rec.company_id: raise ValidationError(_("Rate plan must belong to the booking branch/company."))
             if rec.addon_line_ids.filtered(lambda l:l.company_id!=rec.company_id or l.addon_id.company_id!=rec.company_id): raise ValidationError(_("All add-ons must belong to the booking branch/company."))
-\n    def write(self,vals):\n        if {"rate_plan_id","addon_line_ids","resource_id","checkin_date","checkout_date"} & set(vals) and self.filtered(lambda r:r.state in LOCKED_STATES): raise ValidationError(_("Confirmed commercial terms are locked. Cancel and reopen the booking before changing them."))\n        return super().write(vals)\n
+
+    def write(self,vals):
+        if {"rate_plan_id","addon_line_ids","resource_id","checkin_date","checkout_date"} & set(vals) and self.filtered(lambda r:r.state in LOCKED_STATES): raise ValidationError(_("Confirmed commercial terms are locked. Cancel and reopen the booking before changing them."))
+        return super().write(vals)
