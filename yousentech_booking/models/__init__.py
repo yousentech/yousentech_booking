@@ -5,10 +5,13 @@ from . import stay_resource
 from . import stay_booking
 from . import booking_service
 from . import booking_package
+from . import booking_rate_plan
 from . import booking_commercial
+from . import stay_commercial
 from . import booking_finance
 from . import booking_audit
 from . import booking_api_service
 from . import booking_mixin
+from . import booking_snapshot
 from . import booking_hold
 from . import booking_lifecycle
