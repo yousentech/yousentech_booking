@@ -70,9 +70,10 @@
           <group>
             <field name="company_id" string="الشركة / الفرع"/>
             <field name="activity_type" string="نوع نشاط الحجز"/>
+            <field name="allow_open_stay" string="السماح بإقامة مفتوحة بدون تاريخ خروج" invisible="activity_type == 'events'"/>
           </group>
           <div class="alert alert-warning" role="alert">
-            بعد وجود عمليات فعلية لن يسمح النظام بإلغاء نوع النشاط المرتبط بتلك العمليات.
+            بعد وجود عمليات فعلية لن يسمح النظام بتغيير نوع النشاط. خيار الإقامة المفتوحة يسمح بإنشاء حجز مبدئي بدون تاريخ خروج، ويظل المورد محجوزًا للمستقبل حتى تحديد تاريخ الخروج.
           </div>
         </sheet>
         <footer>
