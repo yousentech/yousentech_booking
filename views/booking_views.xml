@@ -14,11 +14,14 @@
           <button name="action_prepare" type="object" string="بدء التجهيز" invisible="state != 'confirmed'"/>
           <button name="action_start_event" type="object" string="بدء المناسبة" invisible="state != 'preparing'"/>
           <button name="action_complete" type="object" string="إكمال المناسبة" invisible="state != 'event'"/>
+          <button name="action_create_invoice" type="object" string="إنشاء فاتورة" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'manual'"/>
+          <button name="action_create_final_invoice" type="object" string="فاتورة الرصيد" groups="yousentech_booking.group_booking_manager" invisible="state not in ('confirmed','preparing','event','completed') or invoice_policy != 'deposit'"/>
+          <button name="action_create_credit_note" type="object" string="إنشاء إشعار دائن" groups="yousentech_booking.group_booking_manager" invisible="invoice_count == 0"/>
           <button name="action_reopen" type="object" string="إعادة فتح" groups="yousentech_booking.group_booking_supervisor" invisible="state != 'cancelled'"/>
           <field name="state" widget="statusbar" statusbar_visible="draft,hold,confirmed,preparing,event,completed,cancelled"/>
         </header>
         <sheet>
-          <group>
+          <group string="بيانات الحجز الأساسية">
             <group>
               <field name="name" string="رقم الحجز" readonly="1"/>
               <field name="partner_id" string="العميل"/>
@@ -30,9 +33,75 @@
               <field name="period_ids" string="الفترات" widget="many2many_tags"/>
             </group>
           </group>
-          <group>
-            <field name="amount_total" string="الإجمالي" readonly="1"/>
-          </group>
+
+          <notebook>
+            <page string="الباقة والخدمات">
+              <group>
+                <field name="package_id" string="الباقة"/>
+                <field name="discount_type" string="نوع الخصم"/>
+                <field name="discount_value" string="قيمة الخصم" invisible="discount_type == 'none'"/>
+              </group>
+              <field name="service_line_ids" string="الخدمات">
+                <tree editable="bottom">
+                  <field name="company_id" column_invisible="True"/>
+                  <field name="service_id" string="الخدمة"/>
+                  <field name="quantity" string="الكمية"/>
+                  <field name="price_unit" string="سعر الوحدة"/>
+                  <field name="subtotal" string="الإجمالي" readonly="1"/>
+                </tree>
+              </field>
+              <group class="oe_subtotal_footer oe_right">
+                <field name="amount_untaxed" string="قبل الضريبة" readonly="1"/>
+                <field name="discount_amount" string="الخصم" readonly="1"/>
+                <field name="tax_amount" string="الضريبة" readonly="1"/>
+                <field name="amount_total" string="الإجمالي" readonly="1"/>
+              </group>
+            </page>
+
+            <page string="المالية والفواتير">
+              <group>
+                <group>
+                  <field name="invoice_policy" string="سياسة الفوترة"/>
+                  <field name="deposit_percent" string="نسبة العربون" invisible="invoice_policy != 'deposit'"/>
+                  <field name="finance_state" string="الحالة المالية" readonly="1"/>
+                </group>
+                <group>
+                  <field name="amount_invoiced" string="المفوتر" readonly="1"/>
+                  <field name="amount_paid" string="المدفوع" readonly="1"/>
+                  <field name="amount_remaining" string="المتبقي" readonly="1"/>
+                  <field name="invoice_count" invisible="1"/>
+                </group>
+              </group>
+              <field name="payment_schedule_ids" string="جدول الدفعات" invisible="invoice_policy != 'schedule'">
+                <tree editable="bottom">
+                  <field name="name" string="الدفعة"/>
+                  <field name="due_date" string="تاريخ الاستحقاق"/>
+                  <field name="amount" string="المبلغ"/>
+                  <field name="state" string="الحالة" readonly="1"/>
+                  <field name="invoice_id" string="الفاتورة" readonly="1"/>
+                </tree>
+              </field>
+              <field name="invoice_ids" string="الفواتير" readonly="1">
+                <tree>
+                  <field name="name" string="الفاتورة"/>
+                  <field name="invoice_date" string="التاريخ"/>
+                  <field name="amount_total" string="الإجمالي"/>
+                  <field name="payment_state" string="حالة الدفع"/>
+                  <field name="state" string="الحالة"/>
+                </tree>
+              </field>
+            </page>
+
+            <page string="السجل التجاري">
+              <field name="commercial_snapshot_ids" string="نسخ الشروط التجارية" readonly="1">
+                <tree>
+                  <field name="revision" string="المراجعة"/>
+                  <field name="amount_total" string="الإجمالي"/>
+                  <field name="locked" string="مقفلة"/>
+                </tree>
+              </field>
+            </page>
+          </notebook>
         </sheet>
       </form>
     </field>
