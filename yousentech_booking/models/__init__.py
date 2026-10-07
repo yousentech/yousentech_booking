@@ -3,3 +3,9 @@ from . import booking_hall
 from . import booking_event
 from . import stay_resource
 from . import stay_booking
+from . import booking_service
+from . import booking_package
+from . import booking_commercial
+from . import booking_finance
+from . import booking_audit
+from . import booking_api_service
