@@ -2,13 +2,68 @@
 <templates xml:space="preserve">
   <t t-name="yousentech_booking.BookingOS">
     <div class="yb-os" dir="rtl">
-      <header class="yb-hero"><div><span class="yb-kicker">YOUSENTECH BOOKING</span><h1>مركز تشغيل الحجوزات</h1><p>القاعات والإقامات في مساحة تشغيل واحدة.</p></div><button class="btn btn-light">+ حجز جديد</button></header>
-      <section class="yb-grid">
-        <article class="yb-card"><span>حجوزات المناسبات</span><strong t-esc="state.loading ? '…' : state.events"/><small>في الفرع الحالي</small></article>
-        <article class="yb-card"><span>حجوزات الإقامة</span><strong t-esc="state.loading ? '…' : state.stays"/><small>في الفرع الحالي</small></article>
-        <article class="yb-card yb-card-accent"><span>الفرع الحالي</span><strong t-esc="company.currentCompany.name"/><small>يتم العزل باستخدام res.company</small></article>
+      <div class="yb-topbar">
+        <div>
+          <div class="yb-kicker">إدارة القاعات والمناسبات</div>
+          <h1>مخطط حجوزات القاعات</h1>
+          <p>رؤية أسبوعية هادئة للحجوزات، القاعات والفترات بالتاريخ الميلادي والهجري.</p>
+        </div>
+        <button class="yb-primary" t-on-click="() => this.newBooking()">+ حجز جديد</button>
+      </div>
+
+      <div class="yb-toolbar">
+        <div class="yb-date-nav">
+          <button class="yb-icon-btn" t-on-click="() => this.shiftWeek(1)">‹</button>
+          <div class="yb-month"><strong t-esc="monthTitle"/><small>ميلادي • أم القرى</small></div>
+          <button class="yb-icon-btn" t-on-click="() => this.shiftWeek(-1)">›</button>
+          <button class="yb-soft-btn" t-on-click="goToday">اليوم</button>
+        </div>
+        <div class="yb-filters">
+          <div class="yb-search"><i class="fa fa-search"/><input placeholder="ابحث عن قاعة..." t-on-input="onSearch"/></div>
+          <select t-on-change="onHallFilter"><option value="all">جميع القاعات</option><t t-foreach="state.halls" t-as="hall" t-key="hall.id"><option t-att-value="hall.id" t-esc="hall.name"/></t></select>
+        </div>
+      </div>
+
+      <div class="yb-stats">
+        <article><span class="yb-stat-icon green"><i class="fa fa-calendar-check-o"/></span><div><small>مناسبات اليوم</small><strong t-esc="state.stats.today"/></div></article>
+        <article><span class="yb-stat-icon amber"><i class="fa fa-hourglass-half"/></span><div><small>حجوزات مؤقتة</small><strong t-esc="state.stats.holds"/></div></article>
+        <article><span class="yb-stat-icon blue"><i class="fa fa-building-o"/></span><div><small>القاعات النشطة</small><strong t-esc="state.halls.length"/></div></article>
+        <article><span class="yb-stat-icon violet"><i class="fa fa-calendar"/></span><div><small>حجوزات الأسبوع</small><strong t-esc="state.stats.total"/></div></article>
+      </div>
+
+      <section class="yb-board">
+        <div class="yb-board-loading" t-if="state.loading"><i class="fa fa-spinner fa-spin"/> جاري تحميل المخطط...</div>
+        <t t-else="">
+          <div class="yb-grid-head">
+            <div class="yb-hall-head">القاعات</div>
+            <div t-foreach="weekDays" t-as="day" t-key="iso(day)" t-att-class="{'yb-day-head': true, 'is-today': isToday(day)}">
+              <strong t-esc="gregorian(day)"/><small t-esc="hijri(day)"/>
+            </div>
+          </div>
+          <div class="yb-hall-row" t-foreach="visibleHalls" t-as="hall" t-key="hall.id">
+            <div class="yb-hall-cell">
+              <div class="yb-hall-avatar"><i class="fa fa-building"/></div>
+              <div><strong t-esc="hall.name"/><small t-if="hall.capacity"><i class="fa fa-users"/> <t t-esc="hall.capacity"/> شخص</small></div>
+            </div>
+            <div t-foreach="weekDays" t-as="day" t-key="iso(day)" class="yb-day-cell" t-on-click="() => this.newBooking(hall.id, day)">
+              <t t-foreach="eventsFor(hall, day)" t-as="event" t-key="event.id">
+                <button t-att-class="'yb-event ' + eventClass(event)" t-on-click.stop="() => this.openEvent(event)">
+                  <span class="yb-event-top"><strong t-esc="event.name"/><em t-esc="eventLabel(event)"/></span>
+                  <span t-if="event.partner_id" t-esc="event.partner_id[1]"/>
+                  <small t-if="event.period_ids.length"><i class="fa fa-clock-o"/> <t t-esc="event.period_ids.length"/> فترة</small>
+                </button>
+              </t>
+              <span class="yb-add-slot">+ حجز</span>
+            </div>
+          </div>
+          <div class="yb-empty" t-if="!visibleHalls.length">لا توجد قاعات مطابقة للبحث.</div>
+        </t>
       </section>
-      <section class="yb-workspace"><div><h2>اليوم في لمحة</h2><p>ستتوسع هذه المساحة إلى Timeline، الوصول والمغادرة، جاهزية المناسبات، والتنبيهات المالية.</p></div></section>
+
+      <div class="yb-legend">
+        <span><i class="dot confirmed"/> مؤكد</span><span><i class="dot hold"/> مؤقت</span><span><i class="dot preparing"/> تجهيز</span><span><i class="dot event"/> فعالية قائمة</span><span><i class="dot completed"/> مكتمل</span>
+        <small>اضغط على أي مساحة فارغة لإنشاء حجز في القاعة والتاريخ مباشرة.</small>
+      </div>
     </div>
   </t>
 </templates>
