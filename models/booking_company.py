@@ -37,6 +37,25 @@ class BookingSettings(models.Model):
     ]
 
     @api.model
+    def action_open_settings(self):
+        company = self.env.company
+        settings = self.search([("company_id", "=", company.id)], limit=1)
+        if not settings:
+            settings = self.create({
+                "company_id": company.id,
+                "activity_type": company.booking_activity_type or "both",
+                "allow_open_stay": company.booking_allow_open_stay,
+            })
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("إعدادات النظام"),
+            "res_model": self._name,
+            "res_id": settings.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    @api.model
     def _settings_for_company(self, company):
         settings = self.search([("company_id", "=", company.id)], limit=1)
         if settings:
