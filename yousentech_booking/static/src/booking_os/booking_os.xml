@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+  <t t-name="yousentech_booking.BookingOS">
+    <div class="yb-os" dir="rtl">
+      <header class="yb-hero"><div><span class="yb-kicker">YOUSENTECH BOOKING</span><h1>مركز تشغيل الحجوزات</h1><p>القاعات والإقامات في مساحة تشغيل واحدة.</p></div><button class="btn btn-light">+ حجز جديد</button></header>
+      <section class="yb-grid">
+        <article class="yb-card"><span>حجوزات المناسبات</span><strong t-esc="state.loading ? '…' : state.events"/><small>في الفرع الحالي</small></article>
+        <article class="yb-card"><span>حجوزات الإقامة</span><strong t-esc="state.loading ? '…' : state.stays"/><small>في الفرع الحالي</small></article>
+        <article class="yb-card yb-card-accent"><span>الفرع الحالي</span><strong t-esc="company.currentCompany.name"/><small>يتم العزل باستخدام res.company</small></article>
+      </section>
+      <section class="yb-workspace"><div><h2>اليوم في لمحة</h2><p>ستتوسع هذه المساحة إلى Timeline، الوصول والمغادرة، جاهزية المناسبات، والتنبيهات المالية.</p></div></section>
+    </div>
+  </t>
+</templates>
