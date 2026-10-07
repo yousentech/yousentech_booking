@@ -16,3 +16,5 @@ from . import booking_mixin
 from . import booking_snapshot
 from . import booking_hold
 from . import booking_lifecycle
+
+from . import booking_demo_setup
