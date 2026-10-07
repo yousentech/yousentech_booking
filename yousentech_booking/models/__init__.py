@@ -9,3 +9,6 @@ from . import booking_commercial
 from . import booking_finance
 from . import booking_audit
 from . import booking_api_service
+from . import booking_mixin
+from . import booking_hold
+from . import booking_lifecycle
