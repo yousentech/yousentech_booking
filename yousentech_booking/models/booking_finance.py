@@ -65,7 +65,8 @@ class BookingFinanceMixin(models.AbstractModel):
             paid=sum((m.amount_total-m.amount_residual) for m in invoices)-sum((m.amount_total-m.amount_residual) for m in refunds)
             due=max(invoice_residual-refund_residual,0.0)
             rec.amount_invoiced=max(invoiced,0.0)
-            rec.amount_to_invoice=max(rec.amount_total-invoiced,0.0)
+            active_coverage=sum(rec.invoice_ids.filtered(lambda m:m.state!="cancel" and m.move_type=="out_invoice").mapped("amount_total"))
+            rec.amount_to_invoice=max(rec.amount_total-active_coverage,0.0)
             rec.amount_paid=max(paid,0.0)
             rec.amount_due=due
             rec.amount_remaining=due
@@ -181,6 +182,8 @@ class BookingFinanceMixin(models.AbstractModel):
 
     def action_create_credit_note(self):
         self.ensure_one()
+        if not self.env.user.has_group("yousentech_booking.group_booking_manager"):
+            raise UserError(_("Only a booking manager can reverse booking invoices."))
         posted=self.invoice_ids.filtered(lambda m:m.state=="posted" and m.move_type=="out_invoice" and m.payment_state!="reversed")
         if not posted:
             raise UserError(_("There is no posted customer invoice to reverse."))
