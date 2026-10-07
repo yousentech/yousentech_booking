@@ -10,13 +10,13 @@ class StayBooking(models.Model):
     _order = "checkin_date desc, id desc"
 
     name = fields.Char(default="New", readonly=True, copy=False, index=True)
-    company_id = fields.Many2one("res.company", string="Branch", required=True, default=lambda self: self.env.company, index=True, tracking=True)
-    partner_id = fields.Many2one("res.partner", required=True, tracking=True)
-    resource_id = fields.Many2one("yousentech.stay.resource", required=True, domain="[('company_id','=',company_id)]", tracking=True)
-    checkin_date = fields.Date(required=True, index=True, tracking=True)
-    checkout_date = fields.Date(required=True, index=True, tracking=True)
-    state = fields.Selection([("draft","Draft"),("hold","Hold"),("confirmed","Confirmed"),("checked_in","Checked In"),("checked_out","Checked Out"),("cancelled","Cancelled")], default="draft", required=True, tracking=True, index=True)
-    amount_total = fields.Monetary(tracking=True)
+    company_id = fields.Many2one("res.company", string="الشركة / الفرع", required=True, default=lambda self: self.env.company, index=True, tracking=True)
+    partner_id = fields.Many2one("res.partner", string="العميل", required=True, tracking=True)
+    resource_id = fields.Many2one("yousentech.stay.resource", string="مورد الإقامة", required=True, domain="[('company_id','=',company_id)]", tracking=True)
+    checkin_date = fields.Date(string="تاريخ الدخول", required=True, index=True, tracking=True)
+    checkout_date = fields.Date(string="تاريخ الخروج", required=True, index=True, tracking=True)
+    state = fields.Selection([("draft","مسودة"),("hold","حجز مؤقت"),("confirmed","مؤكد"),("checked_in","تم الدخول"),("checked_out","تم الخروج"),("cancelled","ملغي")], string="الحالة", default="draft", required=True, tracking=True, index=True)
+    amount_total = fields.Monetary(string="الإجمالي", tracking=True)
     currency_id = fields.Many2one(related="company_id.currency_id", store=True, readonly=True)
 
     @api.constrains("checkin_date","checkout_date")
