@@ -1,4 +1,6 @@
-from markupsafe import Markup, escape\n\nfrom odoo import fields, models, _
+from markupsafe import Markup, escape
+
+from odoo import fields, models, _
 from odoo.exceptions import AccessError, UserError
 
 EVENT_TRANSITIONS={"draft":{"hold","confirmed","cancelled"},"hold":{"confirmed","cancelled"},"confirmed":{"preparing","cancelled"},"preparing":{"event","cancelled"},"event":{"completed","cancelled"},"completed":{"cancelled"},"cancelled":{"draft"}}
