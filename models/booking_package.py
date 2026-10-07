@@ -36,7 +36,7 @@ class BookingPackage(models.Model):
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", required=True, default=lambda self:self.env.company, index=True)
     line_ids = fields.One2many("yousentech.booking.package.line","package_id", string="Services")
-    pricing_type = fields.Selection([("fixed","Fixed Package Price"),("services","Sum of Services")], default="fixed", required=True)
+    pricing_type = fields.Selection([("fixed","سعر ثابت للباقة"),("services","مجموع الخدمات")], string="طريقة التسعير", default="fixed", required=True)
     fixed_price = fields.Monetary()
     services_total = fields.Monetary(compute="_compute_services_total", store=True)
     price = fields.Monetary(compute="_compute_price", store=True)
