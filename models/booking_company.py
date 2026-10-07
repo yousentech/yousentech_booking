@@ -15,8 +15,8 @@ class ResCompany(models.Model):
     booking_activity_type = fields.Selection(
         BOOKING_ACTIVITY_TYPES,
         string="نوع نشاط الحجز",
-        default="both",
-        required=True,
+        default=False,
+        required=False,
     )
 
     def write(self, vals):
