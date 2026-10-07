@@ -98,6 +98,16 @@ class BookingApiService(models.AbstractModel):
         return data
 
     @api.model
+    def get_booking(self,kind,record_id):
+        model="yousentech.booking.event" if kind=="event" else "yousentech.stay.booking" if kind=="stay" else False
+        if not model:
+            return self._error("INVALID_PAYLOAD","Unknown booking kind.")
+        rec=self.env[model].browse(int(record_id)).exists()
+        if not rec:
+            return self._error("NOT_FOUND","Booking was not found.")
+        return self._ok(self.serialize_booking(rec))
+
+    @api.model
     def transition(self,kind,record_id,action,reason=None):
         model="yousentech.booking.event" if kind=="event" else "yousentech.stay.booking" if kind=="stay" else False
         if not model:

@@ -32,6 +32,12 @@ class BookingApi(http.Controller):
     def create_stay(self,**payload):
         return request.env["yousentech.booking.api.service"].create_stay(payload)
 
+    @http.route("/api/v2/bookings/get",type="json",auth="user",methods=["POST"],csrf=False)
+    def get_booking(self,kind=None,record_id=None,**payload):
+        if not kind or not record_id:
+            return self._error("INVALID_PAYLOAD","kind and record_id are required.")
+        return request.env["yousentech.booking.api.service"].get_booking(kind,record_id)
+
     @http.route("/api/v2/bookings/action",type="json",auth="user",methods=["POST"],csrf=False)
     def booking_action(self,kind=None,record_id=None,action=None,reason=None,**payload):
         if not kind or not record_id or not action:
