@@ -32,6 +32,10 @@ class StayBooking(models.Model):
                 raise ValidationError(_("New bookings must start in Draft and use lifecycle actions."))
             if vals.get("name", "New") == "New":
                 vals["name"] = self.env["ir.sequence"].next_by_code("yousentech.stay.booking") or "New"
+        for vals in vals_list:
+            company = self.env["res.company"].browse(vals.get("company_id") or self.env.company.id)
+            if company.booking_activity_type not in ("stays", "both"):
+                raise ValidationError(_("النشاط الفندقي / الإقامة غير مفعل لهذه الشركة / الفرع."))
         records = super().create(vals_list)
         records._check_company_integrity()
         records._check_availability(lock=True)
