@@ -88,7 +88,7 @@ class BookingFinanceMixin(models.AbstractModel):
 
     def _sale_journal(self):
         self.ensure_one()
-        journal=self.env["account.journal"].with_company(self.company_id).search([("company_id","=",self.company_id.id),("type","=","sale")],limit=1)
+        journal=self.env["account.journal"].sudo().with_company(self.company_id).search([("company_id","=",self.company_id.id),("type","=","sale")],limit=1)
         if not journal:
             raise UserError(_("Configure a sales journal for this branch/company."))
         return journal
@@ -141,7 +141,7 @@ class BookingFinanceMixin(models.AbstractModel):
         vals={"move_type":"out_invoice","company_id":self.company_id.id,"journal_id":self._sale_journal().id,"partner_id":self.partner_id.id,"invoice_origin":self.name,"invoice_line_ids":self._invoice_lines(ratio,label),"yousentech_snapshot_id":snapshot.id,"yousentech_booking_invoice_kind":kind,**self._booking_link()}
         if schedule:
             vals["yousentech_schedule_id"]=schedule.id
-        move=self.env["account.move"].with_company(self.company_id).create(vals)
+        move=self.env["account.move"].sudo().with_company(self.company_id).create(vals)
         if schedule:
             schedule.with_context(booking_schedule_system_write=True).write({"invoice_id":move.id})
         self._audit("finance",_("Draft %s invoice created.")%kind)
