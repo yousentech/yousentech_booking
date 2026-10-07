@@ -93,8 +93,24 @@
   <record id="view_stay_addon_tree" model="ir.ui.view"><field name="name">yousentech.stay.addon.tree</field><field name="model">yousentech.stay.addon</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="charge_type" string="طريقة الاحتساب"/><field name="price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
   <record id="view_stay_addon_form" model="ir.ui.view"><field name="name">yousentech.stay.addon.form</field><field name="model">yousentech.stay.addon</field><field name="arch" type="xml"><form string="إضافة الإقامة"><sheet><group><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="charge_type" string="طريقة الاحتساب"/><field name="price" string="السعر"/><field name="tax_ids" string="الضرائب" widget="many2many_tags"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
-  <record id="action_event_bookings" model="ir.actions.act_window"><field name="name">حجوزات القاعات والمناسبات</field><field name="res_model">yousentech.booking.event</field><field name="view_mode">tree,form</field></record>
-  <record id="action_stay_bookings" model="ir.actions.act_window"><field name="name">الحجوزات الفندقية</field><field name="res_model">yousentech.stay.booking</field><field name="view_mode">tree,form</field></record>
+  <record id="action_event_bookings" model="ir.actions.act_window">
+    <field name="name">حجوزات القاعات والمناسبات</field>
+    <field name="res_model">yousentech.booking.event</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_ids" eval="[(5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('view_event_booking_list')}),
+      (0, 0, {'view_mode': 'form', 'view_id': ref('view_event_booking_form')})
+    ]"/>
+  </record>
+  <record id="action_stay_bookings" model="ir.actions.act_window">
+    <field name="name">الحجوزات الفندقية</field>
+    <field name="res_model">yousentech.stay.booking</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_ids" eval="[(5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('view_stay_booking_list')}),
+      (0, 0, {'view_mode': 'form', 'view_id': ref('view_stay_booking_form')})
+    ]"/>
+  </record>
   <record id="action_booking_periods" model="ir.actions.act_window"><field name="name">الفترات</field><field name="res_model">yousentech.booking.period</field><field name="view_mode">tree,form</field></record>
   <record id="action_booking_halls" model="ir.actions.act_window"><field name="name">القاعات</field><field name="res_model">yousentech.booking.hall</field><field name="view_mode">tree,form</field></record>
   <record id="action_booking_services" model="ir.actions.act_window"><field name="name">الخدمات</field><field name="res_model">yousentech.booking.service</field><field name="view_mode">tree,form</field></record>
