@@ -1,3 +1,4 @@
+from . import booking_company
 from . import booking_period
 from . import booking_hall
 from . import booking_event
