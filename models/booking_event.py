@@ -38,6 +38,9 @@ class BookingEvent(models.Model):
     def write(self, vals):
         if "state" in vals and not self.env.context.get("booking_system_transition"):
             raise ValidationError(_("Booking state can only be changed through lifecycle actions."))
+        protected={"company_id","partner_id","booking_date","hall_id","period_ids"}
+        if protected & set(vals) and self.filtered(lambda r:r.state not in ("draft","hold")):
+            raise ValidationError(_("Booking core data is locked after confirmation. Cancel and reopen the booking before changing it."))
         result = super().write(vals)
         if {"company_id","booking_date","hall_id","period_ids","state"} & set(vals):
             self._check_company_integrity()
