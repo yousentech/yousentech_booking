@@ -21,3 +21,5 @@ access_stay_addon_manager,stay.addon manager,model_yousentech_stay_addon,yousent
 access_stay_addon_line_user,stay.addon.line user,model_yousentech_stay_booking_addon_line,yousentech_booking.group_booking_user,1,1,1,0
 access_commercial_snapshot_user,commercial.snapshot user,model_yousentech_booking_commercial_snapshot,yousentech_booking.group_booking_user,1,0,0,0
 access_audit_supervisor,booking.audit supervisor,model_yousentech_booking_audit_log,yousentech_booking.group_booking_supervisor,1,0,0,0
+access_package_line_user,booking.package.line user,model_yousentech_booking_package_line,yousentech_booking.group_booking_user,1,0,0,0
+access_package_line_manager,booking.package.line manager,model_yousentech_booking_package_line,yousentech_booking.group_booking_manager,1,1,1,1
