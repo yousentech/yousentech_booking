@@ -32,6 +32,7 @@ class BookingHoldMixin(models.AbstractModel):
             rec._audit("cancel", EXPIRED_REASON)
 
 class BookingEvent(models.Model):
+    _name = "yousentech.booking.event"
     _inherit = ["yousentech.booking.event", "yousentech.booking.hold.mixin"]
 
     def action_hold(self):
@@ -44,6 +45,7 @@ class BookingEvent(models.Model):
         self.search([("state","=","hold"),("hold_expires_at","!=",False),("hold_expires_at","<=",fields.Datetime.now())])._expire_hold()
 
 class StayBooking(models.Model):
+    _name = "yousentech.stay.booking"
     _inherit = ["yousentech.stay.booking", "yousentech.booking.hold.mixin"]
 
     def action_hold(self):
