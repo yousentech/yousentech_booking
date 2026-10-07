@@ -96,7 +96,7 @@ class BookingEvent(models.Model):
     def action_prepare(self): return self._transition("preparing",EVENT_TRANSITIONS)
     def action_start_event(self): return self._transition("event",EVENT_TRANSITIONS)
     def action_complete(self): return self._transition("completed",EVENT_TRANSITIONS)
-    def action_cancel(self,reason=None): return self._transition("cancelled",EVENT_TRANSITIONS,reason)
+    def action_cancel(self,reason=None): return self._transition("cancelled",EVENT_TRANSITIONS,reason or self.cancel_reason)
     def action_reopen(self): return self._transition("draft",EVENT_TRANSITIONS)
 
 class StayBooking(models.Model):
