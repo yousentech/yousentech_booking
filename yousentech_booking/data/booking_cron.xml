@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <record id="ir_cron_expire_event_holds" model="ir.cron">
+    <field name="name">Booking: expire event holds</field>
+    <field name="model_id" ref="model_yousentech_booking_event"/>
+    <field name="state">code</field><field name="code">model._cron_expire_holds()</field>
+    <field name="interval_number">5</field><field name="interval_type">minutes</field>
+  </record>
+  <record id="ir_cron_expire_stay_holds" model="ir.cron">
+    <field name="name">Booking: expire stay holds</field>
+    <field name="model_id" ref="model_yousentech_stay_booking"/>
+    <field name="state">code</field><field name="code">model._cron_expire_holds()</field>
+    <field name="interval_number">5</field><field name="interval_type">minutes</field>
+  </record>
+</odoo>
