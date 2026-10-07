@@ -1,7 +1,7 @@
 from odoo import fields, models, _
 from odoo.exceptions import AccessError, UserError
 
-EVENT_TRANSITIONS={"draft":{"hold","confirmed","cancelled"},"hold":{"confirmed","cancelled"},"confirmed":{"preparing","cancelled"},"preparing":{"event","cancelled"},"event":{"completed"},"cancelled":{"draft"}}
+EVENT_TRANSITIONS={"draft":{"hold","confirmed","cancelled"},"hold":{"confirmed","cancelled"},"confirmed":{"preparing","cancelled"},"preparing":{"event","cancelled"},"event":{"completed","cancelled"},"completed":{"cancelled"},"cancelled":{"draft"}}
 STAY_TRANSITIONS={"draft":{"hold","confirmed","cancelled"},"hold":{"confirmed","cancelled"},"confirmed":{"checked_in","cancelled"},"checked_in":{"checked_out"},"cancelled":{"draft"}}
 
 class BookingLifecycleMixin(models.AbstractModel):
