@@ -178,3 +178,12 @@
 .yb-event-form .yb-event-overview .yb-info-card .yb-venue-compact>div>.o_field_widget:focus-within{
   border-color:#7368e7!important;box-shadow:0 0 0 3px rgba(111,99,229,.1)!important;
 }
+
+/* Explain package priority without showing an irrelevant hall amount. */
+.yb-event-form .yb-venue-card .yb-package-rate-notice{
+  grid-column:1/-1;display:flex;align-items:center;gap:8px;
+  min-width:0;padding:9px 12px;border:1px solid #ddd7fa;
+  border-radius:9px;background:#f5f2ff;color:#4d4384;
+  font-size:12px;line-height:1.65;font-weight:650;
+}
+.yb-event-form .yb-venue-card .yb-package-rate-notice .fa{flex:none;color:#6c5bd8}
