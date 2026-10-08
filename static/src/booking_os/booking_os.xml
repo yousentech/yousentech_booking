@@ -6,16 +6,20 @@
         <div>
           <div class="yb-kicker">إدارة القاعات والمناسبات</div>
           <h1>مخطط حجوزات القاعات</h1>
-          <p>رؤية أسبوعية هادئة للحجوزات، القاعات والفترات بالتاريخ الميلادي والهجري.</p>
+          <p>رؤية أسبوعية وشهرية للحجوزات والإجازات بالتاريخ الميلادي والهجري.</p>
         </div>
         <button class="yb-primary" t-on-click="() => this.newBooking()">+ حجز جديد</button>
       </div>
 
       <div class="yb-toolbar">
         <div class="yb-date-nav">
-          <button class="yb-icon-btn" t-on-click="() => this.shiftWeek(1)">‹</button>
+          <div class="yb-view-switch">
+            <button t-att-class="state.viewMode === 'week' ? 'is-active' : ''" t-on-click="() => this.setViewMode('week')">أسبوعي</button>
+            <button t-att-class="state.viewMode === 'month' ? 'is-active' : ''" t-on-click="() => this.setViewMode('month')">شهري</button>
+          </div>
+          <button class="yb-icon-btn" t-on-click="() => this.shiftPeriod(1)">‹</button>
           <div class="yb-month"><strong t-esc="monthTitle"/><small>ميلادي • أم القرى</small></div>
-          <button class="yb-icon-btn" t-on-click="() => this.shiftWeek(-1)">›</button>
+          <button class="yb-icon-btn" t-on-click="() => this.shiftPeriod(-1)">›</button>
           <button class="yb-soft-btn" t-on-click="goToday">اليوم</button>
         </div>
         <div class="yb-filters">
@@ -28,24 +32,25 @@
         <article><span class="yb-stat-icon green"><i class="fa fa-calendar-check-o"/></span><div><small>مناسبات اليوم</small><strong t-esc="state.stats.today"/></div></article>
         <article><span class="yb-stat-icon amber"><i class="fa fa-hourglass-half"/></span><div><small>حجوزات مؤقتة</small><strong t-esc="state.stats.holds"/></div></article>
         <article><span class="yb-stat-icon blue"><i class="fa fa-building-o"/></span><div><small>القاعات النشطة</small><strong t-esc="state.halls.length"/></div></article>
-        <article><span class="yb-stat-icon violet"><i class="fa fa-calendar"/></span><div><small>حجوزات الأسبوع</small><strong t-esc="state.stats.total"/></div></article>
+        <article><span class="yb-stat-icon violet"><i class="fa fa-calendar"/></span><div><small>حجوزات الفترة</small><strong t-esc="state.stats.total"/></div></article>
       </div>
 
       <section class="yb-board">
         <div class="yb-board-loading" t-if="state.loading"><i class="fa fa-spinner fa-spin"/> جاري تحميل المخطط...</div>
         <t t-else="">
-          <div class="yb-grid-head">
+          <div class="yb-grid-head" t-att-style="gridStyle">
             <div class="yb-hall-head">القاعات</div>
-            <div t-foreach="weekDays" t-as="day" t-key="iso(day)" t-att-class="{'yb-day-head': true, 'is-today': isToday(day)}">
+            <div t-foreach="displayDays" t-as="day" t-key="iso(day)" t-att-class="{'yb-day-head': true, 'is-today': isToday(day), 'is-holiday': isHoliday(day)}">
               <strong t-esc="gregorian(day)"/><small t-esc="hijri(day)"/>
+              <span class="yb-holiday-tag" t-if="isHoliday(day)"><i class="fa fa-star"/> <t t-esc="holidaysFor(day)[0].name"/></span>
             </div>
           </div>
-          <div class="yb-hall-row" t-foreach="visibleHalls" t-as="hall" t-key="hall.id">
+          <div class="yb-hall-row" t-att-style="gridStyle" t-foreach="visibleHalls" t-as="hall" t-key="hall.id">
             <div class="yb-hall-cell">
               <div class="yb-hall-avatar"><i class="fa fa-building"/></div>
               <div><strong t-esc="hall.name"/><small t-if="hall.capacity"><i class="fa fa-users"/> <t t-esc="hall.capacity"/> شخص</small></div>
             </div>
-            <div t-foreach="weekDays" t-as="day" t-key="iso(day)" class="yb-day-cell" t-on-click="() => this.newBooking(hall.id, day)">
+            <div t-foreach="displayDays" t-as="day" t-key="iso(day)" t-att-class="isHoliday(day) ? 'yb-day-cell is-holiday' : 'yb-day-cell'" t-on-click="() => this.newBooking(hall.id, day)">
               <t t-foreach="eventsFor(hall, day)" t-as="event" t-key="event.id">
                 <button t-att-class="'yb-event ' + eventClass(event)" t-on-click.stop="() => this.openEvent(event)">
                   <span class="yb-event-top"><strong t-esc="event.name"/><em t-esc="eventLabel(event)"/></span>
@@ -61,7 +66,7 @@
       </section>
 
       <div class="yb-legend">
-        <span><i class="dot confirmed"/> مؤكد</span><span><i class="dot hold"/> مؤقت</span><span><i class="dot preparing"/> تجهيز</span><span><i class="dot event"/> فعالية قائمة</span><span><i class="dot completed"/> مكتمل</span>
+        <span><i class="dot holiday"/> إجازة</span><span><i class="dot confirmed"/> مؤكد</span><span><i class="dot hold"/> مؤقت</span><span><i class="dot preparing"/> تجهيز</span><span><i class="dot event"/> فعالية قائمة</span><span><i class="dot completed"/> مكتمل</span>
         <small>اضغط على أي مساحة فارغة لإنشاء حجز في القاعة والتاريخ مباشرة.</small>
       </div>
     </div>
