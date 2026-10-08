@@ -419,3 +419,10 @@
  .yb-event-form .yb-approved-summary{gap:9px!important}
  .yb-event-form .yb-approved-summary .yb-booking-summary-finance{padding-top:9px!important}
 }
+
+/* Mobile only: give the final booking total a full-width row. Desktop stays unchanged. */
+@media(max-width:520px){
+ .yb-event-form .yb-approved-summary .yb-finance-strip-values>.yb-finance-total{
+  grid-column:1 / -1!important;
+ }
+}
