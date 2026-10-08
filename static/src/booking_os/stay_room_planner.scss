@@ -190,15 +190,20 @@
 .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 375px),720px);max-height:none;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
 .yb-pms .yb-pms-room-head,.yb-pms .yb-pms-days{position:sticky;top:0}
 
-/* On selection, the detail panel takes the right rail and the mini calendar
-   is removed from that rail, leaving the grid unobstructed. */
-.yb-pms .yb-pms-layout.has-selection .yb-pms-side{order:-1;max-height:none;overflow:visible;flex:0 0 280px;width:280px}
+/* The booking detail panel stays in its original left-side rail; only the mini calendar hides when a booking is selected. */
+.yb-pms .yb-pms-layout.has-selection .yb-pms-side{max-height:none;overflow:visible;flex:0 0 280px;width:280px}
 .yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:clamp(260px,calc(100dvh - 375px),720px);overflow:auto}
 @media(max-width:1050px){
   .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 340px),650px)}
-  .yb-pms .yb-pms-layout.has-selection .yb-pms-side{order:-1;width:100%;flex:0 0 auto;display:block}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-side{width:100%;flex:0 0 auto;display:block}
   .yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:360px}
 }
 @media(max-width:650px){
   .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 315px),600px)}
 }
+
+/* Explicit day columns prevent bookings spanning several dates from shifting
+   holiday background cells into neighboring columns. */
+.yb-pms .yb-pms-track>.yb-pms-cell{grid-row:1;min-width:0;align-self:stretch}
+.yb-pms .yb-pms-track>.yb-pms-cell.holiday{background-color:#fff0f2}
+.yb-pms .yb-pms-track>.yb-pms-cell.holiday.today{background-color:#f9e7f2}
