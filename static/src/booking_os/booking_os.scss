@@ -88,3 +88,18 @@
 .yb-event-form .yb-package-controls .o_form_label{color:#263048!important;font-weight:700!important}
 .yb-event-form .yb-event-tabs>.nav-tabs .nav-link.active{border-bottom:2px solid #6859e6!important}
 @media(min-width:1000px){.yb-event-form .yb-customer-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:12px;align-content:start}.yb-event-form .yb-customer-fields>small,.yb-event-form .yb-customer-name{grid-column:1/-1}.yb-event-form .yb-venue-card .yb-info-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.yb-event-form .yb-venue-card .yb-info-body>small,.yb-event-form .yb-venue-hall,.yb-event-form .yb-event-finance-inline{grid-column:1/-1}}
+
+/* Package configuration: two readable cards, locale-controlled direction */
+.yb-package-form .o_form_sheet{max-width:none!important;width:100%!important;padding:24px!important;background:#fafbfe}
+.yb-package-form .yb-package-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}
+.yb-package-form .yb-package-card{min-width:0;background:#fff;border:1px solid #e1e6f0;border-radius:15px;padding:20px 22px;box-shadow:0 3px 14px rgba(31,40,70,.035)}
+.yb-package-form .yb-package-card h3{font-size:17px;font-weight:800;color:#20283e;margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid #edf0f5}
+.yb-package-form .yb-package-card h3 i{color:#6658d9;margin-inline-end:9px}
+.yb-package-form .yb-package-card .o_form_label{font-size:13px!important;font-weight:750!important;color:#20283e!important}
+.yb-package-form .yb-package-card .o_field_widget:not(.o_field_boolean):not(.o_field_handle){min-width:0}
+.yb-package-form .yb-package-card input:not([type=checkbox]),.yb-package-form .yb-package-card select{min-height:37px;border:1px solid #cbd4e3!important;border-radius:9px!important;background:#fff!important;padding:6px 10px!important}
+.yb-package-form .yb-package-card .o_field_widget:focus-within input{border-color:#6d60df!important;box-shadow:0 0 0 3px rgba(109,96,223,.1)}
+.yb-package-form .yb-package-services .o_list_renderer{border:1px solid #e5e9f2;border-radius:10px;overflow:hidden}
+.yb-package-form .yb-package-services .o_list_table thead{background:#f7f8fc}
+.yb-package-form .yb-package-services .o_list_table th{font-weight:750;color:#30394e}
+@media(max-width:900px){.yb-package-form .yb-package-layout{grid-template-columns:1fr}.yb-package-form .o_form_sheet{padding:12px!important}}
