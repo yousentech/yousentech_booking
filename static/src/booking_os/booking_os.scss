@@ -466,6 +466,14 @@
 .yb-os .yb-month-holidays{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
 .yb-os .yb-month-holiday{display:block;color:#d7374c;font-size:10px;font-weight:750;background:#ffe4e8;border-radius:7px;padding:5px 6px;overflow-wrap:anywhere}
 .yb-os .yb-month-holiday i{margin-inline-end:4px}
+/* Configured holiday names live below the month grid, never inside booking cells. */
+.yb-os .yb-month-holidays-footer{display:flex;align-items:center;flex-wrap:wrap;gap:7px 10px;padding:9px 12px;border-top:1px solid #e8edf6;background:#fffafa;min-width:0}
+.yb-os .yb-month-holidays-footer-title{font-size:11px;font-weight:800;color:#a53b4c;white-space:nowrap}
+.yb-os .yb-month-holiday-footer-item{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:7px;background:#ffe8ed;color:#bd354c;max-width:100%;font-size:10px}
+.yb-os .yb-month-holiday-footer-item strong{font-weight:750;overflow-wrap:anywhere}
+.yb-os .yb-month-holiday-footer-item small{font-size:9px;color:#98636e;white-space:nowrap}
+@media(max-width:480px){.yb-os .yb-month-holidays-footer{padding:7px 6px;gap:5px}.yb-os .yb-month-holiday-footer-item{padding:3px 5px;font-size:9px}}
+
 .yb-os .yb-month-bookings{display:flex;flex-direction:column;gap:5px}
 .yb-os .yb-month-booking{display:flex;flex-direction:column;gap:3px;width:100%;min-width:0;border:0;border-inline-start:3px solid currentColor;border-radius:7px;padding:7px 8px;text-align:start;font-size:10px;line-height:1.3;box-shadow:0 1px 5px rgba(27,40,75,.035)}
 .yb-os .yb-month-booking:hover{filter:brightness(.98);transform:translateY(-1px)}
