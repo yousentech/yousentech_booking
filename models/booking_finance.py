@@ -185,14 +185,15 @@ class BookingFinanceMixin(models.AbstractModel):
                 return (0, 0, {"product_id": product.id if product else False,
                                 "name": name, "quantity": qty,
                                 "price_unit": price * ratio * factor, "tax_ids": tax_ids})
-            lines = [line(label or _("Hall: %s") % self.hall_id.display_name,
-                          self.hall_id.product_id, 1.0, self.hall_id.list_price)]
             if self.package_id and self.package_id.pricing_type == "fixed":
-                lines.append(line(_("Package: %s") % self.package_id.display_name,
-                                  False, 1.0, self.package_id.price))
+                lines = [line(_("Package: %s") % self.package_id.display_name,
+                              False, 1.0, self.package_id.price)]
+            elif self.package_id:
+                lines = [line(l.service_id.display_name, l.service_id.product_id,
+                              l.quantity, l.price_unit) for l in self.service_line_ids]
             else:
-                lines += [line(l.service_id.display_name, l.service_id.product_id,
-                               l.quantity, l.price_unit) for l in self.service_line_ids]
+                lines = [line(label or _("Hall: %s") % self.hall_id.display_name,
+                              self.hall_id.product_id, 1.0, self.hall_id.list_price)]
             lines += [line(l.service_id.display_name, l.service_id.product_id,
                            l.quantity, l.price_unit) for l in self.addon_line_ids]
             return lines
