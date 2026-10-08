@@ -64,13 +64,13 @@
           </div>
 
           <div class="yb-event-overview">
-            <div class="yb-info-card">
+            <div class="yb-info-card yb-customer-card">
               <div class="yb-info-icon purple"><i class="fa fa-user"/></div>
               <div class="yb-info-body yb-customer-fields"><small>بيانات صاحب الحجز</small><div class="yb-customer-name"><label for="partner_id" string="العميل"/><field name="partner_id" nolabel="1" options="{'no_quick_create': True}" readonly="state not in ('draft','hold')"/></div><div class="yb-customer-detail"><label for="customer_mobile" string="رقم الجوال"/><field name="customer_mobile" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-customer-detail"><label for="customer_identity" string="رقم الهوية"/><field name="customer_identity" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-customer-detail"><label for="customer_nationality_id" string="الجنسية"/><field name="customer_nationality_id" nolabel="1" readonly="state not in ('draft','hold')"/></div></div>
             </div>
-            <div class="yb-info-card">
+            <div class="yb-info-card yb-venue-card">
               <div class="yb-info-icon blue"><i class="fa fa-building-o"/></div>
-              <div class="yb-info-body"><small>المناسبة</small><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/><div class="yb-event-date"><small>التاريخ</small><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-periods"><small>الفترات</small><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div><div class="yb-event-finance-inline"><span>الإجمالي <field name="amount_total" nolabel="1" readonly="1"/></span><span>المدفوع <field name="amount_paid" nolabel="1" readonly="1"/></span><span>المتبقي <field name="amount_remaining" nolabel="1" readonly="1"/></span></div></div>
+              <div class="yb-info-body"><small>المناسبة والقاعة</small><div class="yb-venue-hall"><label for="hall_id" string="القاعة"/><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-date"><small>التاريخ</small><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-periods"><small>الفترات</small><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div><div class="yb-event-finance-inline"><strong>الملخص المالي</strong><span>الإجمالي <field name="amount_total" nolabel="1" readonly="1"/></span><span>المدفوع <field name="amount_paid" nolabel="1" readonly="1"/></span><span>المتبقي <field name="amount_remaining" nolabel="1" readonly="1"/></span></div></div>
             </div>
           </div>
 
@@ -78,11 +78,11 @@
 
           <notebook class="yb-event-tabs">
             <page string="الباقة والخدمات">
-              <group class="yb-clean-group">
+              <group class="yb-clean-group yb-package-controls">
                 <group><field name="package_id" string="الباقة" readonly="state not in ('draft','hold')"/></group>
                 <group><field name="discount_type" string="نوع الخصم" readonly="state not in ('draft','hold')"/><field name="discount_value" string="قيمة الخصم" invisible="discount_type == 'none'" readonly="state not in ('draft','hold')"/></group>
               </group>
-              <separator string="الخدمات المختارة"/>
+              <separator string="الخدمات المشمولة في الباقة"/>
               <field name="service_line_ids" string="الخدمات" nolabel="1" readonly="state not in ('draft','hold')">
                 <tree editable="bottom"><field name="company_id" column_invisible="True"/><field name="service_id" string="الخدمة"/><field name="quantity" string="الكمية"/><field name="price_unit" string="سعر الوحدة"/><field name="subtotal" string="الإجمالي" readonly="1"/></tree>
               </field>
