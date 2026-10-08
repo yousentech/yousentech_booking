@@ -84,7 +84,7 @@ class BookingEvent(models.Model):
         for rec in self:
             configured = {line.period_id.id: line.price for line in rec.hall_id.period_price_ids}
             rec.period_price_details = " | ".join(
-                "%s: %s" % (period.display_name, rec.currency_id.format(configured.get(period.id, rec.hall_id.list_price or 0.0)) if hasattr(rec.currency_id, "format") else ("%.2f" % configured.get(period.id, rec.hall_id.list_price or 0.0)))
+                "%s: %s" % (period.display_name, ("%.2f" % configured.get(period.id, rec.hall_id.list_price or 0.0)))
                 for period in rec.period_ids
             )
 
