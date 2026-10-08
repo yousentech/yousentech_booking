@@ -229,3 +229,41 @@
   .yb-event-form .yb-venue-card .yb-venue-compact>.yb-venue-hall{grid-column:span 2!important}
   .yb-event-form .yb-venue-card .yb-venue-compact>.yb-event-date{grid-column:span 1!important}
 }
+
+/* Event booking operational workspace: compact, three-color cards.
+   Odoo controls direction; no forced RTL/LTR. */
+.yb-event-form .yb-event-workspace{
+  display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.45fr) minmax(0,.85fr);
+  gap:12px;align-items:stretch;margin:12px 0 16px;
+}
+.yb-event-form .yb-work-card{
+  min-width:0;padding:13px 14px;border-radius:12px;border:1px solid #dbe3f1;
+  box-shadow:0 2px 9px rgba(33,46,77,.035);overflow:hidden;
+}
+.yb-event-form .yb-work-package{background:#fff8ef;border-color:#f4d9b4}
+.yb-event-form .yb-work-addons{background:#f1f7ff;border-color:#c9dcfa}
+.yb-event-form .yb-work-finance{background:#f6f2ff;border-color:#dcd2f9}
+.yb-event-form .yb-work-heading{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid rgba(79,93,125,.12);font-size:13px;color:#273653}
+.yb-event-form .yb-work-heading i{font-size:16px}
+.yb-event-form .yb-work-package .yb-work-heading i{color:#a56b14}
+.yb-event-form .yb-work-addons .yb-work-heading i{color:#2e72c6}
+.yb-event-form .yb-work-finance .yb-work-heading i{color:#7754c7}
+.yb-event-form .yb-work-package-selector{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.yb-event-form .yb-work-package-selector .o_form_label{font-weight:700;font-size:12px}
+.yb-event-form .yb-work-package-selector>.o_field_widget{width:100%;min-width:0}
+.yb-event-form .yb-work-help{font-size:11px;line-height:1.6;color:#64748b;margin:6px 0}
+.yb-event-form .yb-work-card .o_field_x2many{min-width:0;width:100%}
+.yb-event-form .yb-work-card .o_list_renderer{border:1px solid rgba(116,137,170,.2);border-radius:8px;overflow:auto;background:rgba(255,255,255,.72)}
+.yb-event-form .yb-work-card .o_list_table{margin:0;font-size:12px}
+.yb-event-form .yb-work-card .o_list_table th,.yb-event-form .yb-work-card .o_list_table td{padding:6px 7px}
+.yb-event-form .yb-work-finance-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(109,88,165,.12);font-size:12px}
+.yb-event-form .yb-work-finance-row>.o_field_widget{font-weight:750;text-align:end;min-width:0}
+.yb-event-form .yb-work-finance-row:last-of-type{border-bottom:0}
+@media(max-width:1100px){
+  .yb-event-form .yb-event-workspace{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .yb-event-form .yb-work-finance{grid-column:1/-1}
+}
+@media(max-width:680px){
+  .yb-event-form .yb-event-workspace{grid-template-columns:minmax(0,1fr)}
+  .yb-event-form .yb-work-finance{grid-column:auto}
+}
