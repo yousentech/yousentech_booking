@@ -475,3 +475,55 @@
 .yb-os .yb-month-booking.draft{background:#f6efff;color:#8756b9}
 @media(max-width:1000px){.yb-os .yb-month-calendar{min-width:780px}.yb-os .yb-month-day{min-height:120px}.yb-os .yb-month-weekdays>div{padding:10px 3px}}
 @media(max-width:650px){.yb-os .yb-month-calendar{min-width:700px}.yb-os .yb-month-day{padding:6px 5px;min-height:108px}.yb-os .yb-month-booking{padding:5px}.yb-os .yb-month-booking-head{flex-wrap:wrap}}
+
+
+/* Adaptive month calendar: fit laptop and office monitors without horizontal scrolling.
+   Breakpoints respond to available board width, not physical screen inches. */
+.yb-os .yb-board{container-type:inline-size;container-name:yb-planner}
+.yb-os .yb-month-calendar{min-width:0!important;max-width:100%;box-sizing:border-box}
+.yb-os .yb-month-weekdays,.yb-os .yb-month-days{width:100%;min-width:0}
+.yb-os .yb-month-day{overflow:hidden;min-width:0}
+.yb-os .yb-month-booking-head{min-width:0;flex-wrap:wrap}
+.yb-os .yb-month-booking-head strong{min-width:0;overflow-wrap:anywhere}
+.yb-os .yb-month-holiday{overflow-wrap:anywhere}
+@container yb-planner (min-width:1500px){
+ .yb-month-day{min-height:170px;padding:12px 11px}
+ .yb-month-weekdays>div{font-size:13px;padding:15px 6px}
+ .yb-month-booking{font-size:11px;padding:8px 9px}
+ .yb-month-booking-head strong{font-size:11px}
+}
+@container yb-planner (max-width:1250px){
+ .yb-month-day{min-height:125px;padding:7px 6px}
+ .yb-month-weekdays>div{padding:10px 2px;font-size:11px}
+ .yb-month-booking{padding:5px 6px;gap:2px;font-size:9px}
+ .yb-month-booking-head strong{font-size:9px}
+ .yb-month-booking-head small{font-size:8px}
+ .yb-month-day-heading strong{font-size:13px}
+ .yb-month-holiday{font-size:9px;padding:3px 4px}
+}
+@container yb-planner (max-width:850px){
+ .yb-month-day{min-height:105px;padding:5px 4px}
+ .yb-month-weekdays>div{font-size:10px;padding:9px 1px}
+ .yb-month-booking{padding:4px;line-height:1.25}
+ .yb-month-booking-detail{display:none}
+ .yb-month-booking-head small{display:none}
+ .yb-month-booking-hall{font-size:8px}
+ .yb-month-day-heading strong{font-size:12px}
+ .yb-month-holiday{font-size:8px}
+}
+@container yb-planner (max-width:520px){
+ .yb-month-day{min-height:90px;padding:4px 2px}
+ .yb-month-weekdays>div{font-size:9px;padding:8px 0}
+ .yb-month-day-heading strong{font-size:11px}
+ .yb-month-today{font-size:7px;padding:1px 3px}
+ .yb-month-booking{padding:3px 2px;border-inline-start-width:2px}
+ .yb-month-booking-head strong{font-size:8px}
+ .yb-month-booking-hall{display:none}
+ .yb-month-holiday{font-size:7px;padding:2px}
+}
+@media(max-width:850px){
+ .yb-os .yb-toolbar{gap:9px}
+ .yb-os .yb-date-nav{justify-content:center;flex-wrap:wrap}
+ .yb-os .yb-month{min-width:110px}
+ .yb-os .yb-stats article{min-width:0}
+}
