@@ -631,3 +631,13 @@
  .yb-os .yb-month-booking-head strong{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
  .yb-os .yb-month-more{font-size:9px;padding:2px 3px}
 }
+
+/* Short laptop month rows: reserve visible space for the overflow action. */
+@media (max-width:1599px), (max-height:949px){
+ .yb-os .yb-month-day{display:flex!important;flex-direction:column!important;overflow:hidden!important}
+ .yb-os .yb-month-day-heading{flex:0 0 auto!important}
+ .yb-os .yb-month-bookings{display:flex!important;flex-direction:column!important;gap:2px!important;min-height:0!important;overflow:visible!important}
+ .yb-os .yb-month-booking{display:block!important;flex:0 0 auto!important;min-height:0!important;max-height:20px!important;overflow:hidden!important;padding:2px 4px!important}
+ .yb-os .yb-month-booking-head{display:flex!important;align-items:center!important;min-height:13px!important;line-height:13px!important}
+ .yb-os .yb-month-more{display:block!important;flex:0 0 auto!important;line-height:14px!important;height:18px!important;margin:0!important;padding:1px 3px!important;white-space:nowrap!important}
+}
