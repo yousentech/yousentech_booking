@@ -78,6 +78,8 @@
             <div class="yb-finance-strip-head"><i class="fa fa-money"/> الملخص المالي للحجز</div>
             <div class="yb-finance-strip-values">
               <div class="yb-finance-metric"><small>بعد الخصم</small><field name="amount_untaxed" nolabel="1" readonly="1"/></div>
+              <div class="yb-finance-metric yb-finance-discount"><small>نوع الخصم</small><field name="discount_type" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+              <div class="yb-finance-metric yb-finance-discount" invisible="discount_type == 'none'"><small>قيمة الخصم</small><field name="discount_value" nolabel="1" readonly="state not in ('draft','hold')"/></div>
               <div class="yb-finance-metric yb-finance-discount"><small>الخصم</small><field name="discount_amount" nolabel="1" readonly="1"/></div>
               <div class="yb-finance-metric"><small>الضريبة</small><field name="tax_amount" nolabel="1" readonly="1"/></div>
               <div class="yb-finance-metric yb-finance-total"><small>الإجمالي</small><field name="amount_total" nolabel="1" readonly="1"/></div>
@@ -93,7 +95,7 @@
             <page string="الباقة والخدمات">
               <group class="yb-clean-group yb-package-controls">
                 <group><field name="package_id" string="الباقة" readonly="state not in ('draft','hold')"/></group>
-                <group><field name="discount_type" string="نوع الخصم" readonly="state not in ('draft','hold')"/><field name="discount_value" string="قيمة الخصم" invisible="discount_type == 'none'" readonly="state not in ('draft','hold')"/></group>
+
               </group>
               <separator string="الخدمات المشمولة في الباقة"/>
               <field name="service_line_ids" string="الخدمات" nolabel="1" readonly="state not in ('draft','hold')">
