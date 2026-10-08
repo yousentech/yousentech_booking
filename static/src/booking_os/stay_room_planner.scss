@@ -264,7 +264,7 @@
   padding:20px;background:rgba(22,36,58,.48);box-sizing:border-box;
 }
 .yb-pms .yb-pms-modal{
-  display:flex;flex-direction:column;width:min(100%,540px);max-height:calc(100dvh - 40px);
+  display:flex;flex-direction:column;width:540px;max-width:100%;max-height:calc(100dvh - 40px);
   min-height:0;overflow:hidden;background:#fff;border:1px solid var(--pms-border);
   border-radius:16px;box-shadow:0 24px 70px rgba(19,35,65,.25);
 }
