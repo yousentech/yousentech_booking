@@ -88,7 +88,8 @@ class BookingEvent(models.Model):
             package_price = rec.package_id.price if rec.package_id else 0.0
             package_base = package_price if fixed else sum(rec.service_line_ids.mapped("subtotal"))
             # Included services never become paid add-ons.
-            gross = max(rec.hall_id.list_price or 0.0, 0.0) + package_base
+            # A selected package replaces the hall base rate; never charge both.
+            gross = package_base if rec.package_id else (rec.hall_id.list_price or 0.0)
             gross += sum(rec.addon_line_ids.mapped("subtotal"))
             # All prices are converted to tax-excluded values before applying booking discount.
             tax = rec.package_id.tax_id
@@ -97,9 +98,9 @@ class BookingEvent(models.Model):
                     return price * qty
                 return tax.compute_all(price, currency=rec.currency_id, quantity=qty,
                                        product=product, partner=rec.partner_id)["total_excluded"]
-            untaxed_gross = split(rec.hall_id.list_price or 0.0) + split(package_price) if fixed else split(rec.hall_id.list_price or 0.0)
-            if not fixed:
-                untaxed_gross += sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
+            untaxed_gross = (split(package_price) if fixed else
+                             sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
+                             if rec.package_id else split(rec.hall_id.list_price or 0.0))
             untaxed_gross += sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             discount = (untaxed_gross * rec.discount_value / 100.0 if rec.discount_type == "percent"
                         else min(rec.discount_value, untaxed_gross) if rec.discount_type == "fixed" else 0.0)
@@ -113,11 +114,9 @@ class BookingEvent(models.Model):
                 result = tax.compute_all(unit, currency=rec.currency_id, quantity=qty,
                                          product=product, partner=rec.partner_id)
                 return result["total_included"] - result["total_excluded"]
-            tax_total = taxed_amount(rec.hall_id.list_price or 0.0)
-            if fixed:
-                tax_total += taxed_amount(package_price)
-            else:
-                tax_total += sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
+            tax_total = (taxed_amount(package_price) if fixed else
+                         sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
+                         if rec.package_id else taxed_amount(rec.hall_id.list_price or 0.0))
             tax_total += sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             rec.amount_untaxed = untaxed_gross - discount
             rec.discount_amount = discount
