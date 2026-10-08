@@ -207,3 +207,53 @@
 .yb-pms .yb-pms-track>.yb-pms-cell{grid-row:1;min-width:0;align-self:stretch}
 .yb-pms .yb-pms-track>.yb-pms-cell.holiday{background-color:#fff0f2}
 .yb-pms .yb-pms-track>.yb-pms-cell.holiday.today{background-color:#f9e7f2}
+
+/* Room occupancy: keep the holiday strip and status legend outside the scrolling
+   grid, as in the hall planner. Do not constrain the entire action or details
+   panel to a height that hides their lower controls. */
+.yb-pms .yb-pms-main{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.yb-pms .yb-pms-board-scroll{
+  flex:0 1 auto;
+  height:clamp(220px,calc(100dvh - 525px),560px);
+  max-height:none;
+  min-height:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+}
+.yb-pms .yb-pms-holidays,
+.yb-pms .yb-pms-legend{flex:0 0 auto;min-height:0}
+.yb-pms .yb-pms-layout{align-items:flex-start}
+.yb-pms .yb-pms-side{min-height:0}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-side{
+  height:clamp(220px,calc(100dvh - 525px),560px);
+  min-height:0;
+  max-height:none;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  overscroll-behavior:contain;
+}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{
+  flex:0 0 auto;
+  max-height:none;
+  overflow:visible;
+}
+@media(max-width:1050px){
+  .yb-pms .yb-pms-board-scroll{height:clamp(220px,calc(100dvh - 475px),500px)}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-side{
+    width:100%;
+    flex:0 0 auto;
+    height:auto;
+    max-height:none;
+    overflow:visible;
+  }
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{
+    max-height:none;
+    overflow:visible;
+  }
+}
+@media(max-width:650px){
+  .yb-pms .yb-pms-board-scroll{height:clamp(200px,calc(100dvh - 425px),450px)}
+  .yb-pms .yb-pms-holidays{flex-wrap:wrap}
+}
