@@ -14,3 +14,31 @@
 .yb-event-form .yb-event-periods .o_field_many2many_tags{min-width:0}
 .yb-event-form .yb-branch-line>.o_field_widget{max-width:170px}
 .yb-event-form .yb-finance-card .yb-money-main{max-width:none!important;width:auto!important}
+
+
+/* Event detail: full-width sheet and readable card content */
+.yb-event-form .o_form_sheet_bg{width:100%!important;min-width:0!important;padding:12px 18px 24px!important}
+.yb-event-form .o_form_sheet_bg>.o_form_sheet{width:100%!important;max-width:none!important;min-width:0!important;margin:0 auto!important;box-sizing:border-box!important}
+.yb-event-form .yb-event-overview{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.yb-event-form .yb-info-card{min-width:0;min-height:150px;padding:19px 20px;gap:14px;align-items:flex-start}
+.yb-event-form .yb-info-icon{width:43px;height:43px;min-width:43px;font-size:17px}
+.yb-event-form .yb-info-body>small{font-size:13px;margin-bottom:8px;color:#737c91;font-weight:650}
+.yb-event-form .yb-info-body>span{font-size:12px;margin-top:9px}
+.yb-event-form .yb-info-card .yb-info-body>.o_field_widget{font-size:16px!important;font-weight:650;max-width:280px;width:100%}
+.yb-event-form .yb-info-card .yb-info-body>.o_field_widget.o_field_many2one{max-width:260px}
+.yb-event-form .yb-event-date,.yb-event-form .yb-event-periods{margin-top:11px;min-height:30px;gap:10px}
+.yb-event-form .yb-event-date>small,.yb-event-form .yb-event-periods>small{font-size:12px;width:52px}
+.yb-event-form .yb-event-date>.o_field_widget{width:175px;max-width:175px;font-size:14px}
+.yb-event-form .yb-event-periods>.o_field_widget{max-width:300px;font-size:14px}
+.yb-event-form .yb-event-periods .o_tag{font-size:12px!important}
+.yb-event-form .yb-money-main{font-size:27px!important}
+.yb-event-form .yb-finance-mini{font-size:12px;gap:16px;margin-top:13px;flex-wrap:wrap}
+.yb-event-form .yb-branch-line{font-size:12px;padding:9px 13px}
+.yb-event-form .yb-branch-line>.o_field_widget{max-width:240px}
+.yb-event-form .yb-event-tabs>.nav-tabs .nav-link{font-size:14px;padding:12px 18px!important}
+.yb-event-form .yb-event-tabs .tab-pane{font-size:14px}
+.yb-event-form .o_list_table th,.yb-event-form .o_list_table td{font-size:13px!important}
+.yb-event-form .yb-total-box{font-size:14px}
+.yb-event-form .yb-finance-summary small{font-size:12px}
+@media(max-width:1000px){.yb-event-form .yb-event-overview{grid-template-columns:1fr 1fr}.yb-event-form .yb-finance-card{grid-column:1/-1}}
+@media(max-width:650px){.yb-event-form .o_form_sheet_bg{padding:8px!important}.yb-event-form .o_form_sheet_bg>.o_form_sheet{padding:14px!important}.yb-event-form .yb-event-overview{grid-template-columns:1fr}.yb-event-form .yb-finance-card{grid-column:auto}}
