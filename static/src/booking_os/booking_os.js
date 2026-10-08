@@ -23,6 +23,7 @@ export class BookingOS extends Component {
         const today = new Date();
         this.state = useState({
             loading: true,
+            selectedDay: null,
             viewMode: "month",
             holidays: [],
             anchor: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
@@ -105,6 +106,7 @@ export class BookingOS extends Component {
     }
 
     async shiftPeriod(delta) {
+        this.state.selectedDay = null;
         if (this.state.viewMode === "month") {
             const a = this.state.anchor;
             this.state.anchor = new Date(a.getFullYear(), a.getMonth() + delta, 1);
@@ -183,6 +185,7 @@ export class BookingOS extends Component {
     }
 
     async goToday() {
+        this.state.selectedDay = null;
         const now = new Date();
         this.state.anchor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         await this.loadBoard();
@@ -192,6 +195,14 @@ export class BookingOS extends Component {
     onHallFilter(ev) { this.state.hallId = ev.target.value; }
 
     openDayBookings(day) {
+        this.state.selectedDay = this.iso(day);
+    }
+
+    closeDayBookings() {
+        this.state.selectedDay = null;
+    }
+
+    openDayBookingsList(day) {
         const ids = this.monthEvents(day).map((event) => event.id);
         this.action.doAction({
             type: "ir.actions.act_window",
@@ -204,6 +215,7 @@ export class BookingOS extends Component {
     }
 
     openEvent(event) {
+        this.state.selectedDay = null;
         this.action.doAction({ type: "ir.actions.act_window", res_model: "yousentech.booking.event", res_id: event.id, views: [[false, "form"]], target: "current" });
     }
 
