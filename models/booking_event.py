@@ -1,6 +1,13 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
+class BookingCustomerDetails(models.Model):
+    _inherit = "res.partner"
+
+    yousentech_booking_identity = fields.Char(string="رقم الهوية")
+    yousentech_booking_nationality_id = fields.Many2one("res.country", string="الجنسية")
+
+
 BLOCKING_STATES = ("hold", "confirmed", "preparing", "event", "completed")
 
 class BookingEvent(models.Model):
@@ -12,6 +19,10 @@ class BookingEvent(models.Model):
     name = fields.Char(default="New", readonly=True, copy=False, index=True)
     company_id = fields.Many2one("res.company", string="الشركة / الفرع", required=True, default=lambda self: self.env.company, index=True, tracking=True)
     partner_id = fields.Many2one("res.partner", string="العميل", required=True, tracking=True)
+    customer_mobile = fields.Char(related="partner_id.mobile", readonly=False, string="رقم الجوال")
+    customer_identity = fields.Char(related="partner_id.yousentech_booking_identity", readonly=False, string="رقم الهوية")
+    customer_nationality_id = fields.Many2one(related="partner_id.yousentech_booking_nationality_id", readonly=False, string="الجنسية")
+
     booking_date = fields.Date(string="تاريخ الحجز", required=True, index=True, tracking=True)
     hall_id = fields.Many2one("yousentech.booking.hall", string="القاعة", required=True, domain="[('company_id', '=', company_id)]", tracking=True)
     period_ids = fields.Many2many("yousentech.booking.period", string="الفترات", domain="[('company_id', '=', company_id)]")
