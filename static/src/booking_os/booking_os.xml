@@ -29,10 +29,10 @@
       </div>
 
       <div class="yb-stats">
-        <article><span class="yb-stat-icon green"><i class="fa fa-calendar-check-o"/></span><div><small>مناسبات اليوم</small><strong t-esc="state.stats.today"/></div></article>
-        <article><span class="yb-stat-icon amber"><i class="fa fa-hourglass-half"/></span><div><small>حجوزات مؤقتة</small><strong t-esc="state.stats.holds"/></div></article>
+        <article><span class="yb-stat-icon green"><i class="fa fa-calendar-check-o"/></span><div><small>مناسبات اليوم</small><strong t-esc="visibleStats.today"/></div></article>
+        <article><span class="yb-stat-icon amber"><i class="fa fa-hourglass-half"/></span><div><small>حجوزات مؤقتة</small><strong t-esc="visibleStats.holds"/></div></article>
         <article><span class="yb-stat-icon blue"><i class="fa fa-building-o"/></span><div><small>القاعات النشطة</small><strong t-esc="state.halls.length"/></div></article>
-        <article><span class="yb-stat-icon violet"><i class="fa fa-calendar"/></span><div><small>حجوزات الفترة</small><strong t-esc="state.stats.total"/></div></article>
+        <article><span class="yb-stat-icon violet"><i class="fa fa-calendar"/></span><div><small>حجوزات الفترة</small><strong t-esc="visibleStats.total"/></div></article>
       </div>
 
       <section class="yb-board">
@@ -103,10 +103,10 @@
           <header class="yb-day-panel-header">
             <button class="yb-day-close" t-on-click="() => this.closeDayBookings()" aria-label="إغلاق"><i class="fa fa-times"/></button>
             <h3>حجوزات يوم <t t-esc="state.selectedDay"/></h3>
-            <small><t t-esc="state.events.filter(e => e.booking_date === state.selectedDay).length"/> حجوزات</small>
+            <small><t t-esc="dayEvents(state.selectedDay).length"/> حجوزات</small>
           </header>
           <div class="yb-day-panel-list">
-            <button t-foreach="state.events.filter(e => e.booking_date === state.selectedDay &amp;&amp; visibleHalls.some(h => e.hall_id &amp;&amp; h.id === e.hall_id[0]))" t-as="event" t-key="event.id"
+            <button t-foreach="dayEvents(state.selectedDay)" t-as="event" t-key="event.id"
                     t-att-class="'yb-day-panel-event ' + eventClass(event)"
                     t-on-click="() => this.openEvent(event)">
               <span class="yb-day-panel-event-head"><strong t-esc="event.name"/><em t-esc="eventLabel(event)"/></span>
