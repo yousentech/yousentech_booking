@@ -64,6 +64,8 @@ class BookingEvent(models.Model):
     service_line_ids=fields.One2many("yousentech.booking.event.service.line","booking_id")
     addon_line_ids=fields.One2many("yousentech.booking.event.addon.line","booking_id",string="الخدمات الملحقة المدفوعة")
     hall_period_amount=fields.Monetary(compute="_compute_amounts",string="إجمالي فترات القاعة")
+    booking_base_amount=fields.Monetary(compute="_compute_amounts",string="قيمة الباقة أو القاعة")
+    booking_addons_amount=fields.Monetary(compute="_compute_amounts",string="إجمالي الخدمات الملحقة")
     booking_tax_id=fields.Many2one("account.tax",compute="_compute_booking_tax",string="نوع الضريبة",readonly=True)
     period_price_details=fields.Text(compute="_compute_period_price_details",string="تفصيل أسعار الفترات",readonly=True)
     discount_type=fields.Selection([("none","No Discount"),("percent","Percentage"),("fixed","Fixed")],default="none",required=True)
@@ -160,6 +162,8 @@ class BookingEvent(models.Model):
             period_prices = rec._get_hall_period_prices()
             hall_period_price = sum(price for _period, price in period_prices)
             rec.hall_period_amount = hall_period_price
+            rec.booking_base_amount = package_base if rec.package_id else hall_period_price
+            rec.booking_addons_amount = sum(rec.addon_line_ids.mapped("subtotal"))
             # Included services never become paid add-ons.
             # A selected package replaces the hall base rate; never charge both.
             gross = package_base if rec.package_id else hall_period_price
