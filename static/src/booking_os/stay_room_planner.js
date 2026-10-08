@@ -26,7 +26,7 @@ export class StayRoomPlanner extends Component {
         this.state = useState({
             anchor: parseDate(iso(new Date())), span: 7, loading: true,
             resources: [], bookings: [], query: "", type: "all",
-            selectedId: null, error: "",
+            selectedId: null, error: "", floor: "all", status: "all", collapsedFloors: [],
         });
         onWillStart(() => this.load());
     }
@@ -43,10 +43,38 @@ export class StayRoomPlanner extends Component {
         catch { return ""; }
     }
     isToday(day) { return iso(day) === iso(new Date()); }
+    get floors() {
+        return [...new Set(this.state.resources.map(r => r.floor_name || "غير محدد"))].sort((a, b) => a.localeCompare(b, "ar", {numeric:true}));
+    }
+    get roomGroups() {
+        return this.floors.filter(f => this.state.floor === "all" || f === this.state.floor)
+            .map(f => ({name:f, rooms:this.visibleResources.filter(r => (r.floor_name || "غير محدد") === f),
+                collapsed:this.state.collapsedFloors.includes(f)}))
+            .filter(g => g.rooms.length);
+    }
+    toggleFloor(name) {
+        this.state.collapsedFloors = this.state.collapsedFloors.includes(name)
+            ? this.state.collapsedFloors.filter(f => f !== name)
+            : [...this.state.collapsedFloors, name];
+    }
+    onFloor(ev) { this.state.floor = ev.target.value; }
+    onStatus(ev) { this.state.status = ev.target.value; }
+    get monthDays() {
+        const d = this.start;
+        return Array.from({length: 42}, (_, i) => addDays(new Date(d.getFullYear(), d.getMonth(), 1, 12), i - ((new Date(d.getFullYear(), d.getMonth(), 1).getDay() + 1) % 7)));
+    }
+    get monthLabel() { return new Intl.DateTimeFormat("ar-SA-u-ca-gregory", {month:"long",year:"numeric"}).format(this.start); }
+    get hijriRange() {
+        try {
+            const fmt = d => new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {day:"numeric",month:"long",year:"numeric"}).format(d);
+            return fmt(this.start) + " — " + fmt(addDays(this.end, -1));
+        } catch { return ""; }
+    }
     get visibleResources() {
         const q = this.state.query.trim().toLocaleLowerCase();
         return this.state.resources.filter(r =>
             (this.state.type === "all" || r.resource_type === this.state.type) &&
+            (this.state.floor === "all" || (r.floor_name || "غير محدد") === this.state.floor) &&
             (!q || r.name.toLocaleLowerCase().includes(q)));
     }
     get selectedBooking() { return this.state.bookings.find(b => b.id === this.state.selectedId); }
@@ -63,7 +91,7 @@ export class StayRoomPlanner extends Component {
         };
     }
     bookingsFor(resource) {
-        return this.activeBookings.filter(b => b.resource_id && b.resource_id[0] === resource.id &&
+        return this.activeBookings.filter(b => (this.state.status === "all" || b.state === this.state.status) && b.resource_id && b.resource_id[0] === resource.id &&
             b.checkin_date < iso(this.end) && (!b.checkout_date || b.checkout_date > iso(this.start)))
             .sort((a,b) => a.checkin_date.localeCompare(b.checkin_date) || a.id - b.id);
     }
@@ -84,7 +112,7 @@ export class StayRoomPlanner extends Component {
             const [resources, bookings] = await Promise.all([
                 this.orm.searchRead("yousentech.stay.resource",
                     [["company_id","=",companyId],["active","=",true]],
-                    ["name","resource_type","capacity","nightly_price","sequence"],
+                    ["name","resource_type","capacity","nightly_price","sequence","floor_name"],
                     {order:"sequence,name,id"}),
                 this.orm.searchRead("yousentech.stay.booking",
                     [["company_id","=",companyId],["checkin_date","<",iso(this.end)],
