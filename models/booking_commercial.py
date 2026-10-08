@@ -60,7 +60,7 @@ class BookingEventAddonLine(models.Model):
 
 class BookingEvent(models.Model):
     _inherit="yousentech.booking.event"
-    package_id=fields.Many2one("yousentech.booking.package",domain="[('company_id','=',company_id)]")
+    package_id=fields.Many2one("yousentech.booking.package",domain="[('company_id','=',company_id),('hall_id','=',hall_id)]")
     service_line_ids=fields.One2many("yousentech.booking.event.service.line","booking_id")
     addon_line_ids=fields.One2many("yousentech.booking.event.addon.line","booking_id",string="الخدمات الملحقة المدفوعة")
     hall_period_amount=fields.Monetary(compute="_compute_amounts",string="إجمالي فترات القاعة")
@@ -146,6 +146,12 @@ class BookingEvent(models.Model):
     def _package_commands(package):
         return [fields.Command.create({"service_id":line.service_id.id,"quantity":line.quantity,"price_unit":line.price_unit}) for line in package.line_ids]
 
+    @api.onchange("hall_id", "company_id")
+    def _onchange_hall_package(self):
+        if self.package_id and (self.package_id.hall_id != self.hall_id or self.package_id.company_id != self.company_id):
+            self.package_id = False
+            self.service_line_ids = [fields.Command.clear()]
+
     @api.onchange("package_id")
     def _onchange_package_id(self):
         # Clear old included lines even when the package is removed.
@@ -200,13 +206,15 @@ class BookingEvent(models.Model):
             rec.tax_amount = tax_total
             rec.amount_total = rec.amount_untaxed + tax_total
 
-    @api.constrains("discount_type","discount_value","package_id")
+    @api.constrains("discount_type","discount_value","package_id","hall_id","company_id")
     def _check_commercial(self):
         for rec in self:
             if rec.discount_value<0 or (rec.discount_type=="percent" and rec.discount_value>100):
                 raise ValidationError(_("Invalid discount value."))
             if rec.package_id and rec.package_id.company_id!=rec.company_id:
                 raise ValidationError(_("Package must belong to the booking branch/company."))
+            if rec.package_id and rec.package_id.hall_id != rec.hall_id:
+                raise ValidationError(_("The selected package must belong to the booking hall."))
 
     def write(self,vals):
         commercial={"package_id","service_line_ids","addon_line_ids","discount_type","discount_value","hall_id"}
