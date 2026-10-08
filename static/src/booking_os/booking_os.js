@@ -111,6 +111,14 @@ export class BookingOS extends Component {
         return `grid-template-columns: 168px repeat(${this.displayDays.length}, minmax(${this.state.viewMode === "month" ? 112 : 142}px, 1fr));`;
     }
 
+    get monthHolidayItems() {
+        const prefix = this.iso(this.state.anchor).slice(0, 7) + "-";
+        return this.state.holidays
+            .filter((holiday) => holiday.date && holiday.date.startsWith(prefix))
+            .slice()
+            .sort((a, b) => a.date.localeCompare(b.date) || a.name.localeCompare(b.name));
+    }
+
     holidaysFor(day) {
         const date = this.iso(day);
         return this.state.holidays.filter((h) => h.date === date);
