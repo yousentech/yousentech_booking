@@ -54,16 +54,16 @@
                   <span t-foreach="holidaysFor(day)" t-as="holiday" t-key="holiday.id" class="yb-month-holiday"><i class="fa fa-umbrella"/> <t t-esc="holiday.name"/></span>
                 </div>
                 <div class="yb-month-bookings">
-                  <button t-foreach="monthEvents(day).slice(0, 2)" t-as="event" t-key="event.id"
+                  <button t-foreach="monthEvents(day).slice(0, 1)" t-as="event" t-key="event.id"
                           t-att-class="'yb-month-booking ' + eventClass(event)"
                           t-on-click.stop="() => this.openEvent(event)">
                     <span class="yb-month-booking-head"><strong t-esc="event.name"/><small t-esc="eventLabel(event)"/></span>
                     <span class="yb-month-booking-detail" t-if="event.partner_id" t-esc="event.partner_id[1]"/>
                     <span class="yb-month-booking-hall" t-esc="monthEventLabel(event)"/>
                   </button>
-                  <button t-if="monthEvents(day).length > 2" class="yb-month-more yb-month-more-compact"
+                  <button t-if="monthEvents(day).length > 1" class="yb-month-more yb-month-more-compact"
                           t-on-click.stop="() => this.openDayBookings(day)">
-                    +<t t-esc="monthEvents(day).length - 2"/> حجوزات أخرى
+                    +<t t-esc="monthEvents(day).length - 1"/> حجوزات أخرى
                   </button>
                 </div>
               </div>
