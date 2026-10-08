@@ -77,8 +77,8 @@ class BookingEvent(models.Model):
 
     @api.onchange("package_id")
     def _onchange_package_id(self):
-        if self.package_id:
-            self.service_line_ids=[fields.Command.clear()]+self._package_commands(self.package_id)
+        # Clear old included lines even when the package is removed.
+        self.service_line_ids = [fields.Command.clear()] + (self._package_commands(self.package_id) if self.package_id else [])
 
     @api.depends("hall_id.list_price","hall_id.tax_id","hall_id.period_price_ids.price","hall_id.period_price_ids.period_id","period_ids","package_id.price","package_id.pricing_type",
                  "package_id.tax_id","service_line_ids.subtotal","addon_line_ids.subtotal",
