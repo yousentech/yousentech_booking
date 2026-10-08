@@ -52,6 +52,12 @@ class BookingPackage(models.Model):
     def _compute_price(self):
         for rec in self: rec.price=rec.fixed_price if rec.pricing_type=="fixed" else rec.services_total
 
+    @api.constrains("tax_id", "company_id")
+    def _check_tax_company(self):
+        for rec in self:
+            if rec.tax_id and rec.tax_id.company_id != rec.company_id:
+                raise ValidationError(_("Package tax must belong to the same company."))
+
     @api.constrains("line_ids")
     def _check_lines_company(self):
         for rec in self:
