@@ -616,3 +616,18 @@
   .yb-os .yb-month-weekdays>div{font-size:9px}
   .yb-os .yb-month-booking-head strong{font-size:8px}
 }
+
+/* Compact month cells always disclose overflow instead of silently hiding bookings. */
+.yb-os .yb-month-more{
+  display:block;width:100%;margin-top:2px;padding:3px 5px;
+  border:1px dashed #a79be8;border-radius:6px;
+  background:#f4f1ff;color:#5d4ac7;
+  text-align:center;font-size:10px;font-weight:800;cursor:pointer;
+}
+.yb-os .yb-month-more:hover{background:#eae4ff}
+@media(max-width:1599px), (max-height:949px){
+ .yb-os .yb-month-booking{flex-shrink:0}
+ .yb-os .yb-month-booking-head{flex-wrap:nowrap}
+ .yb-os .yb-month-booking-head strong{white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+ .yb-os .yb-month-more{font-size:9px;padding:2px 3px}
+}
