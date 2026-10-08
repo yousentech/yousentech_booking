@@ -4,6 +4,7 @@
   <menuitem id="menu_booking_os" name="العمليات" parent="menu_booking_root" action="action_booking_os" sequence="1"/>
   <menuitem id="menu_event_bookings" name="حجوزات القاعات والمناسبات" parent="menu_booking_root" action="action_event_bookings" sequence="10"/>
   <menuitem id="menu_stay_bookings" name="الحجوزات الفندقية" parent="menu_booking_root" action="action_stay_bookings" sequence="20"/>
+  <menuitem id="menu_stay_room_planner" name="مخطط إشغال الغرف" parent="menu_booking_root" action="action_stay_room_planner" sequence="21"/>
 
   <menuitem id="menu_booking_configuration" name="التهيئة" parent="menu_booking_root" sequence="90" groups="yousentech_booking.group_booking_manager"/>
   <menuitem id="menu_booking_settings" name="إعدادات النظام" parent="menu_booking_configuration" action="action_open_booking_settings" sequence="1" groups="yousentech_booking.group_booking_manager"/>
