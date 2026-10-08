@@ -58,9 +58,20 @@
             <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-money" invisible="payment_count == 0"><field name="payment_count" widget="statinfo" string="المدفوعات"/></button>
           </div>
 
-          <div class="yb-booking-title">
-            <div class="yb-booking-icon"><i class="fa fa-calendar-check-o"/></div>
-            <div><span>حجز قاعة ومناسبة</span><h1><field name="name" readonly="1"/></h1></div>
+          <div class="yb-booking-summary-header">
+            <div class="yb-booking-summary-identity">
+              <div class="yb-booking-icon"><i class="fa fa-calendar-check-o"/></div>
+              <div><small>ملخص الحجز</small><h1><field name="name" readonly="1"/></h1></div>
+            </div>
+            <div class="yb-booking-summary-finance">
+              <div class="yb-finance-strip-head"><i class="fa fa-money"/> الملخص المالي للحجز</div>
+              <div class="yb-finance-strip-values">
+                <div class="yb-finance-metric"><small>بعد الخصم</small><field name="amount_untaxed" nolabel="1" readonly="1"/></div>
+                <div class="yb-finance-metric yb-finance-discount" invisible="discount_amount == 0"><small>الخصم</small><field name="discount_amount" nolabel="1" readonly="1"/></div>
+                <div class="yb-finance-metric"><small>الضريبة</small><field name="tax_amount" nolabel="1" readonly="1"/></div>
+                <div class="yb-finance-metric yb-finance-total"><small>الإجمالي</small><field name="amount_total" nolabel="1" readonly="1"/></div>
+              </div>
+            </div>
           </div>
 
           <div class="yb-event-overview">
@@ -81,16 +92,6 @@
                   <div class="yb-package-rate-notice" invisible="not package_id"><i class="fa fa-info-circle"/> سيتم اعتماد سعر الباقة للحجز كاملًا وتجاهل أسعار القاعة والفترات. الخدمات الملحقة المدفوعة تُضاف بشكل مستقل.</div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div class="yb-finance-strip">
-            <div class="yb-finance-strip-head"><i class="fa fa-money"/> الملخص المالي للحجز</div>
-            <div class="yb-finance-strip-values">
-              <div class="yb-finance-metric"><small>بعد الخصم</small><field name="amount_untaxed" nolabel="1" readonly="1"/></div>
-              <div class="yb-finance-metric yb-finance-discount" invisible="discount_amount == 0"><small>الخصم</small><field name="discount_amount" nolabel="1" readonly="1"/></div>
-              <div class="yb-finance-metric"><small>الضريبة</small><field name="tax_amount" nolabel="1" readonly="1"/></div>
-              <div class="yb-finance-metric yb-finance-total"><small>الإجمالي</small><field name="amount_total" nolabel="1" readonly="1"/></div>
             </div>
           </div>
 
