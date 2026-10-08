@@ -553,3 +553,66 @@
  .yb-os .yb-board{max-height:clamp(300px, calc(100dvh - 325px), 700px)}
  .yb-os .yb-month-days{grid-auto-rows:minmax(92px,auto)}
 }
+
+
+/* Full-month, single-screen layout. Large monitors retain spacious cards.
+   Only the monthly view is affected; the weekly hall grid keeps its scrolling. */
+.yb-os .yb-board:has(.yb-month-calendar){
+  max-height:none!important;
+  height:auto!important;
+  overflow:visible!important;
+  container-type:inline-size;
+}
+.yb-os .yb-month-calendar{
+  min-width:0!important;
+  width:100%;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+.yb-os .yb-month-days{
+  grid-auto-rows:minmax(130px,auto);
+  height:auto!important;
+  max-height:none!important;
+}
+.yb-os .yb-month-day{
+  min-height:130px;
+  height:auto!important;
+  max-height:none!important;
+  overflow:hidden!important;
+}
+.yb-os .yb-month-weekdays{position:static}
+@media (min-width:1600px) and (min-height:950px){
+  .yb-os .yb-month-days{grid-auto-rows:minmax(155px,auto)}
+  .yb-os .yb-month-day{min-height:155px;padding:11px}
+  .yb-os .yb-month-booking{padding:8px}
+  .yb-os .yb-month-booking-detail{display:block}
+  .yb-os .yb-month-booking-hall{display:block}
+}
+@media (max-width:1599px), (max-height:949px){
+  .yb-os .yb-month-days{grid-auto-rows:minmax(0,1fr);height:clamp(350px,calc(100dvh - 465px),720px)!important}
+  .yb-os .yb-month-day{min-height:0!important;padding:5px 6px}
+  .yb-os .yb-month-weekdays>div{padding:7px 2px;font-size:11px}
+  .yb-os .yb-month-day-heading{margin-bottom:3px}
+  .yb-os .yb-month-day-heading strong{font-size:12px}
+  .yb-os .yb-month-bookings{gap:3px}
+  .yb-os .yb-month-booking{padding:3px 5px;font-size:9px;gap:1px}
+  .yb-os .yb-month-booking-head strong{font-size:9px}
+  .yb-os .yb-month-booking-detail,.yb-os .yb-month-booking-hall{display:none}
+  .yb-os .yb-month-holidays{margin-bottom:2px}
+  .yb-os .yb-month-holiday{padding:2px 4px;font-size:8px}
+}
+@media (max-height:780px){
+  .yb-os .yb-month-days{height:clamp(285px,calc(100dvh - 405px),440px)!important}
+  .yb-os .yb-month-day{padding:3px 5px}
+  .yb-os .yb-month-weekdays>div{padding:5px 1px}
+  .yb-os .yb-month-day-heading{margin-bottom:1px}
+  .yb-os .yb-month-booking{padding:2px 4px}
+}
+@media (max-width:650px){
+  .yb-os .yb-month-calendar{min-width:0!important}
+  .yb-os .yb-month-days{height:clamp(350px,calc(100dvh - 380px),540px)!important}
+  .yb-os .yb-month-day{padding:3px 2px}
+  .yb-os .yb-month-weekdays>div{font-size:9px}
+  .yb-os .yb-month-booking-head strong{font-size:8px}
+}
