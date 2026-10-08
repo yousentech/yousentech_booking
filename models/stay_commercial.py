@@ -52,6 +52,20 @@ class StayBookingAddonLine(models.Model):
 class StayBooking(models.Model):
     _inherit = "yousentech.stay.booking"
     rate_plan_id = fields.Many2one("yousentech.stay.rate.plan", domain="[('company_id','=',company_id)]")
+    @api.model
+    def default_get(self, fields_list):
+        vals = super().default_get(fields_list)
+        company_id = vals.get("company_id") or self.env.context.get("default_company_id") or self.env.company.id
+        settings = self.env["yousentech.booking.settings"].search([("company_id", "=", company_id)], limit=1)
+        if settings:
+            if "rate_plan_id" in fields_list and not vals.get("rate_plan_id") and not self.env.context.get("default_rate_plan_id") and settings.stay_default_rate_plan_id:
+                vals["rate_plan_id"] = settings.stay_default_rate_plan_id.id
+            if "invoice_policy" in fields_list and not self.env.context.get("default_invoice_policy"):
+                vals["invoice_policy"] = settings.stay_invoice_policy
+            if "deposit_percent" in fields_list and not self.env.context.get("default_deposit_percent"):
+                vals["deposit_percent"] = settings.stay_deposit_percent
+        return vals
+
     addon_line_ids = fields.One2many("yousentech.stay.booking.addon.line","booking_id")
     discount_type=fields.Selection([("none","بدون خصم"),("percent","نسبة"),("fixed","مبلغ ثابت")],default="none",required=True)
     discount_value=fields.Float(default=0.0)
