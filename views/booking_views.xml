@@ -17,6 +17,18 @@
   <record id="view_event_booking_list" model="ir.ui.view"><field name="name">yousentech.booking.event.tree</field><field name="model">yousentech.booking.event</field><field name="arch" type="xml"><tree><field name="name" string="الاسم"/><field name="company_id" string="الشركة / الفرع" readonly="state not in ('draft','hold')"/><field name="booking_date" string="تاريخ الحجز" readonly="state not in ('draft','hold')"/><field name="partner_id" string="العميل" readonly="state not in ('draft','hold')"/><field name="hall_id" string="القاعة" readonly="state not in ('draft','hold')"/><field name="state" string="الحالة"/></tree></field></record>
   <record id="view_stay_booking_list" model="ir.ui.view"><field name="name">yousentech.stay.booking.tree</field><field name="model">yousentech.stay.booking</field><field name="arch" type="xml"><tree><field name="name" string="الاسم"/><field name="company_id" string="الشركة / الفرع" readonly="state not in ('draft','hold')"/><field name="checkin_date" string="تاريخ الدخول" readonly="state not in ('draft','hold')"/><field name="checkout_date" string="تاريخ الخروج" readonly="state not in ('draft','hold')"/><field name="partner_id" string="العميل" readonly="state not in ('draft','hold')"/><field name="resource_id" string="مورد الإقامة" readonly="state not in ('draft','hold')"/><field name="state" string="الحالة"/></tree></field></record>
 
+  <record id="view_booking_customer_partner_form_inherit" model="ir.ui.view">
+    <field name="name">res.partner.form.booking.customer.details</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='mobile']" position="after">
+        <field name="yousentech_booking_identity"/>
+        <field name="yousentech_booking_nationality_id"/>
+      </xpath>
+    </field>
+  </record>
+
   <record id="view_event_booking_form" model="ir.ui.view">
     <field name="name">yousentech.booking.event.form</field>
     <field name="model">yousentech.booking.event</field>
@@ -54,7 +66,7 @@
           <div class="yb-event-overview">
             <div class="yb-info-card">
               <div class="yb-info-icon purple"><i class="fa fa-user"/></div>
-              <div class="yb-info-body"><small>العميل</small><field name="partner_id" nolabel="1" readonly="state not in ('draft','hold')"/><span>بيانات صاحب الحجز</span></div>
+              <div class="yb-info-body yb-customer-fields"><small>بيانات صاحب الحجز</small><div class="yb-customer-name"><label for="partner_id" string="العميل"/><field name="partner_id" nolabel="1" options="{'no_quick_create': True}" readonly="state not in ('draft','hold')"/></div><div class="yb-customer-detail"><label for="customer_mobile" string="رقم الجوال"/><field name="customer_mobile" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-customer-detail"><label for="customer_identity" string="رقم الهوية"/><field name="customer_identity" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-customer-detail"><label for="customer_nationality_id" string="الجنسية"/><field name="customer_nationality_id" nolabel="1" readonly="state not in ('draft','hold')"/></div></div>
             </div>
             <div class="yb-info-card">
               <div class="yb-info-icon blue"><i class="fa fa-building-o"/></div>
