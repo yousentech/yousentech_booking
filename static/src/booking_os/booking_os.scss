@@ -572,7 +572,7 @@
 .yb-os .yb-day-panel-header h3{font-size:18px;font-weight:800;margin:8px 0}
 .yb-os .yb-day-panel-header small{color:#7d84a0}
 .yb-os .yb-day-close{border:0;background:#f3f4fa;border-radius:8px;padding:6px 10px;float:left}
-.yb-os .yb-day-panel-list{display:flex;flex-direction:column;gap:9px;overflow-y:auto;overscroll-behavior:contain;flex:0 1 auto;min-height:0;max-height:calc(100dvh - 210px);scrollbar-width:thin}
+.yb-os .yb-day-panel-list{display:flex;flex-direction:column;gap:9px;overflow-y:auto;overscroll-behavior:contain;flex:0 1 auto;min-height:0;max-height:calc(100dvh - 145px);scrollbar-width:thin}
 .yb-os .yb-day-panel-event{display:flex;flex-direction:column;gap:7px;width:100%;text-align:start;background:#fff;border:1px solid #e5e8f2;border-inline-start:4px solid #7864ed;border-radius:12px;padding:13px;color:#27324b}
 .yb-os .yb-day-panel-event.confirmed{border-inline-start-color:#16b36c}
 .yb-os .yb-day-panel-event.completed{border-inline-start-color:#738096}
