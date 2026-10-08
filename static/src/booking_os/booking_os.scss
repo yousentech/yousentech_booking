@@ -42,3 +42,14 @@
 .yb-event-form .yb-finance-summary small{font-size:12px}
 @media(max-width:1000px){.yb-event-form .yb-event-overview{grid-template-columns:1fr 1fr}.yb-event-form .yb-finance-card{grid-column:1/-1}}
 @media(max-width:650px){.yb-event-form .o_form_sheet_bg{padding:8px!important}.yb-event-form .o_form_sheet_bg>.o_form_sheet{padding:14px!important}.yb-event-form .yb-event-overview{grid-template-columns:1fr}.yb-event-form .yb-finance-card{grid-column:auto}}
+
+/* Customer card: legible labels and full-width partner selector */
+.yb-event-form .yb-customer-fields{width:100%}
+.yb-event-form .yb-customer-fields>small{font-size:14px;font-weight:750;color:#222638}
+.yb-event-form .yb-customer-name,.yb-event-form .yb-customer-detail{display:grid;grid-template-columns:95px minmax(0,1fr);gap:10px;align-items:center;margin-top:9px;min-height:30px}
+.yb-event-form .yb-customer-name label,.yb-event-form .yb-customer-detail label{font-size:13px!important;font-weight:700!important;color:#1f2431!important;margin:0!important}
+.yb-event-form .yb-customer-name>.o_field_widget,.yb-event-form .yb-customer-detail>.o_field_widget{width:100%!important;max-width:none!important;min-width:0;font-size:14px!important}
+.yb-event-form .yb-info-card:has(.yb-customer-fields){min-height:230px}
+.yb-event-form .yb-event-overview>.yb-info-card{height:100%}
+.yb-event-form .yb-info-body>small,.yb-event-form .yb-event-date>small,.yb-event-form .yb-event-periods>small{color:#252938!important;font-weight:700}
+@media(max-width:650px){.yb-event-form .yb-customer-name,.yb-event-form .yb-customer-detail{grid-template-columns:90px minmax(0,1fr)}}
