@@ -29,7 +29,7 @@
     <article><i class="fa fa-sign-out"/><div><small>مغادرة اليوم</small><strong t-esc="stats.departures"/></div></article>
   </section>
 
-  <div class="yb-pms-layout">
+  <div t-att-class="selectedBooking ? 'yb-pms-layout has-selection' : 'yb-pms-layout'">
     <section class="yb-pms-main">
       <div class="yb-pms-board-scroll">
         <div class="yb-stay-notice" t-if="state.loading">جاري تحميل مخطط الغرف...</div>
@@ -52,7 +52,7 @@
                   <span class="yb-pms-room-copy"><strong t-esc="room.name"/><small><t t-esc="typeLabel(room.resource_type)"/> · <t t-esc="room.capacity"/> أشخاص</small></span>
                 </button>
                 <div class="yb-pms-track">
-                  <span t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="isToday(day) ? 'yb-pms-cell today' : 'yb-pms-cell'"/>
+                  <span t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="(isToday(day) ? 'yb-pms-cell today' : 'yb-pms-cell') + (isHoliday(day) ? ' holiday' : '')"/>
                   <button t-foreach="bookingsFor(room)" t-as="booking" t-key="booking.id"
                     t-att-class="'yb-pms-booking ' + stateClass(booking.state)"
                     t-att-style="barStyle(booking)" t-on-click="() => this.selectBooking(booking)"
@@ -71,7 +71,7 @@
       <div class="yb-pms-legend"><span class="confirmed">مؤكد</span><span class="hold">مؤقت</span><span class="checked_in">تم الدخول</span><span class="checked_out">تم الخروج</span><span class="draft">مسودة</span></div>
     </section>
     <aside class="yb-pms-side">
-      <section class="yb-pms-calendar">
+      <section class="yb-pms-calendar" t-if="!selectedBooking">
         <h3><i class="fa fa-calendar"/> <t t-esc="monthLabel"/></h3>
         <div class="yb-pms-mini-days"><span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span></div>
         <div class="yb-pms-mini-grid">
