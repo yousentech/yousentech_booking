@@ -58,6 +58,35 @@ export class BookingOS extends Component {
         return Array.from({ length: count }, (_, i) => new Date(a.getFullYear(), a.getMonth(), i + 1));
     }
 
+    get monthCalendarDays() {
+        const a = this.state.anchor;
+        const first = new Date(a.getFullYear(), a.getMonth(), 1);
+        const startOffset = (first.getDay() + 1) % 7;
+        const daysInMonth = new Date(a.getFullYear(), a.getMonth() + 1, 0).getDate();
+        const cells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+        return Array.from({ length: cells }, (_, i) =>
+            new Date(a.getFullYear(), a.getMonth(), 1 - startOffset + i));
+    }
+
+    isCurrentMonth(day) {
+        return day.getMonth() === this.state.anchor.getMonth() &&
+            day.getFullYear() === this.state.anchor.getFullYear();
+    }
+
+    monthDayNumber(day) { return day.getDate(); }
+
+    monthEvents(day) {
+        const date = this.iso(day);
+        const hallIds = new Set(this.visibleHalls.map((h) => h.id));
+        return this.state.events.filter((e) => e.booking_date === date &&
+            e.hall_id && hallIds.has(e.hall_id[0]));
+    }
+
+    monthEventLabel(event) {
+        const hall = this.state.halls.find((h) => event.hall_id && h.id === event.hall_id[0]);
+        return hall ? hall.name : "";
+    }
+
     get gridStyle() {
         return `grid-template-columns: 168px repeat(${this.displayDays.length}, minmax(${this.state.viewMode === "month" ? 112 : 142}px, 1fr));`;
     }
@@ -126,7 +155,7 @@ export class BookingOS extends Component {
     async loadBoard() {
         this.state.loading = true;
         const companyId = this.company.currentCompany.id;
-        const days = this.displayDays;
+        const days = this.state.viewMode === "month" ? this.monthCalendarDays : this.displayDays;
         const from = this.iso(days[0]);
         const to = this.iso(days[days.length - 1]);
         const [halls, periods, events, holidays] = await Promise.all([
