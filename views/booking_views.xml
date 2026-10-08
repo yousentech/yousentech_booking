@@ -137,16 +137,31 @@
 
           <notebook class="yb-event-tabs">
             <page string="بيانات إضافية">
-              <group>
-                <group>
-                  <field name="company_id" string="الشركة / الفرع" readonly="state not in ('draft','hold')"/>
-                  <field name="discount_type" string="نوع الخصم" readonly="state not in ('draft','hold')"/>
-                  <field name="discount_value" string="قيمة الخصم" invisible="discount_type == 'none'" readonly="state not in ('draft','hold')"/>
-                </group>
-                <group>
-                  <field name="description" string="وصف الحجز" placeholder="تفاصيل أو توضيحات خاصة بالحجز..." readonly="state not in ('draft','hold')"/>
-                </group>
-              </group>
+              <div class="yb-extra-cards">
+                <section class="yb-extra-card yb-extra-discount">
+                  <div class="yb-extra-card-title"><i class="fa fa-percent"/><strong>إعدادات الخصم</strong></div>
+                  <div class="yb-extra-field">
+                    <label for="discount_type" string="نوع الخصم"/>
+                    <field name="discount_type" nolabel="1" readonly="state not in ('draft','hold')"/>
+                  </div>
+                  <div class="yb-extra-field" invisible="discount_type == 'none'">
+                    <label for="discount_value" string="قيمة الخصم"/>
+                    <field name="discount_value" nolabel="1" readonly="state not in ('draft','hold')"/>
+                  </div>
+                  <div class="yb-extra-note">الخصم يطبّق على الحجز كاملًا عند اختياره.</div>
+                </section>
+                <section class="yb-extra-card yb-extra-notes">
+                  <div class="yb-extra-card-title"><i class="fa fa-file-text-o"/><strong>وصف الحجز والشركة</strong></div>
+                  <div class="yb-extra-field">
+                    <label for="company_id" string="الشركة / الفرع"/>
+                    <field name="company_id" nolabel="1" readonly="state not in ('draft','hold')"/>
+                  </div>
+                  <div class="yb-extra-field">
+                    <label for="description" string="وصف الحجز"/>
+                    <field name="description" nolabel="1" placeholder="تفاصيل أو توضيحات خاصة بالحجز..." readonly="state not in ('draft','hold')"/>
+                  </div>
+                </section>
+              </div>
             </page>
                         <page string="المالية">
               <div class="yb-finance-summary">
