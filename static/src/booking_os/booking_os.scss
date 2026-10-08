@@ -112,3 +112,22 @@
 .yb-event-form .yb-finance-card .o_form_label{font-weight:700;font-size:12px}
 @media(max-width:1150px){.yb-event-form .yb-event-overview{grid-template-columns:repeat(2,minmax(0,1fr))!important}.yb-event-form .yb-finance-card{grid-column:1/-1}}
 @media(max-width:650px){.yb-event-form .yb-event-overview{grid-template-columns:minmax(0,1fr)!important}.yb-event-form .yb-finance-card{grid-column:auto}}
+
+/* Booking: two primary cards and a single compact financial ribbon. */
+.yb-event-form .yb-event-overview{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+.yb-event-form .yb-finance-strip{margin:12px 0 14px;padding:12px 16px;background:#fff;border:1px solid #dfe5f0;border-radius:13px}
+.yb-event-form .yb-finance-strip-head{font-size:13px;font-weight:800;color:#26345b;margin-bottom:10px}
+.yb-event-form .yb-finance-strip-head i{margin-inline-end:7px;color:#6b5bdd}
+.yb-event-form .yb-finance-strip-values{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px;align-items:stretch}
+.yb-event-form .yb-finance-metric{min-width:0;border-radius:9px;background:#f6f7fb;padding:8px 9px;display:flex;flex-direction:column;gap:5px}
+.yb-event-form .yb-finance-metric small{font-size:11px;font-weight:700;color:#58657c}
+.yb-event-form .yb-finance-metric .o_field_widget{font-size:13px;font-weight:800;min-width:0}
+.yb-event-form .yb-finance-discount{background:#f2efff}
+.yb-event-form .yb-finance-total{background:#e9f1ff}
+.yb-event-form .yb-finance-paid{background:#e9f7ef}
+.yb-event-form .yb-finance-due{background:#fff2e9}
+.yb-event-form .yb-finance-metric select,.yb-event-form .yb-finance-metric input{max-width:100%;min-width:0;border:1px solid #d4daea;border-radius:6px;padding:3px}
+.yb-event-form .yb-event-tabs .o_notebook_content{padding-top:12px}
+@media(max-width:1200px){.yb-event-form .yb-finance-strip-values{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:800px){.yb-event-form .yb-event-overview{grid-template-columns:1fr!important}.yb-event-form .yb-finance-strip-values{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:500px){.yb-event-form .yb-finance-strip-values{grid-template-columns:repeat(2,minmax(0,1fr))}}
