@@ -187,3 +187,36 @@
   font-size:12px;line-height:1.65;font-weight:650;
 }
 .yb-event-form .yb-venue-card .yb-package-rate-notice .fa{flex:none;color:#6c5bd8}
+
+/* Align customer labels/inputs vertically with the adjacent compact venue card. */
+@media(min-width:1000px){
+  .yb-event-form .yb-customer-card .yb-info-body.yb-customer-fields{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:auto auto auto!important;
+    column-gap:12px!important;
+    row-gap:8px!important;
+    align-content:start!important;
+  }
+  .yb-event-form .yb-customer-card .yb-customer-fields>small{
+    grid-column:1/-1!important;
+    margin:0 0 9px!important;
+  }
+  .yb-event-form .yb-customer-card .yb-customer-name{
+    grid-column:1/-1!important;
+  }
+  .yb-event-form .yb-customer-card .yb-customer-name,
+  .yb-event-form .yb-customer-card .yb-customer-detail{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:4px!important;
+    margin:0!important;
+    min-width:0!important;
+  }
+  .yb-event-form .yb-customer-card .yb-customer-name>.o_form_label,
+  .yb-event-form .yb-customer-card .yb-customer-detail>.o_form_label{
+    margin:0!important;
+    line-height:1.4!important;
+  }
+}
