@@ -191,12 +191,12 @@
 .yb-pms .yb-pms-room-head,.yb-pms .yb-pms-days{position:sticky;top:0}
 
 /* The booking detail panel stays in its original left-side rail; only the mini calendar hides when a booking is selected. */
-.yb-pms .yb-pms-layout.has-selection .yb-pms-side{max-height:none;overflow:visible;flex:0 0 280px;width:280px}
-.yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:clamp(260px,calc(100dvh - 375px),720px);overflow:auto}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-side{height:clamp(260px,calc(100dvh - 375px),720px);max-height:none;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;flex:0 0 280px;width:280px}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:none;overflow:visible;flex-shrink:0}
 @media(max-width:1050px){
   .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 340px),650px)}
-  .yb-pms .yb-pms-layout.has-selection .yb-pms-side{width:100%;flex:0 0 auto;display:block}
-  .yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:360px}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-side{width:100%;height:auto;max-height:360px;flex:0 0 auto;display:block;overflow-y:auto}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:none}
 }
 @media(max-width:650px){
   .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 315px),600px)}
