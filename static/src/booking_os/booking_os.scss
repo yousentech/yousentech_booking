@@ -454,6 +454,13 @@
 .yb-os .yb-month-day.is-outside.is-holiday{background:#fff6f6}
 .yb-os .yb-month-day-heading{display:flex;align-items:center;gap:6px;justify-content:space-between;margin-bottom:7px}
 .yb-os .yb-month-day-heading strong{font-size:14px;font-weight:800;color:#253357}
+/* Gregorian and Umm al-Qura Hijri dates share the existing day heading. */
+.yb-os .yb-month-date-pair{display:inline-flex;align-items:baseline;gap:5px;min-width:0;flex-wrap:wrap}
+.yb-os .yb-month-hijri{font-size:9px;font-weight:600;color:#8490a9;line-height:1.3;white-space:nowrap}
+.yb-os .yb-month-day.is-outside .yb-month-hijri{color:#aeb6c6}
+@media(max-width:850px){.yb-os .yb-month-date-pair{gap:3px}.yb-os .yb-month-hijri{font-size:8px;white-space:normal}}
+@media(max-width:480px){.yb-os .yb-month-hijri{font-size:7px;line-height:1.15}}
+
 .yb-os .yb-month-day.is-outside .yb-month-day-heading strong{color:#aeb6c6}
 .yb-os .yb-month-today{font-size:9px;background:#ece9ff;color:#6351da;border-radius:12px;padding:2px 7px;font-weight:800}
 .yb-os .yb-month-holidays{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
