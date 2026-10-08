@@ -53,3 +53,15 @@
 .yb-event-form .yb-event-overview>.yb-info-card{height:100%}
 .yb-event-form .yb-info-body>small,.yb-event-form .yb-event-date>small,.yb-event-form .yb-event-periods>small{color:#252938!important;font-weight:700}
 @media(max-width:650px){.yb-event-form .yb-customer-name,.yb-event-form .yb-customer-detail{grid-template-columns:90px minmax(0,1fr)}}
+
+/* Compact two-card event header */
+.yb-event-form .yb-event-overview{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:stretch;gap:14px}
+.yb-event-form .yb-event-overview>.yb-info-card{min-height:205px;height:auto!important;padding:17px 20px}
+.yb-event-form .yb-event-finance-inline{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #edf0f5}
+.yb-event-form .yb-event-finance-inline>span{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:650;color:#535c71}
+.yb-event-form .yb-event-finance-inline .o_field_widget{font-size:15px!important;font-weight:800!important;color:#252a40}
+.yb-event-form .yb-event-description{display:flex;align-items:flex-start;gap:15px;padding:8px 12px 12px;margin-bottom:8px;border:1px solid #e9ecf3;border-radius:11px;background:#fcfdff}
+.yb-event-form .yb-event-description>label{min-width:80px;font-size:13px;font-weight:750;color:#202637;padding-top:6px}
+.yb-event-form .yb-event-description>.o_field_widget{flex:1;min-width:0;font-size:13px}
+.yb-event-form .yb-event-description textarea{min-height:44px!important}
+@media(max-width:850px){.yb-event-form .yb-event-overview{grid-template-columns:1fr!important}.yb-event-form .yb-event-overview>.yb-info-card{min-height:0}}
