@@ -79,21 +79,52 @@ class BookingEvent(models.Model):
             rec.booking_tax_id = rec.package_id.tax_id if rec.package_id else rec.hall_id.tax_id
 
     def _get_hall_period_prices(self):
-        """Use configured period prices; never silently substitute the default
-        when the hall has a per-period price table."""
+        """Resolve prices by the actual period record; never silently charge
+        the hall default when an explicit period tariff table exists."""
         self.ensure_one()
         if not self.hall_id or not self.period_ids:
             return []
-        lines = self.hall_id.period_price_ids
-        configured = {line.period_id.id: line.price for line in lines}
-        missing = self.period_ids.filtered(lambda period: period.id not in configured)
-        if lines and missing:
+        configured = {line.period_id.id: line.price for line in self.hall_id.period_price_ids}
+        # Existing installations may contain duplicate period definitions with
+        # the same label. Match only a unique same-company label; ambiguity is
+        # rejected rather than selecting an arbitrary tariff.
+        by_name = {}
+        for line in self.hall_id.period_price_ids:
+            if line.period_id.company_id == self.hall_id.company_id:
+                key = (line.period_id.name or "").strip().casefold()
+                by_name.setdefault(key, []).append(line)
+        prices = []
+        missing = []
+        ambiguous = []
+        for period in self.period_ids:
+            if period.company_id != self.hall_id.company_id:
+                raise ValidationError(_("The selected period %s belongs to another company.") % period.display_name)
+            if period.id in configured:
+                price = configured[period.id]
+            elif self.hall_id.period_price_ids:
+                matches = by_name.get((period.name or "").strip().casefold(), [])
+                if len(matches) == 1:
+                    price = matches[0].price
+                elif len(matches) > 1:
+                    ambiguous.append(period.display_name)
+                    continue
+                else:
+                    missing.append(period.display_name)
+                    continue
+            else:
+                price = self.hall_id.list_price or 0.0
+            prices.append((period, price))
+        if missing or ambiguous:
+            details = []
+            if missing:
+                details.append(_("Missing tariff: %s") % ", ".join(missing))
+            if ambiguous:
+                details.append(_("Ambiguous duplicate period tariffs: %s") % ", ".join(ambiguous))
             raise ValidationError(
-                _("No configured hall price for period(s): %s. Configure all selected periods on the hall before saving the booking.")
-                % ", ".join(missing.mapped("display_name"))
+                _("Hall %s: %s. Check the period records and tariff lines on the hall.")
+                % (self.hall_id.display_name, "; ".join(details))
             )
-        return [(period, configured[period.id] if lines else self.hall_id.list_price or 0.0)
-                for period in self.period_ids]
+        return prices
 
     @api.constrains("hall_id", "period_ids", "company_id")
     def _check_hall_period_pricing(self):
