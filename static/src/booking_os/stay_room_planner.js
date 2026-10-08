@@ -55,7 +55,7 @@ export class StayRoomPlanner extends Component {
         const today = iso(new Date());
         const resourceIds = new Set(this.visibleResources.map(r => r.id));
         const bookings = this.activeBookings.filter(b => b.resource_id && resourceIds.has(b.resource_id[0]));
-        const occupied = new Set(bookings.filter(b => b.checkin_date <= today && (!b.checkout_date || b.checkout_date > today)).map(b => b.resource_id[0]));
+        const occupied = new Set(bookings.filter(b => ["hold", "confirmed", "checked_in", "checked_out"].includes(b.state) && b.checkin_date <= today && (!b.checkout_date || b.checkout_date > today)).map(b => b.resource_id[0]));
         return {
             total: resourceIds.size, available: Math.max(0, resourceIds.size - occupied.size),
             occupied: occupied.size, arrivals: bookings.filter(b => b.checkin_date === today).length,
