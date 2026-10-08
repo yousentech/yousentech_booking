@@ -99,27 +99,59 @@
             </div>
           </div>
 
-<div class="yb-event-description"><label for="description" string="وصف الحجز"/><field name="description" nolabel="1" placeholder="تفاصيل أو توضيحات خاصة بالحجز..." readonly="state not in ('draft','hold')"/></div>
+<div class="yb-event-workspace">
+            <section class="yb-work-card yb-work-package">
+              <div class="yb-work-heading"><i class="fa fa-cube"/><strong>الباقة والمتطلبات الأساسية</strong></div>
+              <div class="yb-work-package-selector">
+                <label for="package_id" string="الباقة"/>
+                <field name="package_id" nolabel="1" readonly="state not in ('draft','hold')"/>
+              </div>
+              <div class="yb-work-help" invisible="package_id">يمكن الحجز بدون باقة، ويُعتمد سعر فترات القاعة.</div>
+              <div class="yb-work-help" invisible="not package_id">الخدمات التالية مشمولة في الباقة ولا تُحتسب كخدمات ملحقة.</div>
+              <field name="service_line_ids" nolabel="1" readonly="state not in ('draft','hold')">
+                <tree editable="bottom">
+                  <field name="company_id" column_invisible="True"/>
+                  <field name="service_id" string="الخدمة"/>
+                  <field name="quantity" string="الكمية"/>
+                  <field name="price_unit" string="سعر الوحدة" column_invisible="parent.package_pricing_type == 'fixed'"/>
+                  <field name="subtotal" string="الإجمالي" readonly="1" column_invisible="parent.package_pricing_type == 'fixed'"/>
+                </tree>
+              </field>
+            </section>
+            <section class="yb-work-card yb-work-addons">
+              <div class="yb-work-heading"><i class="fa fa-plus-circle"/><strong>الخدمات الملحقة المدفوعة</strong></div>
+              <field name="addon_line_ids" nolabel="1" readonly="state not in ('draft','hold')">
+                <tree editable="bottom">
+                  <field name="company_id" column_invisible="True"/>
+                  <field name="service_id" string="الخدمة" options="{'no_create': True, 'no_create_edit': True}"/>
+                  <field name="quantity" string="الكمية"/>
+                  <field name="price_unit" string="سعر الوحدة"/>
+                  <field name="subtotal" string="الإجمالي" readonly="1"/>
+                </tree>
+              </field>
+            </section>
+            <section class="yb-work-card yb-work-finance">
+              <div class="yb-work-heading"><i class="fa fa-info-circle"/><strong>تفاصيل التحصيل</strong></div>
+              <div class="yb-work-finance-row"><span>المبلغ المدفوع</span><field name="amount_paid" nolabel="1" readonly="1"/></div>
+              <div class="yb-work-finance-row"><span>المتبقي</span><field name="amount_remaining" nolabel="1" readonly="1"/></div>
+              <div class="yb-work-finance-row"><span>الحالة المالية</span><field name="finance_state" nolabel="1" readonly="1"/></div>
+              <div class="yb-work-help">الخصم والملاحظات متاحان في «بيانات إضافية» عند الحاجة.</div>
+            </section>
+          </div>
 
           <notebook class="yb-event-tabs">
-            <page string="الباقة والخدمات">
-              <group class="yb-clean-group yb-package-controls">
-                <group><field name="package_id" string="الباقة" readonly="state not in ('draft','hold')"/></group>
-
+            <page string="بيانات إضافية">
+              <group>
+                <group>
+                  <field name="company_id" string="الشركة / الفرع" readonly="state not in ('draft','hold')"/>
+                  <field name="discount_type" string="نوع الخصم" readonly="state not in ('draft','hold')"/>
+                  <field name="discount_value" string="قيمة الخصم" invisible="discount_type == 'none'" readonly="state not in ('draft','hold')"/>
+                </group>
+                <group>
+                  <field name="description" string="وصف الحجز" placeholder="تفاصيل أو توضيحات خاصة بالحجز..." readonly="state not in ('draft','hold')"/>
+                </group>
               </group>
-              <separator string="الخدمات المشمولة في الباقة"/>
-              <field name="service_line_ids" string="الخدمات" nolabel="1" readonly="state not in ('draft','hold')">
-                <tree editable="bottom"><field name="company_id" column_invisible="True"/><field name="service_id" string="الخدمة"/><field name="quantity" string="الكمية"/><field name="price_unit" string="سعر الوحدة" column_invisible="parent.package_pricing_type == 'fixed'"/><field name="subtotal" string="الإجمالي" readonly="1" column_invisible="parent.package_pricing_type == 'fixed'"/></tree>
-              </field>
-              <group class="oe_subtotal_footer oe_right yb-total-box"><field name="amount_untaxed" string="قبل الضريبة" readonly="1"/><field name="discount_amount" string="الخصم" readonly="1"/><field name="tax_amount" string="الضريبة" readonly="1"/><field name="amount_total" string="الإجمالي" readonly="1"/></group>
             </page>
-
-            <page string="الخدمات الملحقة">              <separator string="الخدمات الملحقة المدفوعة"/>
-              <field name="addon_line_ids" nolabel="1" readonly="state not in ('draft','hold')">
-                <tree editable="bottom"><field name="company_id" column_invisible="True"/><field name="service_id" string="الخدمة" options="{'no_create': True, 'no_create_edit': True}"/><field name="quantity" string="الكمية"/><field name="price_unit" string="سعر الوحدة"/><field name="subtotal" string="الإجمالي" readonly="1"/></tree>
-              </field>
-</page>
-            <page string="بيانات إضافية">          <div class="yb-branch-line"><i class="fa fa-map-marker"/><span>الشركة / الفرع</span><field name="company_id" nolabel="1" readonly="state not in ('draft','hold')"/></div></page>
                         <page string="المالية">
               <div class="yb-finance-summary">
                 <div><small>صافي المفوتر</small><field name="amount_invoiced" nolabel="1" readonly="1"/></div>
