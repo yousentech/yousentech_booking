@@ -287,3 +287,26 @@
   .yb-pms .yb-pms-modal{max-height:calc(100dvh - 20px)}
   .yb-pms .yb-pms-modal-content{padding:14px}
 }
+
+/* Show the complete mini calendar after moving booking details to a modal.
+   The old side-rail height limit was clipping the calendar's lower weeks. */
+.yb-pms .yb-pms-side{
+  height:auto;
+  max-height:none;
+  min-height:0;
+  overflow:visible;
+  align-self:flex-start;
+}
+.yb-pms .yb-pms-calendar{
+  width:100%;
+  height:auto;
+  max-height:none;
+  overflow:visible;
+  flex-shrink:0;
+}
+.yb-pms .yb-pms-mini-grid button{min-height:29px;padding:5px 0}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-side{
+  height:auto;
+  max-height:none;
+  overflow:visible;
+}
