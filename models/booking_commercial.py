@@ -63,13 +63,30 @@ class BookingEvent(models.Model):
     package_id=fields.Many2one("yousentech.booking.package",domain="[('company_id','=',company_id)]")
     service_line_ids=fields.One2many("yousentech.booking.event.service.line","booking_id")
     addon_line_ids=fields.One2many("yousentech.booking.event.addon.line","booking_id",string="الخدمات الملحقة المدفوعة")
-    hall_period_amount=fields.Monetary(compute="_compute_amounts",store=True,string="إجمالي فترات القاعة")
+    hall_period_amount=fields.Monetary(compute="_compute_amounts",string="إجمالي فترات القاعة")
+    booking_tax_id=fields.Many2one("account.tax",compute="_compute_booking_tax",string="نوع الضريبة",readonly=True)
+    period_price_details=fields.Text(compute="_compute_period_price_details",string="تفصيل أسعار الفترات",readonly=True)
     discount_type=fields.Selection([("none","No Discount"),("percent","Percentage"),("fixed","Fixed")],default="none",required=True)
     discount_value=fields.Float(default=0.0)
     amount_untaxed=fields.Monetary(compute="_compute_amounts",store=True)
     discount_amount=fields.Monetary(compute="_compute_amounts",store=True)
     tax_amount=fields.Monetary(compute="_compute_amounts",store=True)
     amount_total=fields.Monetary(compute="_compute_amounts",store=True,tracking=True)
+
+    @api.depends("package_id", "package_id.tax_id", "hall_id", "hall_id.tax_id")
+    def _compute_booking_tax(self):
+        for rec in self:
+            rec.booking_tax_id = rec.package_id.tax_id if rec.package_id else rec.hall_id.tax_id
+
+    @api.depends("hall_id", "hall_id.list_price", "hall_id.period_price_ids",
+                 "hall_id.period_price_ids.price", "hall_id.period_price_ids.period_id", "period_ids")
+    def _compute_period_price_details(self):
+        for rec in self:
+            configured = {line.period_id.id: line.price for line in rec.hall_id.period_price_ids}
+            rec.period_price_details = " | ".join(
+                "%s: %s" % (period.display_name, rec.currency_id.format(configured.get(period.id, rec.hall_id.list_price or 0.0)) if hasattr(rec.currency_id, "format") else ("%.2f" % configured.get(period.id, rec.hall_id.list_price or 0.0)))
+                for period in rec.period_ids
+            )
 
     @staticmethod
     def _package_commands(package):
@@ -80,7 +97,7 @@ class BookingEvent(models.Model):
         # Clear old included lines even when the package is removed.
         self.service_line_ids = [fields.Command.clear()] + (self._package_commands(self.package_id) if self.package_id else [])
 
-    @api.depends("hall_id.list_price","hall_id.tax_id","hall_id.period_price_ids.price","hall_id.period_price_ids.period_id","period_ids","package_id.price","package_id.pricing_type",
+    @api.depends("hall_id","hall_id.list_price","hall_id.tax_id","hall_id.period_price_ids","hall_id.period_price_ids.price","hall_id.period_price_ids.period_id","period_ids","package_id.price","package_id.pricing_type",
                  "package_id.tax_id","service_line_ids.subtotal","addon_line_ids.subtotal",
                  "discount_type","discount_value","partner_id")
     def _compute_amounts(self):
