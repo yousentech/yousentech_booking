@@ -70,7 +70,7 @@
             </div>
             <div class="yb-info-card yb-venue-card">
               <div class="yb-info-icon blue"><i class="fa fa-building-o"/></div>
-              <div class="yb-info-body"><small>المناسبة والقاعة</small><div class="yb-venue-hall"><label for="hall_id" string="القاعة"/><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-date"><small>التاريخ</small><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-periods"><small>الفترات</small><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div></div>
+              <div class="yb-info-body"><small>المناسبة والقاعة</small><div class="yb-venue-hall"><label for="hall_id" string="القاعة"/><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-date"><small>التاريخ</small><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-periods"><small>الفترات</small><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div><div class="yb-event-periods"><small>إجمالي أسعار فترات القاعة</small><field name="hall_period_amount" nolabel="1" readonly="1"/></div></div>
             </div>
           </div>
 
@@ -274,7 +274,30 @@
   <record id="view_booking_period_form" model="ir.ui.view"><field name="name">yousentech.booking.period.form</field><field name="model">yousentech.booking.period</field><field name="arch" type="xml"><form string="فترة الحجز"><sheet><group><field name="name" string="الاسم"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
   <record id="view_booking_hall_tree" model="ir.ui.view"><field name="name">yousentech.booking.hall.tree</field><field name="model">yousentech.booking.hall</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="capacity" string="السعة"/><field name="product_id" string="منتج الفوترة"/><field name="list_price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
-  <record id="view_booking_hall_form" model="ir.ui.view"><field name="name">yousentech.booking.hall.form</field><field name="model">yousentech.booking.hall</field><field name="arch" type="xml"><form string="القاعة"><sheet><group><field name="name" string="الاسم"/><field name="capacity" string="السعة"/><field name="product_id" string="منتج الفوترة"/><field name="list_price" string="السعر"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
+  <record id="view_booking_hall_form" model="ir.ui.view">
+    <field name="name">yousentech.booking.hall.form</field>
+    <field name="model">yousentech.booking.hall</field>
+    <field name="arch" type="xml">
+      <form string="القاعة" class="yb-package-form">
+        <sheet>
+          <div class="yb-package-layout">
+            <div class="yb-package-card"><h3><i class="fa fa-building-o"/> بيانات القاعة</h3>
+              <group><field name="name"/><field name="capacity"/><field name="product_id"/><field name="company_id"/><field name="sequence"/><field name="active"/></group>
+            </div>
+            <div class="yb-package-card"><h3><i class="fa fa-money"/> إعدادات التسعير</h3>
+              <group><field name="list_price" string="السعر الافتراضي للفترة"/><field name="tax_id" string="ضريبة القاعة" options="{'no_create': True, 'no_create_edit': True}"/></group>
+              <div class="text-muted">يستخدم السعر الافتراضي لأي فترة لا يوجد لها سعر مخصص.</div>
+            </div>
+          </div>
+          <div class="yb-package-card yb-package-services"><h3><i class="fa fa-calendar"/> أسعار الفترات</h3>
+            <field name="period_price_ids" nolabel="1">
+              <tree editable="bottom"><field name="company_id" column_invisible="True"/><field name="period_id" string="الفترة" options="{'no_create': True, 'no_create_edit': True}"/><field name="price" string="سعر الفترة"/></tree>
+            </field>
+          </div>
+        </sheet>
+      </form>
+    </field>
+  </record>
 
   <record id="view_booking_service_tree" model="ir.ui.view"><field name="name">yousentech.booking.service.tree</field><field name="model">yousentech.booking.service</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
   <record id="view_booking_service_form" model="ir.ui.view"><field name="name">yousentech.booking.service.form</field><field name="model">yousentech.booking.service</field><field name="arch" type="xml"><form string="خدمة الحجز"><sheet><group><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="price" string="السعر"/><field name="tax_ids" string="الضرائب" widget="many2many_tags"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
