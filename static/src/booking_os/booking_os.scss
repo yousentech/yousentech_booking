@@ -103,3 +103,12 @@
 .yb-package-form .yb-package-services .o_list_table thead{background:#f7f8fc}
 .yb-package-form .yb-package-services .o_list_table th{font-weight:750;color:#30394e}
 @media(max-width:900px){.yb-package-form .yb-package-layout{grid-template-columns:1fr}.yb-package-form .o_form_sheet{padding:12px!important}}
+
+/* Three-card booking overview; direction follows Odoo locale. */
+.yb-event-form .yb-event-overview{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;align-items:stretch}
+.yb-event-form .yb-event-overview>.yb-info-card{min-width:0!important;width:auto!important;max-width:none!important}
+.yb-event-form .yb-finance-card .yb-info-body{min-width:0;flex:1}
+.yb-event-form .yb-finance-card .o_group{margin-top:10px}
+.yb-event-form .yb-finance-card .o_form_label{font-weight:700;font-size:12px}
+@media(max-width:1150px){.yb-event-form .yb-event-overview{grid-template-columns:repeat(2,minmax(0,1fr))!important}.yb-event-form .yb-finance-card{grid-column:1/-1}}
+@media(max-width:650px){.yb-event-form .yb-event-overview{grid-template-columns:minmax(0,1fr)!important}.yb-event-form .yb-finance-card{grid-column:auto}}
