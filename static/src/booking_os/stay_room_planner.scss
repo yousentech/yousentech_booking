@@ -145,3 +145,21 @@
   .yb-pms-room,.yb-pms-track{min-height:65px}
   .yb-pms-booking{min-height:42px;padding:5px 6px}
 }
+
+/* Room planner: colored KPI icons and configured holiday presentation. */
+.yb-pms-kpis{margin:0 0 14px}
+.yb-pms-kpis article{box-shadow:0 4px 14px #1e36530a;min-width:0}
+.yb-pms-kpis article:nth-child(1)>i{background:#e9edff;color:#6959e8}
+.yb-pms-kpis article:nth-child(2)>i{background:#e2f8ed;color:#159c69}
+.yb-pms-kpis article:nth-child(3)>i{background:#e7f0ff;color:#367ad6}
+.yb-pms-kpis article:nth-child(4)>i{background:#fff1dc;color:#db9125}
+.yb-pms-kpis article:nth-child(5)>i{background:#f7e9ff;color:#9d58c9}
+.yb-pms-date{position:relative}
+.yb-pms-date.holiday{background:#fff4f5}
+.yb-pms-date.holiday.today{background:#fcecf4}
+.yb-pms-holiday-marker{position:absolute;top:4px;inset-inline-end:5px;color:#e14f65;font-size:12px}
+.yb-pms-holidays{display:flex;align-items:center;flex-wrap:wrap;gap:7px;padding:10px 16px;border-top:1px solid #f3dfe3;background:#fffafb;font-size:11px;color:#c54459}
+.yb-pms-holidays>strong{display:inline-flex;align-items:center;gap:5px}
+.yb-pms-holiday-tag{display:inline-flex;align-items:center;gap:7px;background:#ffeaee;color:#c3344d;border-radius:7px;padding:5px 9px;font-weight:700}
+.yb-pms-holiday-tag small{font-weight:400;color:#a65a68}
+@media(max-width:650px){.yb-pms-kpis{gap:7px}.yb-pms-kpis article{gap:7px}.yb-pms-kpis article>i{flex-basis:31px;height:31px}}
