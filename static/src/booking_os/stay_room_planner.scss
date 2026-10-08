@@ -63,7 +63,7 @@
 .yb-pms-board-title h2{font-size:16px;font-weight:850;margin:0 0 4px;color:var(--pms-navy)}
 .yb-pms-board-title small{color:var(--pms-muted)}
 .yb-pms-live{font-size:11px;color:#13a46f;white-space:nowrap}
-.yb-pms-board-scroll{max-height:min(63vh,660px);overflow:auto;scrollbar-width:thin;overscroll-behavior:contain}
+.yb-pms-board-scroll{max-height:63vh;overflow:auto;scrollbar-width:thin;overscroll-behavior:contain}
 .yb-pms-grid{display:grid;grid-template-columns:190px minmax(770px,1fr);min-width:960px;align-content:start}
 .yb-pms-room-head,.yb-pms-days{position:sticky;top:0;z-index:7;background:#f0f5fc;border-bottom:1px solid #dde6f2}
 .yb-pms-room-head{padding:20px 15px;font-weight:800;inset-inline-start:0;z-index:9}
