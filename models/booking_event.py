@@ -1,5 +1,26 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+from datetime import date
+
+# Civil (tabular) Hijri calendar conversion; no optional Python dependency.
+def _gregorian_to_hijri(value):
+    if not value:
+        return False
+    value = fields.Date.to_date(value)
+    a = (14 - value.month) // 12
+    y = value.year + 4800 - a
+    m = value.month + 12 * a - 3
+    jd = value.day + (153 * m + 2) // 5 + 365 * y + y // 4 - y // 100 + y // 400 - 32045
+    l = jd - 1948440 + 10632
+    n = (l - 1) // 10631
+    l = l - 10631 * n + 354
+    j = ((10985 - l) // 5316) * ((50 * l) // 17719) + (l // 5670) * ((43 * l) // 15238)
+    l = l - ((30 - j) // 15) * ((17719 * j) // 50) - (j // 16) * ((15238 * j) // 43) + 29
+    month = (24 * l) // 709
+    day = l - (709 * month) // 24
+    year = 30 * n + j - 30
+    return "%04d/%02d/%02d" % (year, month, day)
+
 
 class BookingCustomerDetails(models.Model):
     _inherit = "res.partner"
@@ -26,6 +47,12 @@ class BookingEvent(models.Model):
     package_pricing_type = fields.Selection(related="package_id.pricing_type", readonly=True, string="نوع تسعير الباقة")
     description = fields.Text(string="الوصف")
     booking_date = fields.Date(string="تاريخ الحجز", required=True, index=True, tracking=True)
+    booking_date_hijri = fields.Char(string="التاريخ الهجري (تقريبي)", compute="_compute_booking_date_hijri", readonly=True)
+
+    @api.depends("booking_date")
+    def _compute_booking_date_hijri(self):
+        for record in self:
+            record.booking_date_hijri = _gregorian_to_hijri(record.booking_date)
     hall_id = fields.Many2one("yousentech.booking.hall", string="القاعة", required=True, domain="[('company_id', '=', company_id)]", tracking=True)
     period_ids = fields.Many2many("yousentech.booking.period", string="الفترات", domain="[('company_id', '=', company_id)]")
     state = fields.Selection([("draft","مسودة"),("hold","حجز مؤقت"),("confirmed","مؤكد"),("preparing","قيد التجهيز"),("event","الفعالية قائمة"),("completed","مكتمل"),("cancelled","ملغي")], string="الحالة", default="draft", required=True, tracking=True, index=True)
