@@ -32,6 +32,18 @@ class BookingSettings(models.Model):
         help="عند التفعيل يمكن إنشاء حجز إقامة بدون تاريخ خروج، ويبقى مورد الإقامة محجوزًا للمستقبل حتى تحديد تاريخ الخروج.",
     )
 
+    stay_default_rate_plan_id = fields.Many2one("yousentech.stay.rate.plan", string="خطة سعر الإقامة الافتراضية", domain="[('company_id','=',company_id)]", help="تحدد السعر والضريبة الافتراضية للحجوزات الفندقية الجديدة.")
+    stay_invoice_policy = fields.Selection([("manual","يدوي"),("full","كامل عند التأكيد"),("deposit","عربون ثم رصيد"),("schedule","جدول دفعات")], string="سياسة الفوترة الافتراضية", default="manual", required=True)
+    stay_deposit_percent = fields.Float(string="نسبة العربون الافتراضية", default=30.0)
+
+    @api.constrains("stay_default_rate_plan_id", "company_id", "stay_deposit_percent")
+    def _check_stay_defaults(self):
+        for rec in self:
+            if rec.stay_default_rate_plan_id and rec.stay_default_rate_plan_id.company_id != rec.company_id:
+                raise ValidationError(_("خطة السعر يجب أن تتبع نفس الشركة / الفرع."))
+            if not 0 <= rec.stay_deposit_percent <= 100:
+                raise ValidationError(_("نسبة العربون يجب أن تكون بين 0 و100."))
+
     _sql_constraints = [
         ("booking_settings_company_unique", "unique(company_id)", "يوجد سجل إعدادات لهذه الشركة / الفرع بالفعل."),
     ]
