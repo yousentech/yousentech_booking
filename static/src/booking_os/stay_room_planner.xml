@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+  <t t-name="yousentech_booking.StayRoomPlanner">
+    <div class="yb-stay">
+      <header class="yb-stay-top">
+        <div><small>إدارة الحجوزات الفندقية</small><h1>مخطط إشغال الغرف</h1><p>عرض الغرف والحجوزات عبر الأيام، مع تفاصيل الحجز عند الاختيار</p></div>
+        <button class="yb-stay-primary" t-on-click="() => this.newBooking()">+ حجز جديد</button>
+      </header>
+      <div class="yb-stay-toolbar">
+        <div class="yb-stay-period">
+          <button t-on-click="() => this.move(-1)" aria-label="الفترة السابقة">‹</button>
+          <strong t-esc="dateTitle"/>
+          <button t-on-click="() => this.move(1)" aria-label="الفترة التالية">›</button>
+          <button t-on-click="() => this.today()">اليوم</button>
+        </div>
+        <div class="yb-stay-controls">
+          <button t-att-class="state.span === 7 ? 'active' : ''" t-on-click="() => this.setSpan(7)">أسبوع</button>
+          <button t-att-class="state.span === 14 ? 'active' : ''" t-on-click="() => this.setSpan(14)">أسبوعان</button>
+          <input placeholder="بحث عن غرفة..." t-on-input="onSearch" aria-label="بحث عن غرفة"/>
+          <select t-on-change="onType" aria-label="نوع الغرفة">
+            <option value="all">جميع الأنواع</option><option value="room">غرفة</option>
+            <option value="suite">جناح</option><option value="apartment">شقة</option><option value="chalet">شاليه</option>
+          </select>
+        </div>
+      </div>
+      <div class="yb-stay-stats">
+        <article><small>إجمالي الغرف</small><strong t-esc="stats.total"/></article>
+        <article><small>المتاحة اليوم</small><strong t-esc="stats.available"/></article>
+        <article><small>المشغولة اليوم</small><strong t-esc="stats.occupied"/></article>
+        <article><small>وصول اليوم</small><strong t-esc="stats.arrivals"/></article>
+        <article><small>مغادرة اليوم</small><strong t-esc="stats.departures"/></article>
+      </div>
+      <div class="yb-stay-workspace">
+        <section class="yb-stay-board" aria-label="مخطط إشغال الغرف">
+          <div class="yb-stay-notice" t-if="state.loading">جاري تحميل الغرف والحجوزات...</div>
+          <div class="yb-stay-notice yb-stay-error" t-if="state.error" t-esc="state.error"/>
+          <div class="yb-stay-table" t-if="!state.loading &amp;&amp; !state.error">
+            <div class="yb-stay-room-head">الغرف</div>
+            <div class="yb-stay-days" t-att-style="'--yb-stay-days:' + state.span">
+              <div t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="isToday(day) ? 'yb-stay-date today' : 'yb-stay-date'">
+                <strong t-esc="gregorian(day)"/><small t-esc="hijri(day)"/>
+              </div>
+            </div>
+            <t t-foreach="visibleResources" t-as="room" t-key="room.id">
+              <button class="yb-stay-room" t-on-click="() => this.newBooking(room)">
+                <strong t-esc="room.name"/><small t-esc="typeLabel(room.resource_type)"/>
+                <span t-if="room.capacity"><i class="fa fa-user"/> <t t-esc="room.capacity"/></span>
+              </button>
+              <div class="yb-stay-track" t-att-style="'--yb-stay-days:' + state.span">
+                <span t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="isToday(day) ? 'yb-stay-cell today' : 'yb-stay-cell'"/>
+                <button t-foreach="bookingsFor(room)" t-as="booking" t-key="booking.id"
+                    t-att-class="'yb-stay-bar ' + stateClass(booking.state)"
+                    t-att-style="barStyle(booking)" t-on-click="() => this.selectBooking(booking)"
+                    t-att-title="booking.name + ' — ' + (booking.partner_id ? booking.partner_id[1] : '')">
+                  <strong t-esc="booking.partner_id ? booking.partner_id[1] : booking.name"/>
+                  <small><t t-esc="booking.name"/> · <t t-esc="label(booking.state)"/></small>
+                </button>
+              </div>
+            </t>
+          </div>
+          <div class="yb-stay-notice" t-if="!state.loading &amp;&amp; !state.error &amp;&amp; !visibleResources.length">لا توجد غرف مطابقة للفلاتر.</div>
+        </section>
+        <aside class="yb-stay-details" t-if="selectedBooking">
+          <div class="yb-stay-detail-head"><h3>تفاصيل الحجز</h3><button t-on-click="closeDetails" aria-label="إغلاق">×</button></div>
+          <div class="yb-stay-detail-body">
+            <span t-att-class="'yb-stay-status ' + stateClass(selectedBooking.state)" t-esc="label(selectedBooking.state)"/>
+            <h2 t-esc="selectedBooking.name"/>
+            <p t-esc="selectedBooking.partner_id ? selectedBooking.partner_id[1] : 'بدون عميل'"/>
+            <dl>
+              <dt>الغرفة</dt><dd t-esc="selectedBooking.resource_id ? selectedBooking.resource_id[1] : ''"/>
+              <dt>الدخول</dt><dd t-esc="selectedBooking.checkin_date"/>
+              <dt>الخروج</dt><dd t-esc="selectedBooking.checkout_date || 'إقامة مفتوحة'"/>
+              <dt>الإجمالي</dt><dd t-esc="selectedBooking.amount_total"/>
+            </dl>
+            <button class="yb-stay-primary" t-on-click="() => this.openBooking(selectedBooking)">فتح الحجز والتفاصيل</button>
+          </div>
+        </aside>
+      </div>
+      <div class="yb-stay-legend"><span class="confirmed">مؤكد</span><span class="hold">حجز مؤقت</span><span class="checked_in">تم الدخول</span><span class="checked_out">تم الخروج</span><span class="draft">مسودة</span></div>
+    </div>
+  </t>
+</templates>
