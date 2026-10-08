@@ -191,6 +191,18 @@ export class BookingOS extends Component {
     onSearch(ev) { this.state.query = ev.target.value; }
     onHallFilter(ev) { this.state.hallId = ev.target.value; }
 
+    openDayBookings(day) {
+        const ids = this.monthEvents(day).map((event) => event.id);
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "حجوزات " + this.iso(day),
+            res_model: "yousentech.booking.event",
+            views: [[false, "list"], [false, "form"]],
+            domain: [["id", "in", ids]],
+            target: "current",
+        });
+    }
+
     openEvent(event) {
         this.action.doAction({ type: "ir.actions.act_window", res_model: "yousentech.booking.event", res_id: event.id, views: [[false, "form"]], target: "current" });
     }
