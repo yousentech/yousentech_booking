@@ -144,3 +144,37 @@
 .yb-event-form .yb-venue-card .yb-venue-compact input{min-height:34px!important}
 .yb-event-form .yb-event-overview>.yb-venue-card{min-height:0!important;padding-block:13px!important}
 @media(max-width:600px){.yb-event-form .yb-venue-card .yb-venue-compact{grid-template-columns:repeat(2,minmax(0,1fr))}.yb-event-form .yb-venue-card .yb-venue-compact>.yb-venue-hall{grid-column:span 1!important}.yb-event-form .yb-venue-card .yb-venue-compact>.yb-event-date{grid-column:span 1!important}.yb-event-form .yb-venue-card .yb-venue-compact>.yb-event-periods{grid-column:span 1!important}}
+
+/* Unified compact booking-card fields. Keep the nationality field as the visual
+   reference for readonly, many2one and many2many widgets alike. */
+.yb-event-form .yb-event-overview .yb-info-card .yb-customer-name>.o_field_widget,
+.yb-event-form .yb-event-overview .yb-info-card .yb-customer-detail>.o_field_widget,
+.yb-event-form .yb-event-overview .yb-info-card .yb-venue-compact>div>.o_field_widget{
+  display:flex!important;align-items:center!important;min-width:0!important;width:100%!important;
+  height:35px!important;min-height:35px!important;max-height:35px!important;
+  padding:4px 10px!important;margin:0!important;box-sizing:border-box!important;
+  border:1px solid #cfd7e6!important;border-radius:9px!important;
+  background:#fff!important;box-shadow:none!important;overflow:hidden;
+}
+.yb-event-form .yb-event-overview .yb-info-card .o_field_widget input,
+.yb-event-form .yb-event-overview .yb-info-card .o_field_widget .o_input,
+.yb-event-form .yb-event-overview .yb-info-card .o_field_widget .o-autocomplete--input{
+  min-width:0!important;width:100%!important;min-height:0!important;height:25px!important;
+  padding:0!important;margin:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;font-size:13px!important;
+}
+.yb-event-form .yb-event-overview .yb-info-card .o_field_many2one .o_input_dropdown,
+.yb-event-form .yb-event-overview .yb-info-card .o_field_many2one .o-autocomplete,
+.yb-event-form .yb-event-overview .yb-info-card .o_field_many2many_tags .o_field_tags{
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  min-height:0!important;margin:0!important;border:0!important;background:transparent!important;
+}
+.yb-event-form .yb-event-overview .yb-info-card .o_field_many2many_tags .o_tag,
+.yb-event-form .yb-event-overview .yb-info-card .o_field_many2many_tags .badge{
+  max-width:100%;margin-block:0!important;
+}
+.yb-event-form .yb-event-overview .yb-info-card .yb-customer-name>.o_field_widget:focus-within,
+.yb-event-form .yb-event-overview .yb-info-card .yb-customer-detail>.o_field_widget:focus-within,
+.yb-event-form .yb-event-overview .yb-info-card .yb-venue-compact>div>.o_field_widget:focus-within{
+  border-color:#7368e7!important;box-shadow:0 0 0 3px rgba(111,99,229,.1)!important;
+}
