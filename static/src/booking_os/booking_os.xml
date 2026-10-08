@@ -114,7 +114,7 @@
               <small t-if="event.partner_id" t-esc="event.partner_id[1]"/>
             </button>
           </div>
-          <button class="yb-day-panel-all" t-on-click="() => this.openDayBookingsList(new Date(state.selectedDay + 'T12:00:00'))">عرض جميع حجوزات هذا اليوم <i class="fa fa-arrow-left"/></button>
+
         </aside>
       </div>
       <div class="yb-legend">
