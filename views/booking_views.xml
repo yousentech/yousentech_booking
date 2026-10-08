@@ -58,7 +58,7 @@
             </div>
             <div class="yb-info-card">
               <div class="yb-info-icon blue"><i class="fa fa-building-o"/></div>
-              <div class="yb-info-body"><small>المناسبة</small><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/><div class="yb-inline-fields"><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div></div>
+              <div class="yb-info-body"><small>المناسبة</small><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/><div class="yb-event-date"><small>التاريخ</small><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-periods"><small>الفترات</small><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div></div>
             </div>
             <div class="yb-info-card yb-finance-card">
               <div class="yb-info-icon green"><i class="fa fa-money"/></div>
