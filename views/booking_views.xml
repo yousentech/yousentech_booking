@@ -567,4 +567,18 @@
     <field name="target">current</field>
   </record>
 
+
+  <record id="view_booking_holiday_tree" model="ir.ui.view">
+    <field name="name">yousentech.booking.holiday.tree</field>
+    <field name="model">yousentech.booking.holiday</field>
+    <field name="arch" type="xml"><tree string="أيام الإجازات" decoration-info="date == context_today()"><field name="date"/><field name="name"/><field name="company_id" groups="base.group_multi_company"/><field name="active" widget="boolean_toggle"/></tree></field>
+  </record>
+  <record id="view_booking_holiday_form" model="ir.ui.view">
+    <field name="name">yousentech.booking.holiday.form</field>
+    <field name="model">yousentech.booking.holiday</field>
+    <field name="arch" type="xml"><form string="يوم إجازة"><sheet><group><field name="name"/><field name="date"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group></sheet></form></field>
+  </record>
+  <record id="action_booking_holidays" model="ir.actions.act_window">
+    <field name="name">أيام الإجازات</field><field name="res_model">yousentech.booking.holiday</field><field name="view_mode">tree,form</field>
+  </record>
 </odoo>
