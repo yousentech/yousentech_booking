@@ -23,7 +23,7 @@ export class BookingOS extends Component {
         const today = new Date();
         this.state = useState({
             loading: true,
-            viewMode: "week",
+            viewMode: "month",
             holidays: [],
             anchor: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
             halls: [],
