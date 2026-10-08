@@ -88,14 +88,9 @@
             <div class="yb-finance-strip-head"><i class="fa fa-money"/> الملخص المالي للحجز</div>
             <div class="yb-finance-strip-values">
               <div class="yb-finance-metric"><small>بعد الخصم</small><field name="amount_untaxed" nolabel="1" readonly="1"/></div>
-              <div class="yb-finance-metric yb-finance-discount"><small>نوع الخصم</small><field name="discount_type" nolabel="1" readonly="state not in ('draft','hold')"/></div>
-              <div class="yb-finance-metric yb-finance-discount" invisible="discount_type == 'none'"><small>قيمة الخصم</small><field name="discount_value" nolabel="1" readonly="state not in ('draft','hold')"/></div>
-              <div class="yb-finance-metric yb-finance-discount"><small>الخصم</small><field name="discount_amount" nolabel="1" readonly="1"/></div>
+              <div class="yb-finance-metric yb-finance-discount" invisible="discount_amount == 0"><small>الخصم</small><field name="discount_amount" nolabel="1" readonly="1"/></div>
               <div class="yb-finance-metric"><small>الضريبة</small><field name="tax_amount" nolabel="1" readonly="1"/></div>
               <div class="yb-finance-metric yb-finance-total"><small>الإجمالي</small><field name="amount_total" nolabel="1" readonly="1"/></div>
-              <div class="yb-finance-metric yb-finance-paid"><small>المدفوع</small><field name="amount_paid" nolabel="1" readonly="1"/></div>
-              <div class="yb-finance-metric yb-finance-due"><small>المتبقي</small><field name="amount_remaining" nolabel="1" readonly="1"/></div>
-              <div class="yb-finance-metric"><small>الحالة المالية</small><field name="finance_state" nolabel="1" readonly="1"/></div>
             </div>
           </div>
 
