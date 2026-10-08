@@ -672,3 +672,18 @@
 @media(min-width:1600px) and (min-height:950px){
  .yb-os .yb-month-bookings>.yb-month-booking{max-height:none!important}
 }
+
+/* Final month layout: two readable bookings plus a reliable overflow control. */
+.yb-os .yb-month-more-compact{display:block!important}
+.yb-os .yb-month-bookings>.yb-month-booking:nth-of-type(n+3){display:none!important}
+@media(max-width:1599px), (max-height:949px){
+ .yb-os .yb-month-days{height:clamp(490px,calc(100dvh - 355px),650px)!important;grid-auto-rows:minmax(0,1fr)!important}
+ .yb-os .yb-month-day{min-height:0!important;overflow:hidden!important}
+ .yb-os .yb-month-bookings>.yb-month-booking:nth-of-type(2){display:block!important}
+ .yb-os .yb-month-bookings>.yb-month-booking{max-height:20px!important;flex-shrink:0!important}
+ .yb-os .yb-month-more-compact{height:18px!important;min-height:18px!important;flex-shrink:0!important}
+}
+@media(min-width:1600px) and (min-height:950px){
+ .yb-os .yb-month-days{height:auto!important;grid-auto-rows:minmax(135px,auto)!important}
+ .yb-os .yb-month-bookings>.yb-month-booking:nth-of-type(2){display:block!important}
+}
