@@ -52,7 +52,7 @@
                   <span class="yb-pms-room-copy"><strong t-esc="room.name"/><small><t t-esc="typeLabel(room.resource_type)"/> · <t t-esc="room.capacity"/> أشخاص</small></span>
                 </button>
                 <div class="yb-pms-track">
-                  <span t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="(isToday(day) ? 'yb-pms-cell today' : 'yb-pms-cell') + (isHoliday(day) ? ' holiday' : '')"/>
+                  <span t-foreach="days" t-as="day" t-foreach-index="dayIndex" t-key="day.toISOString()" t-att-class="(isToday(day) ? 'yb-pms-cell today' : 'yb-pms-cell') + (isHoliday(day) ? ' holiday' : '')" t-att-style="'grid-column:' + (dayIndex + 1)"/>
                   <button t-foreach="bookingsFor(room)" t-as="booking" t-key="booking.id"
                     t-att-class="'yb-pms-booking ' + stateClass(booking.state)"
                     t-att-style="barStyle(booking)" t-on-click="() => this.selectBooking(booking)"
