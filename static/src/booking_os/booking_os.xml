@@ -65,11 +65,6 @@
                 </div>
               </div>
             </div>
-            <div class="yb-month-holidays-footer" t-if="monthHolidayItems.length">
-              <span class="yb-month-holidays-footer-title"><i class="fa fa-calendar"/> الإجازات والمناسبات:</span>
-              <span t-foreach="monthHolidayItems" t-as="holiday" t-key="holiday.id" class="yb-month-holiday-footer-item">
-                <strong t-esc="holiday.name"/><small t-esc="holiday.date"/></span>
-            </div>
           </div>
           <t t-else="">
           <div class="yb-grid-head" t-att-style="gridStyle">
@@ -99,6 +94,11 @@
           <div class="yb-empty" t-if="state.viewMode === 'week' &amp;&amp; !visibleHalls.length">لا توجد قاعات مطابقة للبحث.</div>
         </t>
       </section>
+      <div class="yb-month-holidays-footer" t-if="state.viewMode === 'month' &amp;&amp; monthHolidayItems.length">
+        <span class="yb-month-holidays-footer-title"><i class="fa fa-calendar"/> الإجازات والمناسبات:</span>
+        <span t-foreach="monthHolidayItems" t-as="holiday" t-key="holiday.id" class="yb-month-holiday-footer-item">
+          <strong t-esc="holiday.name"/><small t-esc="holiday.date"/></span>
+      </div>
 
       <div t-if="state.selectedDay" class="yb-day-overlay" t-on-click="() => this.closeDayBookings()">
         <aside class="yb-day-panel" t-on-click.stop="() => {}">
