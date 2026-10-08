@@ -5,8 +5,8 @@
       <div class="yb-topbar">
         <div>
           <div class="yb-kicker">إدارة القاعات والمناسبات</div>
-          <h1>مخطط حجوزات القاعات</h1>
-          <p>رؤية أسبوعية وشهرية للحجوزات والإجازات بالتاريخ الميلادي والهجري.</p>
+          <h1 t-esc="state.viewMode === 'month' ? 'مخطط الحجوزات الشهري' : 'مخطط حجوزات القاعات'"/>
+          <p t-esc="state.viewMode === 'month' ? 'عرض جميع أيام الشهر مع الحجوزات والإجازات.' : 'رؤية أسبوعية للحجوزات والإجازات بالتاريخ الميلادي والهجري.'"/>
         </div>
         <button class="yb-primary" t-on-click="() => this.newBooking()">+ حجز جديد</button>
       </div>
@@ -23,7 +23,7 @@
           <button class="yb-soft-btn" t-on-click="goToday">اليوم</button>
         </div>
         <div class="yb-filters">
-          <div class="yb-search"><i class="fa fa-search"/><input placeholder="ابحث عن قاعة..." t-on-input="onSearch"/></div>
+          <div class="yb-search" t-if="state.viewMode === 'week'"><i class="fa fa-search"/><input placeholder="ابحث عن قاعة..." t-on-input="onSearch"/></div>
           <select t-on-change="onHallFilter"><option value="all">جميع القاعات</option><t t-foreach="state.halls" t-as="hall" t-key="hall.id"><option t-att-value="hall.id" t-esc="hall.name"/></t></select>
         </div>
       </div>
@@ -38,6 +38,34 @@
       <section class="yb-board">
         <div class="yb-board-loading" t-if="state.loading"><i class="fa fa-spinner fa-spin"/> جاري تحميل المخطط...</div>
         <t t-else="">
+          <div class="yb-month-calendar" t-if="state.viewMode === 'month'">
+            <div class="yb-month-weekdays">
+              <div>السبت</div><div>الأحد</div><div>الاثنين</div><div>الثلاثاء</div><div>الأربعاء</div><div>الخميس</div><div>الجمعة</div>
+            </div>
+            <div class="yb-month-days">
+              <div t-foreach="monthCalendarDays" t-as="day" t-key="iso(day)"
+                   t-att-class="{'yb-month-day': true, 'is-outside': !isCurrentMonth(day), 'is-today': isToday(day), 'is-holiday': isHoliday(day)}"
+                   t-on-click="() => this.newBooking(false, day)">
+                <div class="yb-month-day-heading">
+                  <strong t-esc="monthDayNumber(day)"/>
+                  <span class="yb-month-today" t-if="isToday(day)">اليوم</span>
+                </div>
+                <div class="yb-month-holidays" t-if="isHoliday(day)">
+                  <span t-foreach="holidaysFor(day)" t-as="holiday" t-key="holiday.id" class="yb-month-holiday"><i class="fa fa-umbrella"/> <t t-esc="holiday.name"/></span>
+                </div>
+                <div class="yb-month-bookings">
+                  <button t-foreach="monthEvents(day)" t-as="event" t-key="event.id"
+                          t-att-class="'yb-month-booking ' + eventClass(event)"
+                          t-on-click.stop="() => this.openEvent(event)">
+                    <span class="yb-month-booking-head"><strong t-esc="event.name"/><small t-esc="eventLabel(event)"/></span>
+                    <span class="yb-month-booking-detail" t-if="event.partner_id" t-esc="event.partner_id[1]"/>
+                    <span class="yb-month-booking-hall" t-esc="monthEventLabel(event)"/>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <t t-else="">
           <div class="yb-grid-head" t-att-style="gridStyle">
             <div class="yb-hall-head">القاعات</div>
             <div t-foreach="displayDays" t-as="day" t-key="iso(day)" t-att-class="{'yb-day-head': true, 'is-today': isToday(day), 'is-holiday': isHoliday(day)}">
@@ -61,13 +89,14 @@
               <span class="yb-add-slot">+ حجز</span>
             </div>
           </div>
-          <div class="yb-empty" t-if="!visibleHalls.length">لا توجد قاعات مطابقة للبحث.</div>
+          </t>
+          <div class="yb-empty" t-if="state.viewMode === 'week' &amp;&amp; !visibleHalls.length">لا توجد قاعات مطابقة للبحث.</div>
         </t>
       </section>
 
       <div class="yb-legend">
         <span><i class="dot holiday"/> إجازة</span><span><i class="dot confirmed"/> مؤكد</span><span><i class="dot hold"/> مؤقت</span><span><i class="dot preparing"/> تجهيز</span><span><i class="dot event"/> فعالية قائمة</span><span><i class="dot completed"/> مكتمل</span>
-        <small>اضغط على أي مساحة فارغة لإنشاء حجز في القاعة والتاريخ مباشرة.</small>
+        <small>اضغط على اليوم لإنشاء حجز، أو على بطاقة الحجز لفتح تفاصيله.</small>
       </div>
     </div>
   </t>
