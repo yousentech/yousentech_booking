@@ -438,3 +438,40 @@
 .yb-os .yb-day-cell.is-holiday .yb-add-slot{color:#ae713b}
 .yb-os .yb-legend .dot.holiday{background:#efae73}
 @media(max-width:800px){.yb-os .yb-toolbar{flex-wrap:wrap}.yb-os .yb-date-nav{flex-wrap:wrap}.yb-os .yb-filters{flex-wrap:wrap}}
+
+
+/* Monthly calendar: seven weekdays across, independent of the hall-row weekly view. */
+.yb-os .yb-month-calendar{width:100%;background:#fff;direction:rtl}
+.yb-os .yb-month-weekdays,.yb-os .yb-month-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.yb-os .yb-month-weekdays{background:#fafbff;border-bottom:1px solid #e3e8f4}
+.yb-os .yb-month-weekdays>div{text-align:center;padding:13px 5px;font-size:12px;font-weight:800;color:#283453;border-inline-start:1px solid #edf0f7}
+.yb-os .yb-month-days{gap:0}
+.yb-os .yb-month-day{position:relative;min-width:0;min-height:146px;padding:9px 8px;background:#fff;border-inline-start:1px solid #e8edf6;border-bottom:1px solid #e8edf6;cursor:pointer;transition:background .15s}
+.yb-os .yb-month-day:hover{background:#f9f8ff}
+.yb-os .yb-month-day.is-outside{background:#f8f9fc;color:#aab1c2}
+.yb-os .yb-month-day.is-today{box-shadow:inset 0 0 0 2px #7869e9}
+.yb-os .yb-month-day.is-holiday{background:#fff1f2}
+.yb-os .yb-month-day.is-outside.is-holiday{background:#fff6f6}
+.yb-os .yb-month-day-heading{display:flex;align-items:center;gap:6px;justify-content:space-between;margin-bottom:7px}
+.yb-os .yb-month-day-heading strong{font-size:14px;font-weight:800;color:#253357}
+.yb-os .yb-month-day.is-outside .yb-month-day-heading strong{color:#aeb6c6}
+.yb-os .yb-month-today{font-size:9px;background:#ece9ff;color:#6351da;border-radius:12px;padding:2px 7px;font-weight:800}
+.yb-os .yb-month-holidays{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
+.yb-os .yb-month-holiday{display:block;color:#d7374c;font-size:10px;font-weight:750;background:#ffe4e8;border-radius:7px;padding:5px 6px;overflow-wrap:anywhere}
+.yb-os .yb-month-holiday i{margin-inline-end:4px}
+.yb-os .yb-month-bookings{display:flex;flex-direction:column;gap:5px}
+.yb-os .yb-month-booking{display:flex;flex-direction:column;gap:3px;width:100%;min-width:0;border:0;border-inline-start:3px solid currentColor;border-radius:7px;padding:7px 8px;text-align:start;font-size:10px;line-height:1.3;box-shadow:0 1px 5px rgba(27,40,75,.035)}
+.yb-os .yb-month-booking:hover{filter:brightness(.98);transform:translateY(-1px)}
+.yb-os .yb-month-booking-head{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0}
+.yb-os .yb-month-booking-head strong{font-size:10px;font-weight:800;overflow-wrap:anywhere}
+.yb-os .yb-month-booking-head small{font-size:8px;opacity:.8;white-space:nowrap}
+.yb-os .yb-month-booking-detail,.yb-os .yb-month-booking-hall{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yb-os .yb-month-booking-hall{opacity:.75;font-size:9px}
+.yb-os .yb-month-booking.confirmed{background:#e8f8ef;color:#168652}
+.yb-os .yb-month-booking.hold{background:#fff2df;color:#b77713}
+.yb-os .yb-month-booking.preparing{background:#eaf4ff;color:#2379c4}
+.yb-os .yb-month-booking.event{background:#efebff;color:#6552d7}
+.yb-os .yb-month-booking.completed{background:#f0f2f6;color:#667085}
+.yb-os .yb-month-booking.draft{background:#f6efff;color:#8756b9}
+@media(max-width:1000px){.yb-os .yb-month-calendar{min-width:780px}.yb-os .yb-month-day{min-height:120px}.yb-os .yb-month-weekdays>div{padding:10px 3px}}
+@media(max-width:650px){.yb-os .yb-month-calendar{min-width:700px}.yb-os .yb-month-day{padding:6px 5px;min-height:108px}.yb-os .yb-month-booking{padding:5px}.yb-os .yb-month-booking-head{flex-wrap:wrap}}
