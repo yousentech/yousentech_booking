@@ -33,3 +33,6 @@ access_booking_demo_setup_manager,booking.demo.setup manager,model_yousentech_bo
 access_booking_settings_manager,booking.settings manager,model_yousentech_booking_settings,yousentech_booking.group_booking_manager,1,1,1,0
 
 access_booking_cancel_wizard_supervisor,booking.cancel.wizard supervisor,model_yousentech_booking_cancel_wizard,yousentech_booking.group_booking_supervisor,1,1,1,1
+
+access_hall_period_price_user,hall.period.price user,model_yousentech_booking_hall_period_price,yousentech_booking.group_booking_user,1,0,0,0
+access_hall_period_price_manager,hall.period.price manager,model_yousentech_booking_hall_period_price,yousentech_booking.group_booking_manager,1,1,1,1
