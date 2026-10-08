@@ -382,3 +382,40 @@
  .yb-event-form .yb-approved-summary .yb-finance-strip-values{grid-template-columns:repeat(2,minmax(0,1fr))}
  .yb-event-form .yb-approved-summary .yb-finance-metric{min-height:75px}
 }
+
+/* Compact KPI cards: icon beside the title, clear amount on the next line. */
+.yb-event-form .yb-approved-summary{
+ padding:11px 15px!important;gap:16px!important;margin:6px 0 12px!important;
+}
+.yb-event-form .yb-approved-summary .yb-finance-strip-values{gap:9px!important}
+.yb-event-form .yb-approved-summary .yb-finance-metric{
+ display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;
+ grid-template-rows:auto auto!important;align-content:center!important;
+ align-items:center!important;justify-content:initial!important;
+ column-gap:6px!important;row-gap:5px!important;
+ min-height:64px!important;padding:8px 11px!important;
+}
+.yb-event-form .yb-approved-summary .yb-finance-metric>i{
+ order:0!important;grid-column:1!important;grid-row:1!important;
+ width:21px!important;height:21px!important;min-width:21px!important;
+ font-size:12px!important;border-radius:6px!important;
+}
+.yb-event-form .yb-approved-summary .yb-summary-metric-text{
+ display:contents!important;
+}
+.yb-event-form .yb-approved-summary .yb-summary-metric-text>small{
+ grid-column:2!important;grid-row:1!important;margin:0!important;
+ font-size:11px!important;line-height:21px!important;
+}
+.yb-event-form .yb-approved-summary .yb-summary-metric-text>.o_field_widget{
+ grid-column:1 / -1!important;grid-row:2!important;
+ font-size:17px!important;line-height:1.3!important;
+ padding:0!important;margin:0!important;
+}
+.yb-event-form .yb-approved-summary .yb-finance-total .yb-summary-metric-text>.o_field_widget{
+ font-size:19px!important;
+}
+@media(max-width:1350px){
+ .yb-event-form .yb-approved-summary{gap:9px!important}
+ .yb-event-form .yb-approved-summary .yb-booking-summary-finance{padding-top:9px!important}
+}
