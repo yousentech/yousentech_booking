@@ -516,6 +516,40 @@
 }
 @media(max-width:850px){.yb-os .yb-toolbar{gap:9px}.yb-os .yb-date-nav{justify-content:center;flex-wrap:wrap}.yb-os .yb-month{min-width:110px}.yb-os .yb-stats article{min-width:0}}
 
+/* Responsive month-only sizing. Wide desktop (>1499px) keeps its approved layout.
+   All six calendar weeks remain in the document, without internal clipping. */
+@media (min-width:851px) and (max-width:1499px){
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-days{grid-auto-rows:minmax(83px,auto)}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-day{min-height:83px;padding:5px 5px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-day-heading{margin-bottom:3px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-day-heading strong{font-size:12px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-bookings{gap:3px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-bookings>.yb-month-booking{min-height:25px;padding:4px 5px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-booking-head{line-height:16px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-booking-head small{display:none}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-more{min-height:22px;line-height:14px;padding:3px 4px;font-size:9px}
+}
+@media (max-width:850px){
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-days{grid-auto-rows:minmax(75px,auto)}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-day{min-height:75px;padding:4px 3px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-day-heading{margin-bottom:3px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-day-heading strong{font-size:11px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-bookings{gap:3px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-bookings>.yb-month-booking{min-height:23px;padding:3px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-booking-head{line-height:16px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-booking-head small{display:none}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-more{min-height:22px;line-height:14px;padding:3px 2px;font-size:9px}
+}
+@media (max-width:480px){
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-days{grid-auto-rows:minmax(69px,auto)}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-day{min-height:69px;padding:3px 2px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-weekdays>div{font-size:9px;padding:7px 0}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-day-heading strong{font-size:10px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-bookings>.yb-month-booking{min-height:21px;padding:3px 2px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-booking-head strong{font-size:8px}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-more{min-height:20px;font-size:8px;line-height:13px;padding:2px 1px;white-space:normal;overflow-wrap:anywhere}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-holiday{font-size:8px;line-height:12px}
+}
 .yb-os .yb-day-overlay{position:fixed;inset:0;z-index:1100;background:rgba(24,30,56,.28);display:flex;justify-content:flex-start}
 .yb-os .yb-day-panel{width:410px;max-width:94vw;height:100%;overflow:auto;background:#fff;box-shadow:0 0 36px rgba(25,30,60,.18);padding:22px;display:flex;flex-direction:column;gap:15px}
 .yb-os .yb-day-panel-header{position:relative;border-bottom:1px solid #e8eaf4;padding-bottom:16px}
