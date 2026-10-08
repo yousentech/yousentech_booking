@@ -38,8 +38,8 @@
         <div class="yb-pms-grid" t-if="!state.loading &amp;&amp; !state.error" t-att-style="'--yb-stay-days:' + state.span">
           <div class="yb-pms-room-head">الغرفة / النوع</div>
           <div class="yb-pms-days">
-            <div t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="isToday(day) ? 'yb-pms-date today' : 'yb-pms-date'">
-              <strong t-esc="gregorian(day)"/><small t-esc="hijri(day)"/></div>
+            <div t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="(isToday(day) ? 'yb-pms-date today' : 'yb-pms-date') + (isHoliday(day) ? ' holiday' : '')">
+              <strong t-esc="gregorian(day)"/><small t-esc="hijri(day)"/><span t-if="isHoliday(day)" class="yb-pms-holiday-marker" t-att-title="holidaysFor(day).map(h => h.name).join('، ')"><i class="fa fa-calendar-check-o"/></span></div>
           </div>
           <t t-foreach="roomGroups" t-as="group" t-key="group.name">
             <button class="yb-pms-floor" t-on-click="() => this.toggleFloor(group.name)">
@@ -68,6 +68,7 @@
         </div>
         <div class="yb-stay-notice" t-if="!state.loading &amp;&amp; !state.error &amp;&amp; !visibleResources.length">لا توجد غرف مطابقة للفلاتر.</div>
       </div>
+      <div class="yb-pms-holidays" t-if="hasVisibleHolidays"><strong><i class="fa fa-calendar-check-o"/> الإجازات والمناسبات:</strong><t t-foreach="days" t-as="day" t-key="day.toISOString()"><span t-foreach="holidaysFor(day)" t-as="holiday" t-key="holiday.id" class="yb-pms-holiday-tag"><t t-esc="holiday.name"/> <small t-esc="gregorian(day)"/></span></t></div>
       <div class="yb-pms-legend"><span class="confirmed">مؤكد</span><span class="hold">مؤقت</span><span class="checked_in">تم الدخول</span><span class="checked_out">تم الخروج</span><span class="draft">مسودة</span></div>
     </section>
     <aside class="yb-pms-side">
