@@ -53,10 +53,16 @@ class BookingEventServiceLine(models.Model):
             raise ValidationError(_("Confirmed booking commercial lines cannot be deleted."))
         return super().unlink()
 
+class BookingEventAddonLine(models.Model):
+    _name = "yousentech.booking.event.addon.line"
+    _inherit = "yousentech.booking.event.service.line"
+    _description = "Paid Event Booking Add-on"
+
 class BookingEvent(models.Model):
     _inherit="yousentech.booking.event"
     package_id=fields.Many2one("yousentech.booking.package",domain="[('company_id','=',company_id)]")
     service_line_ids=fields.One2many("yousentech.booking.event.service.line","booking_id")
+    addon_line_ids=fields.One2many("yousentech.booking.event.addon.line","booking_id",string="الخدمات الملحقة المدفوعة")
     discount_type=fields.Selection([("none","No Discount"),("percent","Percentage"),("fixed","Fixed")],default="none",required=True)
     discount_value=fields.Float(default=0.0)
     amount_untaxed=fields.Monetary(compute="_compute_amounts",store=True)
@@ -73,25 +79,50 @@ class BookingEvent(models.Model):
         if self.package_id:
             self.service_line_ids=[fields.Command.clear()]+self._package_commands(self.package_id)
 
-    @api.depends("hall_id.list_price","package_id.price","package_id.pricing_type","service_line_ids.subtotal","service_line_ids.service_id.tax_ids","discount_type","discount_value","partner_id")
+    @api.depends("hall_id.list_price","package_id.price","package_id.pricing_type",
+                 "package_id.tax_id","service_line_ids.subtotal","addon_line_ids.subtotal",
+                 "discount_type","discount_value","partner_id")
     def _compute_amounts(self):
         for rec in self:
-            services=sum(rec.service_line_ids.mapped("subtotal"))
-            base=(rec.hall_id.list_price or 0.0)+services
-            fixed_package=rec.package_id and rec.package_id.pricing_type=="fixed"
-            if fixed_package:
-                base=(rec.hall_id.list_price or 0.0)+(rec.package_id.price or 0.0)
-            discount=base*min(max(rec.discount_value,0.0),100.0)/100.0 if rec.discount_type=="percent" else min(max(rec.discount_value,0.0),base) if rec.discount_type=="fixed" else 0.0
-            factor=(base-discount)/base if base else 1.0
-            tax_amount=0.0
-            if not fixed_package:
-                for line in rec.service_line_ids:
-                    taxes=line.service_id.tax_ids.compute_all(line.price_unit*factor,currency=rec.currency_id,quantity=line.quantity,product=line.service_id.product_id,partner=rec.partner_id)
-                    tax_amount+=taxes["total_included"]-taxes["total_excluded"]
-            rec.amount_untaxed=base-discount
-            rec.discount_amount=discount
-            rec.tax_amount=tax_amount
-            rec.amount_total=rec.amount_untaxed+tax_amount
+            fixed = bool(rec.package_id and rec.package_id.pricing_type == "fixed")
+            package_price = rec.package_id.price if rec.package_id else 0.0
+            package_base = package_price if fixed else sum(rec.service_line_ids.mapped("subtotal"))
+            # Included services never become paid add-ons.
+            gross = max(rec.hall_id.list_price or 0.0, 0.0) + package_base
+            gross += sum(rec.addon_line_ids.mapped("subtotal"))
+            # All prices are converted to tax-excluded values before applying booking discount.
+            tax = rec.package_id.tax_id
+            def split(price, qty=1.0, product=False):
+                if not tax:
+                    return price * qty
+                return tax.compute_all(price, currency=rec.currency_id, quantity=qty,
+                                       product=product, partner=rec.partner_id)["total_excluded"]
+            untaxed_gross = split(rec.hall_id.list_price or 0.0) + split(package_price) if fixed else split(rec.hall_id.list_price or 0.0)
+            if not fixed:
+                untaxed_gross += sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
+            untaxed_gross += sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
+            discount = (untaxed_gross * rec.discount_value / 100.0 if rec.discount_type == "percent"
+                        else min(rec.discount_value, untaxed_gross) if rec.discount_type == "fixed" else 0.0)
+            discount = max(0.0, discount)
+            factor = (untaxed_gross - discount) / untaxed_gross if untaxed_gross else 1.0
+            def taxed_amount(price, qty=1.0, product=False):
+                if not tax:
+                    return 0.0
+                # Price-included taxes require recomputing a tax-inclusive discounted unit price.
+                unit = price * factor
+                result = tax.compute_all(unit, currency=rec.currency_id, quantity=qty,
+                                         product=product, partner=rec.partner_id)
+                return result["total_included"] - result["total_excluded"]
+            tax_total = taxed_amount(rec.hall_id.list_price or 0.0)
+            if fixed:
+                tax_total += taxed_amount(package_price)
+            else:
+                tax_total += sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
+            tax_total += sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
+            rec.amount_untaxed = untaxed_gross - discount
+            rec.discount_amount = discount
+            rec.tax_amount = tax_total
+            rec.amount_total = rec.amount_untaxed + tax_total
 
     @api.constrains("discount_type","discount_value","package_id")
     def _check_commercial(self):
@@ -102,7 +133,7 @@ class BookingEvent(models.Model):
                 raise ValidationError(_("Package must belong to the booking branch/company."))
 
     def write(self,vals):
-        commercial={"package_id","service_line_ids","discount_type","discount_value","hall_id"}
+        commercial={"package_id","service_line_ids","addon_line_ids","discount_type","discount_value","hall_id"}
         if commercial & set(vals) and self.filtered(lambda r:r.state in LOCKED_STATES):
             raise ValidationError(_("Confirmed commercial terms are locked. Cancel and reopen the booking before changing them."))
         if {"discount_type","discount_value"} & set(vals) and not self.env.user.has_group("yousentech_booking.group_booking_manager"):
