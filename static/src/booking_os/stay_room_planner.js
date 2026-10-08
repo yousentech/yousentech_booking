@@ -25,7 +25,7 @@ export class StayRoomPlanner extends Component {
         this.company = useService("company");
         this.state = useState({
             anchor: parseDate(iso(new Date())), span: 7, loading: true,
-            resources: [], bookings: [], query: "", type: "all",
+            resources: [], bookings: [], holidays: [], query: "", type: "all",
             selectedId: null, error: "", floor: "all", status: "all", collapsedFloors: [],
         });
         onWillStart(() => this.load());
@@ -42,6 +42,9 @@ export class StayRoomPlanner extends Component {
         try { return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {day:"numeric",month:"short"}).format(day); }
         catch { return ""; }
     }
+    holidaysFor(day) { return this.state.holidays.filter(h => h.date === iso(day)); }
+    isHoliday(day) { return this.holidaysFor(day).length > 0; }
+    get hasVisibleHolidays() { return this.days.some(day => this.isHoliday(day)); }
     isToday(day) { return iso(day) === iso(new Date()); }
     get floors() {
         return [...new Set(this.state.resources.map(r => r.floor_name || "غير محدد"))].sort((a, b) => a.localeCompare(b, "ar", {numeric:true}));
@@ -109,7 +112,7 @@ export class StayRoomPlanner extends Component {
         this.state.error = "";
         try {
             const companyId = this.company.currentCompany.id;
-            const [resources, bookings] = await Promise.all([
+            const [resources, bookings, holidays] = await Promise.all([
                 this.orm.searchRead("yousentech.stay.resource",
                     [["company_id","=",companyId],["active","=",true]],
                     ["name","resource_type","capacity","nightly_price","sequence","floor_name"],
@@ -119,14 +122,19 @@ export class StayRoomPlanner extends Component {
                      "|",["checkout_date","=",false],["checkout_date",">",iso(this.start)]],
                     ["name","partner_id","resource_id","checkin_date","checkout_date","state","amount_total"],
                     {order:"checkin_date,id"}),
+                this.orm.searchRead("yousentech.booking.holiday",
+                    [["company_id","=",companyId],["active","=",true],["date",">=",iso(this.start)],["date","<",iso(this.end)]],
+                    ["name","date"], {order:"date,name"}),
             ]);
             this.state.resources = resources;
             this.state.bookings = bookings;
+            this.state.holidays = holidays;
             if (this.state.selectedId && !bookings.some(b => b.id === this.state.selectedId)) this.state.selectedId = null;
         } catch (error) {
             this.state.error = "تعذر تحميل مخطط الغرف. تحقق من صلاحياتك أو أعد المحاولة.";
             this.state.resources = [];
             this.state.bookings = [];
+            this.state.holidays = [];
         } finally { this.state.loading = false; }
     }
     async move(delta) { this.state.anchor = addDays(this.start, delta * this.state.span); await this.load(); }
