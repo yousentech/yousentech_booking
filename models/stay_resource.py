@@ -8,6 +8,7 @@ class StayResource(models.Model):
 
     name = fields.Char(required=True, translate=True)
     sequence = fields.Integer(default=10)
+    floor_name = fields.Char(string="الطابق", default="غير محدد", index=True, help="اسم أو رقم الطابق لتجميع الغرف في مخطط الإشغال.")
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", string="الشركة / الفرع", required=True, default=lambda self: self.env.company, index=True)
     resource_type = fields.Selection([("room","غرفة"),("suite","جناح"),("apartment","شقة"),("chalet","شاليه")], string="نوع المورد", default="room", required=True)
