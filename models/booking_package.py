@@ -33,6 +33,8 @@ class BookingPackage(models.Model):
 
     name = fields.Char(required=True, translate=True)
     sequence = fields.Integer(default=10)
+    description = fields.Text(string="الوصف")
+    tax_id = fields.Many2one("account.tax", string="ضريبة الباقة", domain="[('company_id','=',company_id),('type_tax_use','in',('sale','none'))]")
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", required=True, default=lambda self:self.env.company, index=True)
     line_ids = fields.One2many("yousentech.booking.package.line","package_id", string="Services")
