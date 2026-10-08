@@ -78,14 +78,35 @@ class BookingEvent(models.Model):
         for rec in self:
             rec.booking_tax_id = rec.package_id.tax_id if rec.package_id else rec.hall_id.tax_id
 
+    def _get_hall_period_prices(self):
+        """Use configured period prices; never silently substitute the default
+        when the hall has a per-period price table."""
+        self.ensure_one()
+        if not self.hall_id or not self.period_ids:
+            return []
+        lines = self.hall_id.period_price_ids
+        configured = {line.period_id.id: line.price for line in lines}
+        missing = self.period_ids.filtered(lambda period: period.id not in configured)
+        if lines and missing:
+            raise ValidationError(
+                _("No configured hall price for period(s): %s. Configure all selected periods on the hall before saving the booking.")
+                % ", ".join(missing.mapped("display_name"))
+            )
+        return [(period, configured[period.id] if lines else self.hall_id.list_price or 0.0)
+                for period in self.period_ids]
+
+    @api.constrains("hall_id", "period_ids", "company_id")
+    def _check_hall_period_pricing(self):
+        for booking in self:
+            booking._get_hall_period_prices()
+
     @api.depends("hall_id", "hall_id.list_price", "hall_id.period_price_ids",
                  "hall_id.period_price_ids.price", "hall_id.period_price_ids.period_id", "period_ids")
     def _compute_period_price_details(self):
         for rec in self:
-            configured = {line.period_id.id: line.price for line in rec.hall_id.period_price_ids}
             rec.period_price_details = " | ".join(
-                "%s: %s" % (period.display_name, ("%.2f" % configured.get(period.id, rec.hall_id.list_price or 0.0)))
-                for period in rec.period_ids
+                "%s: %.2f" % (period.display_name, price)
+                for period, price in rec._get_hall_period_prices()
             )
 
     @staticmethod
@@ -105,8 +126,8 @@ class BookingEvent(models.Model):
             fixed = bool(rec.package_id and rec.package_id.pricing_type == "fixed")
             package_price = rec.package_id.price if rec.package_id else 0.0
             package_base = package_price if fixed else sum(rec.service_line_ids.mapped("subtotal"))
-            configured = {line.period_id.id: line.price for line in rec.hall_id.period_price_ids}
-            hall_period_price = sum(configured.get(period.id, rec.hall_id.list_price or 0.0) for period in rec.period_ids)
+            period_prices = rec._get_hall_period_prices()
+            hall_period_price = sum(price for _period, price in period_prices)
             rec.hall_period_amount = hall_period_price
             # Included services never become paid add-ons.
             # A selected package replaces the hall base rate; never charge both.
@@ -121,7 +142,7 @@ class BookingEvent(models.Model):
                                        product=product, partner=rec.partner_id)["total_excluded"]
             untaxed_gross = (split(package_price, len(rec.period_ids)) if fixed else
                              sum(split(l.price_unit, l.quantity * len(rec.period_ids), l.service_id.product_id) for l in rec.service_line_ids)
-                             if rec.package_id else sum(split(configured.get(period.id, rec.hall_id.list_price or 0.0)) for period in rec.period_ids))
+                             if rec.package_id else sum(split(price) for _period, price in period_prices))
             untaxed_gross += sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             discount = (untaxed_gross * rec.discount_value / 100.0 if rec.discount_type == "percent"
                         else min(rec.discount_value, untaxed_gross) if rec.discount_type == "fixed" else 0.0)
@@ -137,7 +158,7 @@ class BookingEvent(models.Model):
                 return result["total_included"] - result["total_excluded"]
             tax_total = (taxed_amount(package_price, len(rec.period_ids)) if fixed else
                          sum(taxed_amount(l.price_unit, l.quantity * len(rec.period_ids), l.service_id.product_id) for l in rec.service_line_ids)
-                         if rec.package_id else sum(taxed_amount(configured.get(period.id, rec.hall_id.list_price or 0.0)) for period in rec.period_ids))
+                         if rec.package_id else sum(taxed_amount(price) for _period, price in period_prices))
             tax_total += sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             rec.amount_untaxed = untaxed_gross - discount
             rec.discount_amount = discount
