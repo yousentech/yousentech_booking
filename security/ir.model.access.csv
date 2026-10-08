@@ -14,6 +14,8 @@ access_booking_service_manager,booking.service manager,model_yousentech_booking_
 access_booking_package_user,booking.package user,model_yousentech_booking_package,yousentech_booking.group_booking_user,1,0,0,0
 access_booking_package_manager,booking.package manager,model_yousentech_booking_package,yousentech_booking.group_booking_manager,1,1,1,1
 access_event_service_line_user,event.service.line user,model_yousentech_booking_event_service_line,yousentech_booking.group_booking_user,1,1,1,0
+access_event_addon_line_user,event.addon.line user,model_yousentech_booking_event_addon_line,yousentech_booking.group_booking_user,1,1,1,0
+access_event_addon_line_manager,event.addon.line manager,model_yousentech_booking_event_addon_line,yousentech_booking.group_booking_manager,1,1,1,1
 access_rate_plan_user,stay.rate.plan user,model_yousentech_stay_rate_plan,yousentech_booking.group_booking_user,1,0,0,0
 access_rate_plan_manager,stay.rate.plan manager,model_yousentech_stay_rate_plan,yousentech_booking.group_booking_manager,1,1,1,1
 access_stay_addon_user,stay.addon user,model_yousentech_stay_addon,yousentech_booking.group_booking_user,1,0,0,0
