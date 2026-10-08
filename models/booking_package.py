@@ -37,6 +37,8 @@ class BookingPackage(models.Model):
     tax_id = fields.Many2one("account.tax", string="ضريبة الباقة", domain="[('company_id','=',company_id),('type_tax_use','in',('sale','none'))]")
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", required=True, default=lambda self:self.env.company, index=True)
+    hall_id = fields.Many2one("yousentech.booking.hall", string="القاعة", required=True, index=True,
+                              domain="[('company_id', '=', company_id), ('active', '=', True)]")
     line_ids = fields.One2many("yousentech.booking.package.line","package_id", string="Services")
     pricing_type = fields.Selection([("fixed","سعر ثابت للباقة"),("services","مجموع الخدمات")], string="طريقة التسعير", default="fixed", required=True)
     fixed_price = fields.Monetary()
@@ -51,6 +53,12 @@ class BookingPackage(models.Model):
     @api.depends("pricing_type","fixed_price","services_total")
     def _compute_price(self):
         for rec in self: rec.price=rec.fixed_price if rec.pricing_type=="fixed" else rec.services_total
+
+    @api.constrains("hall_id", "company_id")
+    def _check_hall_company(self):
+        for rec in self:
+            if rec.hall_id and rec.hall_id.company_id != rec.company_id:
+                raise ValidationError(_("The package hall must belong to the same company."))
 
     @api.constrains("tax_id", "company_id")
     def _check_tax_company(self):
