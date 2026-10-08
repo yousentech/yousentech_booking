@@ -178,3 +178,27 @@
   }
   .yb-pms-side > *{flex-shrink:0}
 }
+
+/* Occupancy planner: holiday column shading through every displayed room. */
+.yb-pms .yb-pms-cell.holiday{background:#fff0f2}
+.yb-pms .yb-pms-cell.holiday.today{background:#f9e7f2}
+.yb-pms .yb-pms-booking{position:relative;z-index:2}
+
+/* Keep the entire room list scrollable independently of the Odoo action. */
+.yb-pms .yb-pms-layout{min-height:0;align-items:flex-start}
+.yb-pms .yb-pms-main{min-width:0;min-height:0}
+.yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 375px),720px);max-height:none;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.yb-pms .yb-pms-room-head,.yb-pms .yb-pms-days{position:sticky;top:0}
+
+/* On selection, the detail panel takes the right rail and the mini calendar
+   is removed from that rail, leaving the grid unobstructed. */
+.yb-pms .yb-pms-layout.has-selection .yb-pms-side{order:-1;max-height:none;overflow:visible;flex:0 0 280px;width:280px}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:clamp(260px,calc(100dvh - 375px),720px);overflow:auto}
+@media(max-width:1050px){
+  .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 340px),650px)}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-side{order:-1;width:100%;flex:0 0 auto;display:block}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:360px}
+}
+@media(max-width:650px){
+  .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 315px),600px)}
+}
