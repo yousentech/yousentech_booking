@@ -31,7 +31,6 @@
 
   <div class="yb-pms-layout">
     <section class="yb-pms-main">
-      <div class="yb-pms-board-title"><div><h2>جدول إشغال الغرف</h2><small>اختر حجزًا لعرض التفاصيل، أو غرفة لإنشاء حجز</small></div><span class="yb-pms-live"><i class="fa fa-circle"/> بيانات الحجوزات</span></div>
       <div class="yb-pms-board-scroll">
         <div class="yb-stay-notice" t-if="state.loading">جاري تحميل مخطط الغرف...</div>
         <div class="yb-stay-notice yb-stay-error" t-if="state.error" t-esc="state.error"/>
