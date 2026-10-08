@@ -318,3 +318,19 @@
 .yb-event-form .yb-work-package-selector>.o_field_widget:focus-within{
  border-color:#7368e7!important;box-shadow:0 0 0 3px rgba(111,99,229,.1)!important;
 }
+
+/* Extra details: two intentional cards instead of loose Odoo groups. */
+.yb-event-form .yb-extra-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:12px 4px 18px;align-items:start}
+.yb-event-form .yb-extra-card{min-width:0;min-height:185px;border:1px solid #dce2ef;border-radius:13px;padding:17px 19px;background:#fff;box-shadow:0 3px 12px rgba(36,48,77,.03)}
+.yb-event-form .yb-extra-discount{background:#f7f4ff;border-color:#ddd4fa}
+.yb-event-form .yb-extra-notes{background:#f3f8ff;border-color:#d1e0f5}
+.yb-event-form .yb-extra-card-title{display:flex;align-items:center;gap:9px;margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid rgba(95,110,144,.14);color:#273653;font-size:14px}
+.yb-event-form .yb-extra-discount .yb-extra-card-title i{color:#7956c9}
+.yb-event-form .yb-extra-notes .yb-extra-card-title i{color:#3479bd}
+.yb-event-form .yb-extra-field{display:flex;flex-direction:column;gap:5px;min-width:0;margin-bottom:12px}
+.yb-event-form .yb-extra-field .o_form_label{font-size:12px;font-weight:750;color:#36425a;margin:0}
+.yb-event-form .yb-extra-field>.o_field_widget{width:100%;min-width:0;min-height:36px;box-sizing:border-box;border:1px solid #cfd7e6;border-radius:9px;background:#fff;padding:5px 10px}
+.yb-event-form .yb-extra-field>.o_field_widget .o_input,.yb-event-form .yb-extra-field>.o_field_widget input,.yb-event-form .yb-extra-field>.o_field_widget textarea{width:100%;min-width:0;border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+.yb-event-form .yb-extra-field>.o_field_widget:focus-within{border-color:#7368e7;box-shadow:0 0 0 3px rgba(111,99,229,.09)}
+.yb-event-form .yb-extra-note{color:#7b7e94;font-size:11px;margin-top:9px}
+@media(max-width:760px){.yb-event-form .yb-extra-cards{grid-template-columns:minmax(0,1fr)}}
