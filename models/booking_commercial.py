@@ -63,6 +63,7 @@ class BookingEvent(models.Model):
     package_id=fields.Many2one("yousentech.booking.package",domain="[('company_id','=',company_id)]")
     service_line_ids=fields.One2many("yousentech.booking.event.service.line","booking_id")
     addon_line_ids=fields.One2many("yousentech.booking.event.addon.line","booking_id",string="الخدمات الملحقة المدفوعة")
+    hall_period_amount=fields.Monetary(compute="_compute_amounts",store=True,string="إجمالي فترات القاعة")
     discount_type=fields.Selection([("none","No Discount"),("percent","Percentage"),("fixed","Fixed")],default="none",required=True)
     discount_value=fields.Float(default=0.0)
     amount_untaxed=fields.Monetary(compute="_compute_amounts",store=True)
@@ -79,7 +80,7 @@ class BookingEvent(models.Model):
         if self.package_id:
             self.service_line_ids=[fields.Command.clear()]+self._package_commands(self.package_id)
 
-    @api.depends("hall_id.list_price","package_id.price","package_id.pricing_type",
+    @api.depends("hall_id.list_price","hall_id.tax_id","hall_id.period_price_ids.price","hall_id.period_price_ids.period_id","period_ids","package_id.price","package_id.pricing_type",
                  "package_id.tax_id","service_line_ids.subtotal","addon_line_ids.subtotal",
                  "discount_type","discount_value","partner_id")
     def _compute_amounts(self):
@@ -87,20 +88,23 @@ class BookingEvent(models.Model):
             fixed = bool(rec.package_id and rec.package_id.pricing_type == "fixed")
             package_price = rec.package_id.price if rec.package_id else 0.0
             package_base = package_price if fixed else sum(rec.service_line_ids.mapped("subtotal"))
+            configured = {line.period_id.id: line.price for line in rec.hall_id.period_price_ids}
+            hall_period_price = sum(configured.get(period.id, rec.hall_id.list_price or 0.0) for period in rec.period_ids)
+            rec.hall_period_amount = hall_period_price
             # Included services never become paid add-ons.
             # A selected package replaces the hall base rate; never charge both.
-            gross = package_base if rec.package_id else (rec.hall_id.list_price or 0.0)
+            gross = (package_base * len(rec.period_ids)) if rec.package_id else hall_period_price
             gross += sum(rec.addon_line_ids.mapped("subtotal"))
             # All prices are converted to tax-excluded values before applying booking discount.
-            tax = rec.package_id.tax_id
+            tax = rec.package_id.tax_id if rec.package_id else rec.hall_id.tax_id
             def split(price, qty=1.0, product=False):
                 if not tax:
                     return price * qty
                 return tax.compute_all(price, currency=rec.currency_id, quantity=qty,
                                        product=product, partner=rec.partner_id)["total_excluded"]
-            untaxed_gross = (split(package_price) if fixed else
+            untaxed_gross = (split(package_price, len(rec.period_ids)) if fixed else
                              sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
-                             if rec.package_id else split(rec.hall_id.list_price or 0.0))
+                             if rec.package_id else sum(split(configured.get(period.id, rec.hall_id.list_price or 0.0)) for period in rec.period_ids))
             untaxed_gross += sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             discount = (untaxed_gross * rec.discount_value / 100.0 if rec.discount_type == "percent"
                         else min(rec.discount_value, untaxed_gross) if rec.discount_type == "fixed" else 0.0)
@@ -114,9 +118,9 @@ class BookingEvent(models.Model):
                 result = tax.compute_all(unit, currency=rec.currency_id, quantity=qty,
                                          product=product, partner=rec.partner_id)
                 return result["total_included"] - result["total_excluded"]
-            tax_total = (taxed_amount(package_price) if fixed else
+            tax_total = (taxed_amount(package_price, len(rec.period_ids)) if fixed else
                          sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
-                         if rec.package_id else taxed_amount(rec.hall_id.list_price or 0.0))
+                         if rec.package_id else sum(taxed_amount(configured.get(period.id, rec.hall_id.list_price or 0.0)) for period in rec.period_ids))
             tax_total += sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             rec.amount_untaxed = untaxed_gross - discount
             rec.discount_amount = discount
