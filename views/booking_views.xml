@@ -70,8 +70,9 @@
             </div>
             <div class="yb-info-card yb-venue-card">
               <div class="yb-info-icon blue"><i class="fa fa-building-o"/></div>
-              <div class="yb-info-body"><small>المناسبة والقاعة</small><div class="yb-venue-hall"><label for="hall_id" string="القاعة"/><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-date"><small>التاريخ</small><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-periods"><small>الفترات</small><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div><div class="yb-event-finance-inline"><strong>الملخص المالي</strong><span>الإجمالي <field name="amount_total" nolabel="1" readonly="1"/></span><span>المدفوع <field name="amount_paid" nolabel="1" readonly="1"/></span><span>المتبقي <field name="amount_remaining" nolabel="1" readonly="1"/></span></div></div>
+              <div class="yb-info-body"><small>المناسبة والقاعة</small><div class="yb-venue-hall"><label for="hall_id" string="القاعة"/><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-date"><small>التاريخ</small><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-periods"><small>الفترات</small><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div></div>
             </div>
+            <div class="yb-info-card yb-finance-card"><div class="yb-info-icon purple"><i class="fa fa-money"/></div><div class="yb-info-body"><small>الملخص المالي</small><group col="2"><field name="amount_untaxed" string="بعد الخصم" readonly="1"/><field name="discount_amount" string="الخصم" readonly="1"/><field name="tax_amount" string="الضريبة" readonly="1"/><field name="amount_total" string="الإجمالي" readonly="1"/><field name="amount_paid" string="المدفوع" readonly="1"/><field name="amount_remaining" string="المتبقي" readonly="1"/><field name="finance_state" string="الحالة المالية" readonly="1"/></group></div></div>
           </div>
 
           <div class="yb-branch-line"><i class="fa fa-map-marker"/><span>الشركة / الفرع</span><field name="company_id" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-description"><label for="description" string="وصف الحجز"/><field name="description" nolabel="1" placeholder="تفاصيل أو توضيحات خاصة بالحجز..." readonly="state not in ('draft','hold')"/></div>
@@ -85,6 +86,10 @@
               <separator string="الخدمات المشمولة في الباقة"/>
               <field name="service_line_ids" string="الخدمات" nolabel="1" readonly="state not in ('draft','hold')">
                 <tree editable="bottom"><field name="company_id" column_invisible="True"/><field name="service_id" string="الخدمة"/><field name="quantity" string="الكمية"/><field name="price_unit" string="سعر الوحدة" column_invisible="parent.package_pricing_type == 'fixed'"/><field name="subtotal" string="الإجمالي" readonly="1" column_invisible="parent.package_pricing_type == 'fixed'"/></tree>
+              </field>
+              <separator string="الخدمات الملحقة المدفوعة"/>
+              <field name="addon_line_ids" nolabel="1" readonly="state not in ('draft','hold')">
+                <tree editable="bottom"><field name="company_id" column_invisible="True"/><field name="service_id" string="الخدمة" options="{'no_create': True, 'no_create_edit': True}"/><field name="quantity" string="الكمية"/><field name="price_unit" string="سعر الوحدة"/><field name="subtotal" string="الإجمالي" readonly="1"/></tree>
               </field>
               <group class="oe_subtotal_footer oe_right yb-total-box"><field name="amount_untaxed" string="قبل الضريبة" readonly="1"/><field name="discount_amount" string="الخصم" readonly="1"/><field name="tax_amount" string="الضريبة" readonly="1"/><field name="amount_total" string="الإجمالي" readonly="1"/></group>
             </page>
@@ -164,7 +169,7 @@
             <page string="الإقامة والإضافات">
               <group>
                 <group>
-                  <field name="rate_plan_id" string="خطة السعر" readonly="state not in ('draft','hold')"/>
+                  <field name="discount_type" string="نوع الخصم" readonly="state not in ('draft','hold')"/><field name="discount_value" string="قيمة الخصم" invisible="discount_type == 'none'" readonly="state not in ('draft','hold')"/><field name="rate_plan_id" string="خطة السعر" readonly="state not in ('draft','hold')"/>
                   <field name="nights" string="عدد الليالي" readonly="1"/>
                   <field name="nightly_price" string="سعر الليلة" readonly="1"/>
                 </group>
