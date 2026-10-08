@@ -53,28 +53,56 @@ class StayBooking(models.Model):
     _inherit = "yousentech.stay.booking"
     rate_plan_id = fields.Many2one("yousentech.stay.rate.plan", domain="[('company_id','=',company_id)]")
     addon_line_ids = fields.One2many("yousentech.stay.booking.addon.line","booking_id")
+    discount_type=fields.Selection([("none","بدون خصم"),("percent","نسبة"),("fixed","مبلغ ثابت")],default="none",required=True)
+    discount_value=fields.Float(default=0.0)
+    discount_amount=fields.Monetary(compute="_compute_commercial",store=True)
     nights = fields.Integer(compute="_compute_commercial", store=True)
     nightly_price = fields.Monetary(compute="_compute_commercial", store=True)
     amount_untaxed = fields.Monetary(compute="_compute_commercial", store=True)
     tax_amount = fields.Monetary(compute="_compute_commercial", store=True)
     amount_total = fields.Monetary(compute="_compute_commercial", store=True, tracking=True)
 
-    @api.depends("checkin_date","checkout_date","resource_id.nightly_price","rate_plan_id.pricing_type","rate_plan_id.fixed_price","rate_plan_id.percent_adjustment","addon_line_ids.subtotal","addon_line_ids.addon_id.tax_ids","partner_id")
+    @api.depends("checkin_date","checkout_date","resource_id.nightly_price","rate_plan_id.pricing_type","rate_plan_id.fixed_price","rate_plan_id.percent_adjustment","rate_plan_id.tax_id","addon_line_ids.subtotal","discount_type","discount_value","partner_id")
     def _compute_commercial(self):
         for rec in self:
-            nights=(rec.checkout_date-rec.checkin_date).days if rec.checkin_date and rec.checkout_date and rec.checkout_date>rec.checkin_date else 0
-            base_price=rec.resource_id.nightly_price or 0.0
-            if rec.rate_plan_id.pricing_type=="fixed": base_price=rec.rate_plan_id.fixed_price or 0.0
-            elif rec.rate_plan_id.pricing_type=="percent": base_price*=1.0+(rec.rate_plan_id.percent_adjustment or 0.0)/100.0
-            rec.nights=nights; rec.nightly_price=base_price
-            rec.amount_untaxed=nights*base_price+sum(rec.addon_line_ids.mapped("subtotal"))
-            tax_amount=0.0
+            nights = (rec.checkout_date-rec.checkin_date).days if rec.checkin_date and rec.checkout_date and rec.checkout_date > rec.checkin_date else 0
+            price = rec.resource_id.nightly_price or 0.0
+            if rec.rate_plan_id.pricing_type == "fixed":
+                price = rec.rate_plan_id.fixed_price or 0.0
+            elif rec.rate_plan_id.pricing_type == "percent":
+                price *= 1 + (rec.rate_plan_id.percent_adjustment or 0.0) / 100.0
+            rec.nights, rec.nightly_price = nights, price
+            tax = rec.rate_plan_id.tax_id
+            def split(unit, qty, product=False):
+                if not tax:
+                    return unit * qty
+                return tax.compute_all(unit, currency=rec.currency_id, quantity=qty, product=product, partner=rec.partner_id)["total_excluded"]
+            gross = split(price, nights, rec.resource_id.product_id)
             for line in rec.addon_line_ids:
-                quantity=line.quantity*(nights if line.addon_id.charge_type=="night" else 1)
-                taxes=line.addon_id.tax_ids.compute_all(line.price_unit,currency=rec.currency_id,quantity=quantity,product=line.addon_id.product_id,partner=rec.partner_id)
-                tax_amount+=taxes["total_included"]-taxes["total_excluded"]
-            rec.tax_amount=tax_amount
-            rec.amount_total=rec.amount_untaxed+tax_amount
+                qty = line.quantity * (nights if line.addon_id.charge_type == "night" else 1)
+                gross += split(line.price_unit, qty, line.addon_id.product_id)
+            discount = gross * rec.discount_value / 100 if rec.discount_type == "percent" else min(rec.discount_value, gross) if rec.discount_type == "fixed" else 0.0
+            discount = max(discount, 0.0)
+            factor = (gross-discount)/gross if gross else 1.0
+            def tax_part(unit, qty, product=False):
+                if not tax:
+                    return 0.0
+                result = tax.compute_all(unit*factor, currency=rec.currency_id, quantity=qty, product=product, partner=rec.partner_id)
+                return result["total_included"]-result["total_excluded"]
+            taxes = tax_part(price, nights, rec.resource_id.product_id)
+            for line in rec.addon_line_ids:
+                qty = line.quantity * (nights if line.addon_id.charge_type == "night" else 1)
+                taxes += tax_part(line.price_unit, qty, line.addon_id.product_id)
+            rec.discount_amount = discount
+            rec.amount_untaxed = gross-discount
+            rec.tax_amount = taxes
+            rec.amount_total = rec.amount_untaxed+taxes
+
+    @api.constrains("discount_type","discount_value")
+    def _check_discount(self):
+        for rec in self:
+            if rec.discount_value < 0 or (rec.discount_type == "percent" and rec.discount_value > 100):
+                raise ValidationError(_("Invalid booking discount."))
 
     @api.constrains("rate_plan_id","addon_line_ids")
     def _check_commercial_company(self):
@@ -83,5 +111,5 @@ class StayBooking(models.Model):
             if rec.addon_line_ids.filtered(lambda l:l.company_id!=rec.company_id or l.addon_id.company_id!=rec.company_id): raise ValidationError(_("All add-ons must belong to the booking branch/company."))
 
     def write(self,vals):
-        if {"rate_plan_id","addon_line_ids","resource_id","checkin_date","checkout_date"} & set(vals) and self.filtered(lambda r:r.state in LOCKED_STATES): raise ValidationError(_("Confirmed commercial terms are locked. Cancel and reopen the booking before changing them."))
+        if {"rate_plan_id","addon_line_ids","discount_type","discount_value","resource_id","checkin_date","checkout_date"} & set(vals) and self.filtered(lambda r:r.state in LOCKED_STATES): raise ValidationError(_("Confirmed commercial terms are locked. Cancel and reopen the booking before changing them."))
         return super().write(vals)
