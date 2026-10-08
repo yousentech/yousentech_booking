@@ -131,3 +131,16 @@
 @media(max-width:1200px){.yb-event-form .yb-finance-strip-values{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:800px){.yb-event-form .yb-event-overview{grid-template-columns:1fr!important}.yb-event-form .yb-finance-strip-values{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:500px){.yb-event-form .yb-finance-strip-values{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Compact event venue card: hall + date, then periods + price + tax. */
+.yb-event-form .yb-venue-card .yb-info-body:has(.yb-venue-compact){display:block!important}
+.yb-event-form .yb-venue-card .yb-venue-compact{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 12px;align-items:start;margin-top:9px}
+.yb-event-form .yb-venue-card .yb-venue-compact>.yb-venue-hall{grid-column:span 4!important}
+.yb-event-form .yb-venue-card .yb-venue-compact>.yb-event-date{grid-column:span 2!important}
+.yb-event-form .yb-venue-card .yb-venue-compact>.yb-event-periods{grid-column:span 2!important}
+.yb-event-form .yb-venue-card .yb-venue-compact>div{display:flex!important;flex-direction:column!important;gap:4px!important;min-width:0;margin:0!important;align-items:stretch!important}
+.yb-event-form .yb-venue-card .yb-venue-compact .o_form_label{font-size:12px!important;font-weight:700!important;margin:0!important}
+.yb-event-form .yb-venue-card .yb-venue-compact .o_field_widget{min-width:0;width:100%}
+.yb-event-form .yb-venue-card .yb-venue-compact input{min-height:34px!important}
+.yb-event-form .yb-event-overview>.yb-venue-card{min-height:0!important;padding-block:13px!important}
+@media(max-width:600px){.yb-event-form .yb-venue-card .yb-venue-compact{grid-template-columns:repeat(2,minmax(0,1fr))}.yb-event-form .yb-venue-card .yb-venue-compact>.yb-venue-hall{grid-column:span 1!important}.yb-event-form .yb-venue-card .yb-venue-compact>.yb-event-date{grid-column:span 1!important}.yb-event-form .yb-venue-card .yb-venue-compact>.yb-event-periods{grid-column:span 1!important}}
