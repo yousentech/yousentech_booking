@@ -426,3 +426,15 @@
   grid-column:1 / -1!important;
  }
 }
+
+/* Monthly hall planner and holiday emphasis. Weekly layout remains the default. */
+.yb-os .yb-view-switch{display:flex;align-items:center;gap:3px;background:#f1f0fc;padding:3px;border-radius:9px;border:1px solid #e2defa}
+.yb-os .yb-view-switch button{border:0;background:transparent;color:#77748d;border-radius:7px;padding:7px 12px;font-size:12px;font-weight:700}
+.yb-os .yb-view-switch button.is-active{background:#fff;color:#5d4bd8;box-shadow:0 1px 6px rgba(56,49,112,.1)}
+.yb-os .yb-day-head.is-holiday:not(.is-today){background:#fff0e6;color:#a95022;border-bottom:2px solid #efa56b}
+.yb-os .yb-day-head.is-today.is-holiday{outline:3px solid #ffbe82;outline-offset:-3px}
+.yb-os .yb-holiday-tag{display:block;margin-top:5px;padding:3px 5px;border-radius:6px;background:#ffe2c9;color:#9c4a1b;font-size:9px;font-weight:800;white-space:normal;overflow-wrap:anywhere}
+.yb-os .yb-day-cell.is-holiday{background:repeating-linear-gradient(135deg,#fff9f3,#fff9f3 12px,#fff3e7 12px,#fff3e7 24px)}
+.yb-os .yb-day-cell.is-holiday .yb-add-slot{color:#ae713b}
+.yb-os .yb-legend .dot.holiday{background:#efae73}
+@media(max-width:800px){.yb-os .yb-toolbar{flex-wrap:wrap}.yb-os .yb-date-nav{flex-wrap:wrap}.yb-os .yb-filters{flex-wrap:wrap}}
