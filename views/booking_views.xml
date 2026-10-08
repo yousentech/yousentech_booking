@@ -76,8 +76,9 @@
                   <div class="yb-venue-hall"><label for="hall_id" string="القاعة"/><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/></div>
                   <div class="yb-event-date"><label for="booking_date" string="التاريخ"/><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div>
                   <div class="yb-event-periods"><label for="period_ids" string="الفترات"/><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div>
-                  <div class="yb-event-periods"><label for="hall_period_amount" string="المبلغ"/><field name="hall_period_amount" nolabel="1" readonly="1"/></div>
+                  <div class="yb-event-periods" invisible="package_id"><label for="hall_period_amount" string="المبلغ"/><field name="hall_period_amount" nolabel="1" readonly="1"/></div>
                   <div class="yb-event-periods"><label for="booking_tax_id" string="نوع الضريبة"/><field name="booking_tax_id" nolabel="1" readonly="1" options="{'no_open': True}"/></div>
+                  <div class="yb-package-rate-notice" invisible="not package_id"><i class="fa fa-info-circle"/> سيتم اعتماد سعر الباقة للحجز كاملًا وتجاهل أسعار القاعة والفترات. الخدمات الملحقة المدفوعة تُضاف بشكل مستقل.</div>
                 </div>
               </div>
             </div>
