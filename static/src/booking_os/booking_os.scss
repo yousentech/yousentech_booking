@@ -581,3 +581,9 @@
 .yb-os .yb-day-panel-event-head em{font-style:normal;font-size:11px;color:#6c648a}
 .yb-os .yb-day-panel-event small{color:#737f99}
 .yb-os .yb-day-panel-all{border:0;border-radius:10px;background:#efebff;color:#6048cb;font-weight:800;padding:12px;flex:0 0 auto}
+
+/* Holiday names live below (outside) the monthly board, preserving booking card space. */
+.yb-os .yb-month-holiday-summary{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:9px;padding:9px 12px;border:1px solid #f5e0e4;border-radius:9px;background:#fffafb;color:#b9364b;font-size:11px}
+.yb-os .yb-month-holiday-summary>strong{display:inline-flex;align-items:center;gap:5px}
+.yb-os .yb-month-holiday-summary-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:7px;background:#ffe9ee;font-weight:700}
+.yb-os .yb-month-holiday-summary-tag small{color:#9b6771;font-weight:400}
