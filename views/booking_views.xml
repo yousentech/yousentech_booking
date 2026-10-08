@@ -74,7 +74,7 @@
                 <small>المناسبة والقاعة</small>
                 <div class="yb-venue-compact">
                   <div class="yb-venue-hall"><label for="hall_id" string="القاعة"/><field name="hall_id" nolabel="1" readonly="state not in ('draft','hold')"/></div>
-                  <div class="yb-event-date"><label for="booking_date" string="التاريخ"/><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+                  <div class="yb-event-date"><label for="booking_date" string="التاريخ"/><field name="booking_date" nolabel="1" readonly="state not in ('draft','hold')"/></div><div class="yb-event-date yb-hijri-date"><label for="booking_date_hijri" string="التاريخ الهجري (تقريبي)"/><field name="booking_date_hijri" nolabel="1" readonly="1"/></div>
                   <div class="yb-event-periods"><label for="period_ids" string="الفترات"/><field name="period_ids" nolabel="1" widget="many2many_tags" readonly="state not in ('draft','hold')"/></div>
                   <div class="yb-event-periods" invisible="package_id"><label for="hall_period_amount" string="المبلغ"/><field name="hall_period_amount" nolabel="1" readonly="1"/></div>
                   <div class="yb-event-periods"><label for="booking_tax_id" string="نوع الضريبة"/><field name="booking_tax_id" nolabel="1" readonly="1" options="{'no_open': True}"/></div>
