@@ -47,7 +47,7 @@
                    t-att-class="{'yb-month-day': true, 'is-outside': !isCurrentMonth(day), 'is-today': isToday(day), 'is-holiday': isHoliday(day)}"
                    t-on-click="() => this.newBooking(false, day)">
                 <div class="yb-month-day-heading">
-                  <strong t-esc="monthDayNumber(day)"/>
+                  <span class="yb-month-date-pair"><strong t-esc="monthDayNumber(day)"/><small class="yb-month-hijri" t-esc="hijri(day)"/></span>
                   <span class="yb-month-today" t-if="isToday(day)">اليوم</span>
                 </div>
                 <div class="yb-month-holidays" t-if="isHoliday(day)">
