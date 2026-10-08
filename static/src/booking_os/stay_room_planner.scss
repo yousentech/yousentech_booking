@@ -111,3 +111,37 @@
 @media(max-width:1400px){.yb-pms-side{width:235px;flex-basis:235px}.yb-pms-grid{grid-template-columns:165px minmax(735px,1fr);min-width:900px}.yb-pms-kpis{gap:8px}.yb-pms-kpis article{padding:11px}}
 @media(max-width:1050px){.yb-pms-layout{flex-direction:column}.yb-pms-side{width:100%;flex:0 0 auto;display:grid;grid-template-columns:minmax(240px,1fr) minmax(270px,1.3fr)}.yb-pms-board-scroll{max-height:56vh}.yb-pms-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.yb-pms{padding:10px}.yb-pms-heading h1{font-size:21px}.yb-pms-heading{align-items:flex-start}.yb-pms-toolbar,.yb-pms-filters{padding:10px}.yb-pms-date-nav{width:100%;justify-content:space-between}.yb-pms-range{min-width:0;flex:1}.yb-pms-view{width:100%;justify-content:flex-end}.yb-pms-filters select{flex:1 1 130px}.yb-pms-board-title{padding:12px}.yb-pms-live{display:none}.yb-pms-grid{grid-template-columns:125px minmax(700px,1fr);min-width:825px}.yb-pms-board-scroll{max-height:53vh}.yb-pms-side{display:flex}.yb-pms-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.yb-pms-kpis article{padding:10px}.yb-pms-kpis strong{font-size:19px}.yb-pms-booking-details{max-height:420px;overflow:auto}}
+
+/* Match the hall planner's short-viewport scroll policy while preserving the
+   approved wide-desktop PMS composition. Only the room grid scrolls. */
+@media (min-width:1051px) and (max-width:1499px){
+  .yb-pms{padding:14px}
+  .yb-pms-heading{margin-bottom:12px}
+  .yb-pms-toolbar,.yb-pms-filters{margin-bottom:10px}
+  .yb-pms-board-scroll{max-height:calc(100dvh - 385px);min-height:220px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .yb-pms-date{min-height:55px;padding:8px 2px}
+  .yb-pms-room,.yb-pms-track{min-height:67px}
+  .yb-pms-booking{min-height:44px;padding:6px 8px}
+}
+@media (max-height:950px){
+  .yb-pms-board-scroll{max-height:calc(100dvh - 365px);min-height:190px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .yb-pms-room-head,.yb-pms-days{position:sticky;top:0}
+}
+@media (max-width:1050px){
+  .yb-pms-layout{min-width:0}
+  .yb-pms-main{width:100%;min-width:0}
+  .yb-pms-board-scroll{max-height:calc(100dvh - 345px);min-height:200px;overflow:auto;overscroll-behavior:contain}
+  .yb-pms-grid{min-width:0;grid-template-columns:150px minmax(630px,1fr);width:max-content}
+  .yb-pms-room-head,.yb-pms-room{position:sticky;inset-inline-start:0}
+}
+@media (max-width:650px){
+  .yb-pms-board-scroll{max-height:calc(100dvh - 320px);min-height:200px;overflow:auto}
+  .yb-pms-grid{grid-template-columns:112px minmax(560px,1fr)}
+  .yb-pms-room{padding:7px;gap:5px}
+  .yb-pms-room-icon{flex-basis:25px;height:25px}
+  .yb-pms-room-copy strong{font-size:11px}
+  .yb-pms-date{min-height:52px;padding:7px 2px}
+  .yb-pms-date strong{font-size:10px}
+  .yb-pms-room,.yb-pms-track{min-height:65px}
+  .yb-pms-booking{min-height:42px;padding:5px 6px}
+}
