@@ -115,7 +115,7 @@
               <div class="yb-work-heading"><i class="fa fa-cube"/><strong>الباقة والمتطلبات الأساسية</strong></div>
               <div class="yb-work-package-selector">
                 <label for="package_id" string="الباقة"/>
-                <field name="package_id" nolabel="1" readonly="state not in ('draft','hold')"/>
+                <field name="package_id" nolabel="1" domain="[('company_id','=',company_id),('hall_id','=',hall_id)]" readonly="state not in ('draft','hold')" options="{'no_create': True, 'no_create_edit': True}"/>
               </div>
               <div class="yb-work-help" invisible="package_id">يمكن الحجز بدون باقة، ويُعتمد سعر فترات القاعة.</div>
               <div class="yb-work-help" invisible="not package_id">الخدمات التالية مشمولة في الباقة ولا تُحتسب كخدمات ملحقة.</div>
@@ -370,7 +370,7 @@
   <record id="view_booking_service_tree" model="ir.ui.view"><field name="name">yousentech.booking.service.tree</field><field name="model">yousentech.booking.service</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
   <record id="view_booking_service_form" model="ir.ui.view"><field name="name">yousentech.booking.service.form</field><field name="model">yousentech.booking.service</field><field name="arch" type="xml"><form string="خدمة الحجز"><sheet><group><field name="name" string="الاسم"/><field name="product_id" string="المنتج"/><field name="price" string="السعر"/><field name="tax_ids" string="الضرائب" widget="many2many_tags"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
 
-  <record id="view_booking_package_tree" model="ir.ui.view"><field name="name">yousentech.booking.package.tree</field><field name="model">yousentech.booking.package</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="pricing_type" string="طريقة التسعير"/><field name="price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_booking_package_tree" model="ir.ui.view"><field name="name">yousentech.booking.package.tree</field><field name="model">yousentech.booking.package</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="hall_id" string="القاعة"/><field name="pricing_type" string="طريقة التسعير"/><field name="price" string="السعر"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
   <record id="view_booking_package_form" model="ir.ui.view">
     <field name="name">yousentech.booking.package.form</field>
     <field name="model">yousentech.booking.package</field>
@@ -383,6 +383,7 @@
               <group col="2">
                 <field name="name" string="اسم الباقة"/>
                 <field name="company_id" string="الشركة / الفرع"/>
+                <field name="hall_id" string="القاعة" required="1" options="{'no_create': True, 'no_create_edit': True}"/>
                 <field name="sequence" string="الترتيب"/>
                 <field name="active" string="نشط"/>
               </group>
