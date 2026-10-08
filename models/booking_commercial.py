@@ -103,7 +103,7 @@ class BookingEvent(models.Model):
                 return tax.compute_all(price, currency=rec.currency_id, quantity=qty,
                                        product=product, partner=rec.partner_id)["total_excluded"]
             untaxed_gross = (split(package_price, len(rec.period_ids)) if fixed else
-                             sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
+                             sum(split(l.price_unit, l.quantity * len(rec.period_ids), l.service_id.product_id) for l in rec.service_line_ids)
                              if rec.package_id else sum(split(configured.get(period.id, rec.hall_id.list_price or 0.0)) for period in rec.period_ids))
             untaxed_gross += sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             discount = (untaxed_gross * rec.discount_value / 100.0 if rec.discount_type == "percent"
@@ -119,7 +119,7 @@ class BookingEvent(models.Model):
                                          product=product, partner=rec.partner_id)
                 return result["total_included"] - result["total_excluded"]
             tax_total = (taxed_amount(package_price, len(rec.period_ids)) if fixed else
-                         sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
+                         sum(taxed_amount(l.price_unit, l.quantity * len(rec.period_ids), l.service_id.product_id) for l in rec.service_line_ids)
                          if rec.package_id else sum(taxed_amount(configured.get(period.id, rec.hall_id.list_price or 0.0)) for period in rec.period_ids))
             tax_total += sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             rec.amount_untaxed = untaxed_gross - discount
