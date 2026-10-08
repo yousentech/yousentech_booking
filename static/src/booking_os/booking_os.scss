@@ -560,6 +560,12 @@
  .yb-os .yb-board:has(.yb-month-calendar) .yb-month-bookings>.yb-month-booking{min-height:23px;padding:3px 4px}
  .yb-os .yb-board:has(.yb-month-calendar) .yb-month-more{min-height:20px;line-height:13px;padding:2px 3px}
 }
+/* Keep the month independently scrollable on short viewports. No clipping of
+   the final week; full-size desktops retain their approved card styling. */
+@media (max-height:950px){
+ .yb-os .yb-board:has(.yb-month-calendar){max-height:calc(100dvh - 410px)!important;min-height:210px;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin;overscroll-behavior:contain}
+ .yb-os .yb-board:has(.yb-month-calendar) .yb-month-weekdays{position:sticky;top:0;z-index:4;background:#fafbff}
+}
 .yb-os .yb-day-overlay{position:fixed;inset:0;z-index:1100;background:rgba(24,30,56,.28);display:flex;justify-content:flex-start}
 .yb-os .yb-day-panel{width:410px;max-width:94vw;height:100%;overflow:auto;background:#fff;box-shadow:0 0 36px rgba(25,30,60,.18);padding:22px;display:flex;flex-direction:column;gap:15px}
 .yb-os .yb-day-panel-header{position:relative;border-bottom:1px solid #e8eaf4;padding-bottom:16px}
