@@ -50,9 +50,6 @@
                   <span class="yb-month-date-pair"><strong t-esc="monthDayNumber(day)"/><small class="yb-month-hijri" t-esc="hijri(day)"/></span>
                   <span class="yb-month-today" t-if="isToday(day)">اليوم</span>
                 </div>
-                <div class="yb-month-holidays" t-if="isHoliday(day)">
-                  <span t-foreach="holidaysFor(day)" t-as="holiday" t-key="holiday.id" class="yb-month-holiday"><i class="fa fa-umbrella"/> <t t-esc="holiday.name"/></span>
-                </div>
                 <div class="yb-month-bookings">
                   <button t-foreach="monthEvents(day).slice(0, 1)" t-as="event" t-key="event.id"
                           t-att-class="'yb-month-booking ' + eventClass(event)"
@@ -67,6 +64,11 @@
                   </button>
                 </div>
               </div>
+            </div>
+            <div class="yb-month-holidays-footer" t-if="monthHolidayItems.length">
+              <span class="yb-month-holidays-footer-title"><i class="fa fa-calendar"/> الإجازات والمناسبات:</span>
+              <span t-foreach="monthHolidayItems" t-as="holiday" t-key="holiday.id" class="yb-month-holiday-footer-item">
+                <strong t-esc="holiday.name"/><small t-esc="holiday.date"/></span>
             </div>
           </div>
           <t t-else="">
