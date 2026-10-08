@@ -193,11 +193,9 @@ class BookingFinanceMixin(models.AbstractModel):
                 lines = [line(l.service_id.display_name, l.service_id.product_id,
                               l.quantity * len(periods), l.price_unit) for l in self.service_line_ids]
             else:
-                configured = {entry.period_id.id: entry.price for entry in self.hall_id.period_price_ids}
                 lines = [line(_("%s / %s") % (self.hall_id.display_name, period.display_name),
-                              self.hall_id.product_id, 1.0,
-                              configured.get(period.id, self.hall_id.list_price or 0.0))
-                         for period in periods]
+                              self.hall_id.product_id, 1.0, price)
+                         for period, price in self._get_hall_period_prices()]
             lines += [line(l.service_id.display_name, l.service_id.product_id,
                            l.quantity, l.price_unit) for l in self.addon_line_ids]
             return lines
