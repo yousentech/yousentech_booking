@@ -71,7 +71,7 @@
       <div class="yb-pms-legend"><span class="confirmed">مؤكد</span><span class="hold">مؤقت</span><span class="checked_in">تم الدخول</span><span class="checked_out">تم الخروج</span><span class="draft">مسودة</span></div>
     </section>
     <aside class="yb-pms-side">
-      <section class="yb-pms-calendar" t-if="!selectedBooking">
+      <section class="yb-pms-calendar">
         <h3><i class="fa fa-calendar"/> <t t-esc="monthLabel"/></h3>
         <div class="yb-pms-mini-days"><span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span></div>
         <div class="yb-pms-mini-grid">
@@ -80,23 +80,34 @@
              t-on-click="() => { this.state.anchor = day; this.load(); }" t-esc="day.getDate()"/>
         </div>
       </section>
-      <section class="yb-pms-booking-details">
-        <div class="yb-pms-panel-head"><h3>تفاصيل الحجز</h3><button t-if="selectedBooking" t-on-click="closeDetails" aria-label="إغلاق">×</button></div>
-        <t t-if="selectedBooking">
-          <div class="yb-pms-guest-avatar"><i class="fa fa-user-circle-o"/></div>
-          <span t-att-class="'yb-stay-status ' + stateClass(selectedBooking.state)" t-esc="label(selectedBooking.state)"/>
-          <h3 t-esc="selectedBooking.partner_id ? selectedBooking.partner_id[1] : selectedBooking.name"/>
-          <p t-esc="selectedBooking.name"/>
-          <dl><dt>الغرفة</dt><dd t-esc="selectedBooking.resource_id ? selectedBooking.resource_id[1] : ''"/>
-              <dt>تاريخ الوصول</dt><dd t-esc="selectedBooking.checkin_date"/>
-              <dt>تاريخ المغادرة</dt><dd t-esc="selectedBooking.checkout_date || 'إقامة مفتوحة'"/>
-              <dt>الإجمالي</dt><dd t-esc="selectedBooking.amount_total"/></dl>
-          <button class="yb-pms-open" t-on-click="() => this.openBooking(selectedBooking)">فتح الحجز وإدارته <i class="fa fa-external-link"/></button>
-        </t>
-        <div class="yb-pms-empty-detail" t-else=""><i class="fa fa-hand-pointer-o"/><strong>اختر حجزًا من المخطط</strong><small>ستظهر بيانات النزيل والتواريخ وتفاصيل الحجز هنا</small></div>
-      </section>
     </aside>
   </div>
+  <div class="yb-pms-modal-backdrop" t-if="selectedBooking" t-on-click="closeDetails">
+    <section class="yb-pms-modal" role="dialog" aria-modal="true" aria-label="تفاصيل الحجز" t-on-click.stop="">
+      <div class="yb-pms-panel-head">
+        <h3>تفاصيل الحجز</h3>
+        <button type="button" t-on-click="closeDetails" aria-label="إغلاق تفاصيل الحجز">×</button>
+      </div>
+      <div class="yb-pms-modal-content">
+        <div class="yb-pms-guest-avatar"><i class="fa fa-user-circle-o"/></div>
+        <span t-att-class="'yb-stay-status ' + stateClass(selectedBooking.state)" t-esc="label(selectedBooking.state)"/>
+        <h3 t-esc="selectedBooking.partner_id ? selectedBooking.partner_id[1] : selectedBooking.name"/>
+        <p t-esc="selectedBooking.name"/>
+        <dl>
+          <dt>الغرفة</dt><dd t-esc="selectedBooking.resource_id ? selectedBooking.resource_id[1] : ''"/>
+          <dt>تاريخ الوصول</dt><dd t-esc="selectedBooking.checkin_date"/>
+          <dt>تاريخ المغادرة</dt><dd t-esc="selectedBooking.checkout_date || 'إقامة مفتوحة'"/>
+          <dt>الإجمالي</dt><dd t-esc="selectedBooking.amount_total"/>
+        </dl>
+      </div>
+      <div class="yb-pms-modal-footer">
+        <button type="button" class="yb-pms-open" t-on-click="() => this.openBooking(selectedBooking)">
+          فتح الحجز وإدارته <i class="fa fa-external-link"/>
+        </button>
+      </div>
+    </section>
+  </div>
+
 </div>
 </t>
 </templates>
