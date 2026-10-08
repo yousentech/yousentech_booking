@@ -163,3 +163,18 @@
 .yb-pms-holiday-tag{display:inline-flex;align-items:center;gap:7px;background:#ffeaee;color:#c3344d;border-radius:7px;padding:5px 9px;font-weight:700}
 .yb-pms-holiday-tag small{font-weight:400;color:#a65a68}
 @media(max-width:650px){.yb-pms-kpis{gap:7px}.yb-pms-kpis article{gap:7px}.yb-pms-kpis article>i{flex-basis:31px;height:31px}}
+
+/* Keep booking details reachable on short desktop viewports: the side rail
+   scrolls independently instead of being clipped below the mini calendar. */
+@media (min-width:1051px){
+  .yb-pms-side{
+    max-height:calc(100dvh - 535px);
+    min-height:260px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+    align-self:flex-start;
+  }
+  .yb-pms-side > *{flex-shrink:0}
+}
