@@ -12,6 +12,7 @@
   <menuitem id="menu_booking_halls" name="القاعات" parent="menu_booking_event_configuration" action="action_booking_halls" sequence="10"/>
   <menuitem id="menu_booking_periods" name="الفترات" parent="menu_booking_event_configuration" action="action_booking_periods" sequence="20"/>
   <menuitem id="menu_booking_services" name="الخدمات" parent="menu_booking_event_configuration" action="action_booking_services" sequence="30"/>
+  <menuitem id="menu_booking_holidays" name="أيام الإجازات" parent="menu_booking_event_configuration" action="action_booking_holidays" sequence="35" groups="yousentech_booking.group_booking_manager"/>
   <menuitem id="menu_booking_packages" name="الباقات" parent="menu_booking_event_configuration" action="action_booking_packages" sequence="40"/>
 
   <menuitem id="menu_booking_stay_configuration" name="إعدادات الإقامة" parent="menu_booking_configuration" sequence="20"/>
