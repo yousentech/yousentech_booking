@@ -188,10 +188,10 @@ class BookingFinanceMixin(models.AbstractModel):
             periods = self.period_ids
             if self.package_id and self.package_id.pricing_type == "fixed":
                 lines = [line(_("Package: %s") % self.package_id.display_name,
-                              False, len(periods), self.package_id.price)]
+                              False, 1.0, self.package_id.price)]
             elif self.package_id:
                 lines = [line(l.service_id.display_name, l.service_id.product_id,
-                              l.quantity * len(periods), l.price_unit) for l in self.service_line_ids]
+                              l.quantity, l.price_unit) for l in self.service_line_ids]
             else:
                 lines = [line(_("%s / %s") % (self.hall_id.display_name, period.display_name),
                               self.hall_id.product_id, 1.0, price)
