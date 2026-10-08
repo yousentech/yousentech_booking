@@ -21,6 +21,14 @@
     <select t-on-change="onFloor" aria-label="الطابق"><option value="all">جميع الطوابق</option><option t-foreach="floors" t-as="floor" t-key="floor" t-att-value="floor" t-esc="floor"/></select>
     <select t-on-change="onStatus" aria-label="حالة الحجز"><option value="all">جميع الحالات</option><option value="draft">مسودة</option><option value="hold">مؤقت</option><option value="confirmed">مؤكد</option><option value="checked_in">تم الدخول</option><option value="checked_out">تم الخروج</option></select>
   </div>
+  <section class="yb-pms-kpis">
+    <article><i class="fa fa-bed"/><div><small>إجمالي الغرف</small><strong t-esc="stats.total"/></div></article>
+    <article><i class="fa fa-check-circle"/><div><small>الغرف المتاحة</small><strong t-esc="stats.available"/></div></article>
+    <article><i class="fa fa-key"/><div><small>المشغولة اليوم</small><strong t-esc="stats.occupied"/></div></article>
+    <article><i class="fa fa-sign-in"/><div><small>وصول اليوم</small><strong t-esc="stats.arrivals"/></div></article>
+    <article><i class="fa fa-sign-out"/><div><small>مغادرة اليوم</small><strong t-esc="stats.departures"/></div></article>
+  </section>
+
   <div class="yb-pms-layout">
     <section class="yb-pms-main">
       <div class="yb-pms-board-title"><div><h2>جدول إشغال الغرف</h2><small>اختر حجزًا لعرض التفاصيل، أو غرفة لإنشاء حجز</small></div><span class="yb-pms-live"><i class="fa fa-circle"/> بيانات الحجوزات</span></div>
@@ -89,13 +97,6 @@
       </section>
     </aside>
   </div>
-  <section class="yb-pms-kpis">
-    <article><i class="fa fa-bed"/><div><small>إجمالي الغرف</small><strong t-esc="stats.total"/></div></article>
-    <article><i class="fa fa-check-circle"/><div><small>الغرف المتاحة</small><strong t-esc="stats.available"/></div></article>
-    <article><i class="fa fa-key"/><div><small>المشغولة اليوم</small><strong t-esc="stats.occupied"/></div></article>
-    <article><i class="fa fa-sign-in"/><div><small>وصول اليوم</small><strong t-esc="stats.arrivals"/></div></article>
-    <article><i class="fa fa-sign-out"/><div><small>مغادرة اليوم</small><strong t-esc="stats.departures"/></div></article>
-  </section>
 </div>
 </t>
 </templates>
