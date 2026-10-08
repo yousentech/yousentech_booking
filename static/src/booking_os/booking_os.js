@@ -23,6 +23,8 @@ export class BookingOS extends Component {
         const today = new Date();
         this.state = useState({
             loading: true,
+            viewMode: "week",
+            holidays: [],
             anchor: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
             halls: [],
             events: [],
@@ -47,6 +49,40 @@ export class BookingOS extends Component {
         const saturdayOffset = day === 6 ? 0 : -(day + 1);
         const start = new Date(anchor.getTime() + saturdayOffset * DAY_MS);
         return Array.from({ length: 7 }, (_, i) => new Date(start.getTime() + i * DAY_MS));
+    }
+
+    get displayDays() {
+        if (this.state.viewMode === "week") return this.weekDays;
+        const a = this.state.anchor;
+        const count = new Date(a.getFullYear(), a.getMonth() + 1, 0).getDate();
+        return Array.from({ length: count }, (_, i) => new Date(a.getFullYear(), a.getMonth(), i + 1));
+    }
+
+    get gridStyle() {
+        return `grid-template-columns: 168px repeat(${this.displayDays.length}, minmax(${this.state.viewMode === "month" ? 112 : 142}px, 1fr));`;
+    }
+
+    holidaysFor(day) {
+        const date = this.iso(day);
+        return this.state.holidays.filter((h) => h.date === date);
+    }
+
+    isHoliday(day) { return this.holidaysFor(day).length > 0; }
+
+    async setViewMode(mode) {
+        if (mode !== "week" && mode !== "month") return;
+        this.state.viewMode = mode;
+        await this.loadBoard();
+    }
+
+    async shiftPeriod(delta) {
+        if (this.state.viewMode === "month") {
+            const a = this.state.anchor;
+            this.state.anchor = new Date(a.getFullYear(), a.getMonth() + delta, 1);
+        } else {
+            this.state.anchor = new Date(this.state.anchor.getFullYear(), this.state.anchor.getMonth(), this.state.anchor.getDate() + delta * 7);
+        }
+        await this.loadBoard();
     }
 
     get visibleHalls() {
@@ -90,17 +126,18 @@ export class BookingOS extends Component {
     async loadBoard() {
         this.state.loading = true;
         const companyId = this.company.currentCompany.id;
-        const days = this.weekDays;
+        const days = this.displayDays;
         const from = this.iso(days[0]);
-        const to = this.iso(days[6]);
-        const [halls, periods, events] = await Promise.all([
+        const to = this.iso(days[days.length - 1]);
+        const [halls, periods, events, holidays] = await Promise.all([
             this.orm.searchRead("yousentech.booking.hall", [["company_id", "=", companyId], ["active", "=", true]], ["name", "capacity", "sequence"], { order: "sequence,id" }),
             this.orm.searchRead("yousentech.booking.period", [["company_id", "=", companyId], ["active", "=", true]], ["name", "sequence"], { order: "sequence,id" }),
             this.orm.searchRead("yousentech.booking.event", [["company_id", "=", companyId], ["booking_date", ">=", from], ["booking_date", "<=", to], ["state", "!=", "cancelled"]], ["name", "partner_id", "booking_date", "hall_id", "period_ids", "state", "amount_total"], { order: "booking_date,id" }),
+            this.orm.searchRead("yousentech.booking.holiday", [["company_id", "=", companyId], ["date", ">=", from], ["date", "<=", to], ["active", "=", true]], ["name", "date"]),
         ]);
         const today = this.iso(new Date());
         Object.assign(this.state, {
-            halls, periods, events,
+            halls, periods, events, holidays,
             stats: {
                 today: events.filter((e) => e.booking_date === today).length,
                 holds: events.filter((e) => e.state === "hold").length,
