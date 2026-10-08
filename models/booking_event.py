@@ -23,6 +23,7 @@ class BookingEvent(models.Model):
     customer_identity = fields.Char(related="partner_id.yousentech_booking_identity", readonly=False, string="رقم الهوية")
     customer_nationality_id = fields.Many2one(related="partner_id.yousentech_booking_nationality_id", readonly=False, string="الجنسية")
 
+    description = fields.Text(string="الوصف")
     booking_date = fields.Date(string="تاريخ الحجز", required=True, index=True, tracking=True)
     hall_id = fields.Many2one("yousentech.booking.hall", string="القاعة", required=True, domain="[('company_id', '=', company_id)]", tracking=True)
     period_ids = fields.Many2many("yousentech.booking.period", string="الفترات", domain="[('company_id', '=', company_id)]")
