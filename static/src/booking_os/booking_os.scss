@@ -527,3 +527,29 @@
  .yb-os .yb-month{min-width:110px}
  .yb-os .yb-stats article{min-width:0}
 }
+
+
+/* Keep every month week reachable inside Odoo's fixed-height action area.
+   Scroll the planner itself; do not clip the calendar at the browser viewport. */
+.yb-os{min-height:0;min-width:0}
+.yb-os .yb-board{
+  min-width:0;
+  max-height:clamp(320px, calc(100dvh - 405px), 850px);
+  overflow-y:auto!important;
+  overflow-x:auto!important;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:#a9b1c8 #f3f5fa;
+}
+.yb-os .yb-month-calendar{height:auto!important;max-height:none!important;overflow:visible!important}
+.yb-os .yb-month-days{height:auto!important;max-height:none!important;grid-auto-rows:minmax(125px,auto)}
+.yb-os .yb-month-day{height:auto!important;max-height:none!important;overflow:visible!important}
+.yb-os .yb-month-weekdays{position:sticky;top:0;z-index:5}
+@media(max-width:1250px){
+ .yb-os .yb-board{max-height:clamp(300px, calc(100dvh - 370px), 760px)}
+ .yb-os .yb-month-days{grid-auto-rows:minmax(112px,auto)}
+}
+@media(max-width:750px){
+ .yb-os .yb-board{max-height:clamp(300px, calc(100dvh - 325px), 700px)}
+ .yb-os .yb-month-days{grid-auto-rows:minmax(92px,auto)}
+}
