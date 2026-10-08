@@ -65,3 +65,26 @@
 .yb-event-form .yb-event-description>.o_field_widget{flex:1;min-width:0;font-size:13px}
 .yb-event-form .yb-event-description textarea{min-height:44px!important}
 @media(max-width:850px){.yb-event-form .yb-event-overview{grid-template-columns:1fr!important}.yb-event-form .yb-event-overview>.yb-info-card{min-height:0}}
+
+/* Premium outlined inputs. Direction is inherited from Odoo's active language. */
+.yb-event-form .yb-info-card{box-shadow:0 3px 16px rgba(40,48,83,.035);border-color:#e0e5f0}
+.yb-event-form .yb-info-card .yb-info-body>small{font-size:15px!important;color:#202942!important;font-weight:800!important;margin-bottom:14px}
+.yb-event-form .yb-customer-name,.yb-event-form .yb-customer-detail,.yb-event-form .yb-venue-hall,.yb-event-form .yb-event-date,.yb-event-form .yb-event-periods{display:flex;flex-direction:column;align-items:stretch;gap:5px;margin-top:10px}
+.yb-event-form .yb-customer-name label,.yb-event-form .yb-customer-detail label,.yb-event-form .yb-venue-hall label,.yb-event-form .yb-event-date>small,.yb-event-form .yb-event-periods>small{width:auto!important;font-size:12px!important;color:#263048!important;font-weight:750!important;line-height:1.4}
+.yb-event-form .yb-customer-name>.o_field_widget,.yb-event-form .yb-customer-detail>.o_field_widget,.yb-event-form .yb-venue-hall>.o_field_widget,.yb-event-form .yb-event-date>.o_field_widget,.yb-event-form .yb-event-periods>.o_field_widget{width:100%!important;max-width:none!important;min-width:0;min-height:37px;border:1px solid #cfd7e6!important;border-radius:9px!important;background:#fff;padding:5px 10px!important;box-sizing:border-box}
+.yb-event-form .yb-customer-name input,.yb-event-form .yb-customer-detail input,.yb-event-form .yb-venue-hall input,.yb-event-form .yb-event-date input{border:0!important;box-shadow:none!important;min-height:25px;background:transparent!important;font-size:13px!important}
+.yb-event-form .yb-customer-name>.o_field_widget:focus-within,.yb-event-form .yb-customer-detail>.o_field_widget:focus-within,.yb-event-form .yb-venue-hall>.o_field_widget:focus-within,.yb-event-form .yb-event-date>.o_field_widget:focus-within,.yb-event-form .yb-event-periods>.o_field_widget:focus-within{border-color:#7368e7!important;box-shadow:0 0 0 3px rgba(111,99,229,.1)}
+.yb-event-form .yb-customer-fields{width:100%!important}
+.yb-event-form .yb-customer-card .yb-info-body,.yb-event-form .yb-venue-card .yb-info-body{max-width:none!important}
+.yb-event-form .yb-event-overview>.yb-info-card{min-height:0!important;padding:20px!important}
+.yb-event-form .yb-venue-card .yb-event-date,.yb-event-form .yb-venue-card .yb-event-periods{flex:1;min-width:0}
+.yb-event-form .yb-venue-card .yb-event-finance-inline{border:1px solid #e2eee8;background:#f7fcf9;border-radius:12px;padding:13px;margin-top:18px;display:flex;align-items:center;gap:14px}
+.yb-event-form .yb-event-finance-inline>strong{font-size:13px;color:#253c33}
+.yb-event-form .yb-event-description{display:flex;align-items:stretch}
+.yb-event-form .yb-event-description>.o_field_widget{border:1px solid #cfd7e6;border-radius:9px;background:white;padding:5px 9px}
+.yb-event-form .yb-event-description textarea{border:0!important;box-shadow:none!important}
+.yb-event-form .yb-package-controls .o_field_widget:not(.o_field_boolean){border-radius:8px}
+.yb-event-form .yb-package-controls input,.yb-event-form .yb-package-controls select{border:1px solid #cfd7e6!important;border-radius:8px!important;min-height:36px!important}
+.yb-event-form .yb-package-controls .o_form_label{color:#263048!important;font-weight:700!important}
+.yb-event-form .yb-event-tabs>.nav-tabs .nav-link.active{border-bottom:2px solid #6859e6!important}
+@media(min-width:1000px){.yb-event-form .yb-customer-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:12px;align-content:start}.yb-event-form .yb-customer-fields>small,.yb-event-form .yb-customer-name{grid-column:1/-1}.yb-event-form .yb-venue-card .yb-info-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.yb-event-form .yb-venue-card .yb-info-body>small,.yb-event-form .yb-venue-hall,.yb-event-form .yb-event-finance-inline{grid-column:1/-1}}
