@@ -267,3 +267,54 @@
   .yb-event-form .yb-event-workspace{grid-template-columns:minmax(0,1fr)}
   .yb-event-form .yb-work-finance{grid-column:auto}
 }
+
+/* Event header: one prominent, compact booking summary above the customer and venue cards. */
+.yb-event-form .yb-booking-summary-header{
+  display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,2.2fr);
+  align-items:center;gap:20px;padding:16px 20px;margin:8px 0 14px;
+  border:1px solid #d5d0f4;border-radius:15px;
+  background:linear-gradient(115deg,#f4f1ff 0%,#f8f7ff 55%,#f0f5ff 100%);
+  box-shadow:0 4px 15px rgba(77,69,145,.05);
+}
+.yb-event-form .yb-booking-summary-identity{display:flex;align-items:center;gap:12px;min-width:0}
+.yb-event-form .yb-booking-summary-identity .yb-booking-icon{flex:none}
+.yb-event-form .yb-booking-summary-identity small{display:block;color:#7066a5;font-size:12px;font-weight:700}
+.yb-event-form .yb-booking-summary-identity h1{margin:3px 0 0;font-size:25px!important;line-height:1.2;font-weight:850!important;color:#30296b}
+.yb-event-form .yb-booking-summary-identity h1 .o_field_widget{font-size:inherit!important;font-weight:inherit!important;color:inherit!important}
+.yb-event-form .yb-booking-summary-finance{min-width:0}
+.yb-event-form .yb-booking-summary-finance .yb-finance-strip-head{margin-bottom:7px;font-weight:750;color:#514681}
+.yb-event-form .yb-booking-summary-finance .yb-finance-strip-values{display:flex;flex-wrap:wrap;gap:8px;justify-content:stretch}
+.yb-event-form .yb-booking-summary-finance .yb-finance-metric{
+  flex:1 1 125px;min-width:110px;margin:0;padding:9px 11px;
+  background:rgba(255,255,255,.9);border:1px solid #e4e3f2;border-radius:10px;
+}
+.yb-event-form .yb-booking-summary-finance .yb-finance-total{background:#e7edff;border-color:#cfdafa}
+.yb-event-form .yb-booking-summary-finance .yb-finance-total .o_field_widget{font-size:17px!important;font-weight:850!important}
+@media(max-width:950px){
+ .yb-event-form .yb-booking-summary-header{grid-template-columns:1fr;gap:12px;padding:13px}
+}
+@media(max-width:520px){
+ .yb-event-form .yb-booking-summary-identity h1{font-size:20px!important}
+ .yb-event-form .yb-booking-summary-finance .yb-finance-metric{flex-basis:calc(50% - 8px)}
+}
+/* Make the package many2one visibly framed like the customer nationality input. */
+.yb-event-form .yb-work-package-selector>.o_field_widget{
+ display:flex!important;align-items:center!important;width:100%!important;
+ min-width:0!important;min-height:35px!important;max-height:35px!important;
+ padding:4px 10px!important;margin:0!important;box-sizing:border-box!important;
+ background:#fff!important;border:1px solid #cfd7e6!important;
+ border-radius:9px!important;box-shadow:none!important;
+}
+.yb-event-form .yb-work-package-selector .o_field_many2one .o_input_dropdown,
+.yb-event-form .yb-work-package-selector .o_field_many2one .o-autocomplete{
+ width:100%!important;min-width:0!important;background:transparent!important;
+}
+.yb-event-form .yb-work-package-selector .o_field_widget input,
+.yb-event-form .yb-work-package-selector .o_field_widget .o_input{
+ width:100%!important;min-width:0!important;height:25px!important;
+ padding:0!important;margin:0!important;border:0!important;
+ background:transparent!important;box-shadow:none!important;
+}
+.yb-event-form .yb-work-package-selector>.o_field_widget:focus-within{
+ border-color:#7368e7!important;box-shadow:0 0 0 3px rgba(111,99,229,.1)!important;
+}
