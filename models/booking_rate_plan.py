@@ -10,6 +10,7 @@ class StayRatePlan(models.Model):
     active=fields.Boolean(default=True)
     company_id=fields.Many2one("res.company",required=True,default=lambda self:self.env.company,index=True)
     pricing_type=fields.Selection([("fixed","سعر ثابت لليلة"),("resource","سعر مورد الإقامة"),("percent","تعديل نسبة على سعر المورد")],string="طريقة التسعير",default="resource",required=True)
+    tax_id=fields.Many2one("account.tax",string="ضريبة الإقامة والإضافات",domain="[('company_id','=',company_id),('type_tax_use','in',('sale','none'))]")
     fixed_price=fields.Monetary()
     percent_adjustment=fields.Float()
     currency_id=fields.Many2one(related="company_id.currency_id",store=True,readonly=True)
