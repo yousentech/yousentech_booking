@@ -177,7 +177,7 @@ class BookingFinanceMixin(models.AbstractModel):
         if ratio<=0:
             raise UserError(_("Invoice ratio must be greater than zero."))
         if self._name == "yousentech.booking.event":
-            tax = self.package_id.tax_id
+            tax = self.package_id.tax_id if self.package_id else self.hall_id.tax_id
             gross_untaxed = self.amount_untaxed + self.discount_amount
             factor = self.amount_untaxed / gross_untaxed if gross_untaxed else 1.0
             tax_ids = [(6, 0, tax.ids)] if tax else [(6, 0, [])]
@@ -185,15 +185,19 @@ class BookingFinanceMixin(models.AbstractModel):
                 return (0, 0, {"product_id": product.id if product else False,
                                 "name": name, "quantity": qty,
                                 "price_unit": price * ratio * factor, "tax_ids": tax_ids})
+            periods = self.period_ids
             if self.package_id and self.package_id.pricing_type == "fixed":
                 lines = [line(_("Package: %s") % self.package_id.display_name,
-                              False, 1.0, self.package_id.price)]
+                              False, len(periods), self.package_id.price)]
             elif self.package_id:
                 lines = [line(l.service_id.display_name, l.service_id.product_id,
-                              l.quantity, l.price_unit) for l in self.service_line_ids]
+                              l.quantity * len(periods), l.price_unit) for l in self.service_line_ids]
             else:
-                lines = [line(label or _("Hall: %s") % self.hall_id.display_name,
-                              self.hall_id.product_id, 1.0, self.hall_id.list_price)]
+                configured = {entry.period_id.id: entry.price for entry in self.hall_id.period_price_ids}
+                lines = [line(_("%s / %s") % (self.hall_id.display_name, period.display_name),
+                              self.hall_id.product_id, 1.0,
+                              configured.get(period.id, self.hall_id.list_price or 0.0))
+                         for period in periods]
             lines += [line(l.service_id.display_name, l.service_id.product_id,
                            l.quantity, l.price_unit) for l in self.addon_line_ids]
             return lines
