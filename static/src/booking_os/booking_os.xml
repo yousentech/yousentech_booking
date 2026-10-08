@@ -29,10 +29,10 @@
       </div>
 
       <div class="yb-stats">
-        <article><span class="yb-stat-icon green"><i class="fa fa-calendar-check-o"/></span><div><small>مناسبات اليوم</small><strong t-esc="state.stats.today"/></div></article>
-        <article><span class="yb-stat-icon amber"><i class="fa fa-hourglass-half"/></span><div><small>حجوزات مؤقتة</small><strong t-esc="state.stats.holds"/></div></article>
+        <article><span class="yb-stat-icon green"><i class="fa fa-calendar-check-o"/></span><div><small>مناسبات اليوم</small><strong t-esc="visibleStats.today"/></div></article>
+        <article><span class="yb-stat-icon amber"><i class="fa fa-hourglass-half"/></span><div><small>حجوزات مؤقتة</small><strong t-esc="visibleStats.holds"/></div></article>
         <article><span class="yb-stat-icon blue"><i class="fa fa-building-o"/></span><div><small>القاعات النشطة</small><strong t-esc="state.halls.length"/></div></article>
-        <article><span class="yb-stat-icon violet"><i class="fa fa-calendar"/></span><div><small>حجوزات الفترة</small><strong t-esc="state.stats.total"/></div></article>
+        <article><span class="yb-stat-icon violet"><i class="fa fa-calendar"/></span><div><small>حجوزات الفترة</small><strong t-esc="visibleStats.total"/></div></article>
       </div>
 
       <section class="yb-board">
@@ -54,16 +54,16 @@
                   <span t-foreach="holidaysFor(day)" t-as="holiday" t-key="holiday.id" class="yb-month-holiday"><i class="fa fa-umbrella"/> <t t-esc="holiday.name"/></span>
                 </div>
                 <div class="yb-month-bookings">
-                  <button t-foreach="monthEvents(day).slice(0, 2)" t-as="event" t-key="event.id"
+                  <button t-foreach="monthEvents(day).slice(0, 1)" t-as="event" t-key="event.id"
                           t-att-class="'yb-month-booking ' + eventClass(event)"
                           t-on-click.stop="() => this.openEvent(event)">
                     <span class="yb-month-booking-head"><strong t-esc="event.name"/><small t-esc="eventLabel(event)"/></span>
                     <span class="yb-month-booking-detail" t-if="event.partner_id" t-esc="event.partner_id[1]"/>
                     <span class="yb-month-booking-hall" t-esc="monthEventLabel(event)"/>
                   </button>
-                  <button t-if="monthEvents(day).length > 2" class="yb-month-more yb-month-more-compact"
+                  <button t-if="monthEvents(day).length > 1" class="yb-month-more yb-month-more-compact"
                           t-on-click.stop="() => this.openDayBookings(day)">
-                    +<t t-esc="monthEvents(day).length - 2"/> حجوزات أخرى
+                    +<t t-esc="monthEvents(day).length - 1"/> حجوزات أخرى
                   </button>
                 </div>
               </div>
@@ -103,10 +103,10 @@
           <header class="yb-day-panel-header">
             <button class="yb-day-close" t-on-click="() => this.closeDayBookings()" aria-label="إغلاق"><i class="fa fa-times"/></button>
             <h3>حجوزات يوم <t t-esc="state.selectedDay"/></h3>
-            <small><t t-esc="state.events.filter(e => e.booking_date === state.selectedDay).length"/> حجوزات</small>
+            <small><t t-esc="dayEvents(state.selectedDay).length"/> حجوزات</small>
           </header>
           <div class="yb-day-panel-list">
-            <button t-foreach="state.events.filter(e => e.booking_date === state.selectedDay &amp;&amp; visibleHalls.some(h => e.hall_id &amp;&amp; h.id === e.hall_id[0]))" t-as="event" t-key="event.id"
+            <button t-foreach="dayEvents(state.selectedDay)" t-as="event" t-key="event.id"
                     t-att-class="'yb-day-panel-event ' + eventClass(event)"
                     t-on-click="() => this.openEvent(event)">
               <span class="yb-day-panel-event-head"><strong t-esc="event.name"/><em t-esc="eventLabel(event)"/></span>
@@ -114,7 +114,7 @@
               <small t-if="event.partner_id" t-esc="event.partner_id[1]"/>
             </button>
           </div>
-          <button class="yb-day-panel-all" t-on-click="() => this.openDayBookingsList(new Date(state.selectedDay + 'T12:00:00'))">عرض جميع حجوزات هذا اليوم <i class="fa fa-arrow-left"/></button>
+
         </aside>
       </div>
       <div class="yb-legend">

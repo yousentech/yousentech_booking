@@ -77,10 +77,29 @@ export class BookingOS extends Component {
     monthDayNumber(day) { return day.getDate(); }
 
     monthEvents(day) {
-        const date = this.iso(day);
-        const hallIds = new Set(this.visibleHalls.map((h) => h.id));
-        return this.state.events.filter((e) => e.booking_date === date &&
-            e.hall_id && hallIds.has(e.hall_id[0]));
+        return this.dayEvents(this.iso(day));
+    }
+
+    dayEvents(date) {
+        const hallIds = new Set(this.visibleHalls.map((hall) => hall.id));
+        return this.state.events.filter((event) => event.booking_date === date &&
+            event.hall_id && hallIds.has(event.hall_id[0]));
+    }
+
+    get visibleStats() {
+        const start = this.state.viewMode === "month"
+            ? this.iso(new Date(this.state.anchor.getFullYear(), this.state.anchor.getMonth(), 1))
+            : this.iso(this.displayDays[0]);
+        const end = this.state.viewMode === "month"
+            ? this.iso(new Date(this.state.anchor.getFullYear(), this.state.anchor.getMonth() + 1, 0))
+            : this.iso(this.displayDays[this.displayDays.length - 1]);
+        const events = this.state.events.filter((event) => event.booking_date >= start &&
+            event.booking_date <= end && this.visibleHalls.some((hall) => event.hall_id && hall.id === event.hall_id[0]));
+        return {
+            today: events.filter((event) => event.booking_date === this.iso(new Date())).length,
+            holds: events.filter((event) => event.state === "hold").length,
+            total: events.length,
+        };
     }
 
     monthEventLabel(event) {
