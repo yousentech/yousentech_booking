@@ -176,18 +176,41 @@ class BookingFinanceMixin(models.AbstractModel):
         self.ensure_one()
         if ratio<=0:
             raise UserError(_("Invoice ratio must be greater than zero."))
-        if self._name=="yousentech.booking.event":
-            base=(self.amount_untaxed or 0.0)+(self.discount_amount or 0.0)
-            discount_factor=(self.amount_untaxed/base) if base else 1.0
-            event_ratio=ratio*discount_factor
-            lines=[(0,0,{"product_id":self.hall_id.product_id.id or False,"name":label or _("Hall: %s")%self.hall_id.display_name,"quantity":1.0,"price_unit":self.hall_id.list_price*event_ratio})]
-            if self.package_id and self.package_id.pricing_type=="fixed":
-                lines.append((0,0,{"name":_("Package: %s")%self.package_id.display_name,"quantity":1.0,"price_unit":self.package_id.price*event_ratio}))
+        if self._name == "yousentech.booking.event":
+            tax = self.package_id.tax_id
+            gross_untaxed = self.amount_untaxed + self.discount_amount
+            factor = self.amount_untaxed / gross_untaxed if gross_untaxed else 1.0
+            tax_ids = [(6, 0, tax.ids)] if tax else [(6, 0, [])]
+            def line(name, product, qty, price):
+                return (0, 0, {"product_id": product.id if product else False,
+                                "name": name, "quantity": qty,
+                                "price_unit": price * ratio * factor, "tax_ids": tax_ids})
+            lines = [line(label or _("Hall: %s") % self.hall_id.display_name,
+                          self.hall_id.product_id, 1.0, self.hall_id.list_price)]
+            if self.package_id and self.package_id.pricing_type == "fixed":
+                lines.append(line(_("Package: %s") % self.package_id.display_name,
+                                  False, 1.0, self.package_id.price))
             else:
-                lines += [(0,0,{"product_id":l.service_id.product_id.id,"name":l.service_id.display_name,"quantity":l.quantity,"price_unit":l.price_unit*event_ratio,"tax_ids":[(6,0,l.service_id.tax_ids.ids)]}) for l in self.service_line_ids]
+                lines += [line(l.service_id.display_name, l.service_id.product_id,
+                               l.quantity, l.price_unit) for l in self.service_line_ids]
+            lines += [line(l.service_id.display_name, l.service_id.product_id,
+                           l.quantity, l.price_unit) for l in self.addon_line_ids]
             return lines
-        lines=[(0,0,{"product_id":self.resource_id.product_id.id or False,"name":label or _("Stay: %s")%self.resource_id.display_name,"quantity":self.nights or 1,"price_unit":self.nightly_price*ratio})]
-        lines += [(0,0,{"product_id":l.addon_id.product_id.id,"name":l.addon_id.display_name,"quantity":l.quantity*(self.nights if l.addon_id.charge_type=="night" else 1),"price_unit":l.price_unit*ratio,"tax_ids":[(6,0,l.addon_id.tax_ids.ids)]}) for l in self.addon_line_ids]
+        # Stay booking: apply booking-wide discount to room and every add-on.
+        gross_untaxed = self.amount_untaxed + self.discount_amount
+        factor = self.amount_untaxed / gross_untaxed if gross_untaxed else 1.0
+        tax = self.rate_plan_id.tax_id
+        tax_ids = [(6, 0, tax.ids)] if tax else [(6, 0, [])]
+        lines = [(0, 0, {"product_id": self.resource_id.product_id.id or False,
+                         "name": label or _("Stay: %s") % self.resource_id.display_name,
+                         "quantity": self.nights or 1,
+                         "price_unit": self.nightly_price * ratio * factor,
+                         "tax_ids": tax_ids})]
+        lines += [(0, 0, {"product_id": l.addon_id.product_id.id,
+                          "name": l.addon_id.display_name,
+                          "quantity": l.quantity * (self.nights if l.addon_id.charge_type == "night" else 1),
+                          "price_unit": l.price_unit * ratio * factor,
+                          "tax_ids": tax_ids}) for l in self.addon_line_ids]
         return lines
 
     def _create_invoice(self,ratio=1.0,label=None,schedule=None,kind="manual"):
