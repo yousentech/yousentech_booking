@@ -162,7 +162,7 @@ class BookingEvent(models.Model):
             rec.hall_period_amount = hall_period_price
             # Included services never become paid add-ons.
             # A selected package replaces the hall base rate; never charge both.
-            gross = (package_base * len(rec.period_ids)) if rec.package_id else hall_period_price
+            gross = package_base if rec.package_id else hall_period_price
             gross += sum(rec.addon_line_ids.mapped("subtotal"))
             # All prices are converted to tax-excluded values before applying booking discount.
             tax = rec.package_id.tax_id if rec.package_id else rec.hall_id.tax_id
@@ -171,8 +171,8 @@ class BookingEvent(models.Model):
                     return price * qty
                 return tax.compute_all(price, currency=rec.currency_id, quantity=qty,
                                        product=product, partner=rec.partner_id)["total_excluded"]
-            untaxed_gross = (split(package_price, len(rec.period_ids)) if fixed else
-                             sum(split(l.price_unit, l.quantity * len(rec.period_ids), l.service_id.product_id) for l in rec.service_line_ids)
+            untaxed_gross = (split(package_price) if fixed else
+                             sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.service_line_ids)
                              if rec.package_id else sum(split(price) for _period, price in period_prices))
             untaxed_gross += sum(split(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
             discount = (untaxed_gross * rec.discount_value / 100.0 if rec.discount_type == "percent"
@@ -187,7 +187,7 @@ class BookingEvent(models.Model):
                 result = tax.compute_all(unit, currency=rec.currency_id, quantity=qty,
                                          product=product, partner=rec.partner_id)
                 return result["total_included"] - result["total_excluded"]
-            tax_total = (taxed_amount(package_price, len(rec.period_ids)) if fixed else
+            tax_total = (taxed_amount(package_price) if fixed else
                          sum(taxed_amount(l.price_unit, l.quantity * len(rec.period_ids), l.service_id.product_id) for l in rec.service_line_ids)
                          if rec.package_id else sum(taxed_amount(price) for _period, price in period_prices))
             tax_total += sum(taxed_amount(l.price_unit, l.quantity, l.service_id.product_id) for l in rec.addon_line_ids)
