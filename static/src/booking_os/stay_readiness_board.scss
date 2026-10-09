@@ -349,3 +349,13 @@
   padding:3px 8px;font-size:12px;font-weight:750;line-height:1.5;
 }
 .yb-ready .yb-ready-booking-row .yb-ready-draft-pill{font-size:10px;margin-inline-start:5px}
+
+/* Direct navigation to an existing booking from the room detail drawer. */
+.yb-ready .yb-ready-open-booking{
+  align-self:flex-start;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  border:1px solid #d9d5f7;background:#f1efff;color:#5143c5;
+  border-radius:7px;padding:6px 10px;font-size:12px;font-weight:750;
+  cursor:pointer;margin-top:7px;
+}
+.yb-ready .yb-ready-open-booking:hover{background:#e5e0ff;border-color:#aaa0eb}
