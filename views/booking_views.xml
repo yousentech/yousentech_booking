@@ -261,7 +261,7 @@
           </div>
           <div class="yb-event-workspace">
             <section class="yb-work-card yb-work-package"><div class="yb-work-heading"><i class="fa fa-bed"/><strong>التسعير والإقامة</strong></div>
-              <group><field name="rate_plan_id" string="خطة السعر" readonly="state not in ('draft','hold')"/><field name="nights" string="عدد الليالي" readonly="1"/><field name="nightly_price" string="سعر الليلة" readonly="1"/></group>
+              <group><field name="rate_plan_id" string="خطة السعر" class="yb-stay-rate-plan-outline" readonly="state not in ('draft','hold')"/><field name="nights" string="عدد الليالي" readonly="1"/><field name="nightly_price" string="سعر الليلة" readonly="1"/></group>
               <div class="yb-work-help">تُستدعى خطة السعر والضريبة من التهيئة عند إنشاء الحجز، ويمكن تعديل الخطة قبل التأكيد.</div>
             </section>
             <section class="yb-work-card yb-work-addons"><div class="yb-work-heading"><i class="fa fa-plus-circle"/><strong>الإضافات المدفوعة</strong></div>
