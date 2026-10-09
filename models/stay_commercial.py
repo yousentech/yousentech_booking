@@ -67,6 +67,28 @@ class StayBooking(models.Model):
         return vals
 
     addon_line_ids = fields.One2many("yousentech.stay.booking.addon.line","booking_id")
+    customer_mobile = fields.Char(related="partner_id.mobile", readonly=False, string="رقم الجوال")
+    customer_identity = fields.Char(related="partner_id.yousentech_booking_identity", readonly=False, string="رقم الهوية")
+    customer_nationality_id = fields.Many2one(related="partner_id.yousentech_booking_nationality_id", readonly=False, string="الجنسية")
+    description = fields.Text(string="الوصف")
+    stay_base_amount = fields.Monetary(string="قيمة الإقامة", compute="_compute_stay_components")
+    stay_addons_amount = fields.Monetary(string="قيمة الإضافات", compute="_compute_stay_components")
+
+    @api.depends("checkin_date", "checkout_date", "resource_id.nightly_price", "rate_plan_id.pricing_type", "rate_plan_id.fixed_price", "rate_plan_id.percent_adjustment", "rate_plan_id.tax_id", "addon_line_ids.subtotal", "partner_id")
+    def _compute_stay_components(self):
+        for rec in self:
+            nights = (rec.checkout_date - rec.checkin_date).days if rec.checkin_date and rec.checkout_date > rec.checkin_date else 0
+            price = rec.resource_id.nightly_price or 0.0
+            if rec.rate_plan_id.pricing_type == "fixed":
+                price = rec.rate_plan_id.fixed_price or 0.0
+            elif rec.rate_plan_id.pricing_type == "percent":
+                price *= 1 + (rec.rate_plan_id.percent_adjustment or 0.0) / 100.0
+            tax = rec.rate_plan_id.tax_id
+            def untaxed(unit, quantity, product):
+                return tax.compute_all(unit, currency=rec.currency_id, quantity=quantity, product=product, partner=rec.partner_id)["total_excluded"] if tax else unit * quantity
+            rec.stay_base_amount = untaxed(price, nights, rec.resource_id.product_id)
+            rec.stay_addons_amount = sum(untaxed(line.price_unit, line.quantity * (nights if line.addon_id.charge_type == "night" else 1), line.addon_id.product_id) for line in rec.addon_line_ids)
+
     discount_type=fields.Selection([("none","بدون خصم"),("percent","نسبة"),("fixed","مبلغ ثابت")],default="none",required=True)
     discount_value=fields.Float(default=0.0)
     discount_amount=fields.Monetary(compute="_compute_commercial",store=True)
