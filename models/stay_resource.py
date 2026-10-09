@@ -27,6 +27,18 @@ class StayResource(models.Model):
             if rec.out_of_service_to and (not rec.out_of_service_from or rec.out_of_service_to <= rec.out_of_service_from):
                 raise ValidationError(_("تاريخ النهاية يجب أن يكون بعد البداية."))
 
+    @api.constrains("out_of_service_type","out_of_service_from","out_of_service_to")
+    def _check_closure_bookings(self):
+        for rec in self:
+            if not rec.out_of_service_type or not rec.out_of_service_from:
+                continue
+            domain = [("resource_id","=",rec.id),("state","in",["hold","confirmed","checked_in","checked_out"]),
+                      "|",("checkout_date","=",False),("checkout_date",">",rec.out_of_service_from)]
+            if rec.out_of_service_to:
+                domain.append(("checkin_date","<",rec.out_of_service_to))
+            if self.env["yousentech.stay.booking"].search(domain,limit=1):
+                raise ValidationError(_("لا يمكن إيقاف غرفة لديها حجز متعارض مع فترة الإيقاف."))
+
     def _is_out_of_service(self, start, end):
         self.ensure_one()
         return bool(self.out_of_service_type and self.out_of_service_from and self.out_of_service_from < (end or fields.Date.to_date("9999-12-31")) and (not self.out_of_service_to or self.out_of_service_to > start))
