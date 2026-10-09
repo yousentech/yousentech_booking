@@ -19,6 +19,7 @@ export class StayReadinessBoard extends Component {
         this.state=useState({start:iso(new Date()),nights:1,mode:"day",floor:"all",type:"all",status:"all",query:"",resources:[],bookings:[],loading:true,error:"",selected:null});
         onWillStart(()=>this.load());
     }
+    get days() { return Array.from({length:this.state.nights},(_,i)=>iso(add(date(this.state.start),i))); }
     get end() { return iso(add(date(this.state.start),this.state.nights)); }
     get floors() { return [...new Set(this.state.resources.map(r=>r.floor_name||"غير محدد"))].sort((a,b)=>a.localeCompare(b,"ar",{numeric:true})); }
     get filtered() {
@@ -29,20 +30,34 @@ export class StayReadinessBoard extends Component {
     }
     get groups() { return this.floors.map(f=>({name:f,rooms:this.filtered.filter(r=>(r.floor_name||"غير محدد")===f)})).filter(g=>g.rooms.length); }
     get counts() {
-        const counts={total:this.filtered.length,available:0,occupied:0,reserved:0};
+        const counts={total:this.filtered.length,available:0,occupied:0,reserved:0,maintenance:0,blocked:0,cleaning:0,inspection:0,unknown:0};
         for(const r of this.filtered) {const key=this.status(r).key;if(key in counts)counts[key]++;}
         return counts;
     }
     typeLabel(type) { return TYPES[type] || type; }
     roomBookings(r) {return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&BLOCKING.includes(b.state));}
-    status(r) {
-        const matches=this.roomBookings(r).filter(b=>b.checkin_date<this.end&&(!b.checkout_date||b.checkout_date>this.state.start));
-        if(matches.length) {
-            const occupied=matches.some(b=>b.state==="checked_in"||(b.checkin_date<=this.state.start&&b.state==="checked_out"));
-            return occupied?{key:"occupied",label:"مشغولة خلال الفترة"}:{key:"reserved",label:"محجوزة خلال الفترة"};
-        }
-        return {key:"available",label:"متاحة للحجز"};
+    dayStatus(r,day) {
+        const next=iso(add(date(day),1));
+        if(r.out_of_service_type&&r.out_of_service_from&&r.out_of_service_from<next&&(!r.out_of_service_to||r.out_of_service_to>day))
+            return {key:r.out_of_service_type,label:r.out_of_service_type==="maintenance"?"صيانة":"موقوفة"};
+        const match=this.roomBookings(r).find(b=>b.checkin_date<next&&(!b.checkout_date||b.checkout_date>day));
+        if(match)return match.state==="checked_in"?{key:"occupied",label:"مشغولة"}:{key:"reserved",label:"محجوزة"};
+        if(r.housekeeping_state==="dirty")return {key:"cleaning",label:"تحتاج تنظيفًا"};
+        if(r.housekeeping_state==="inspection")return {key:"inspection",label:"بانتظار الفحص"};
+        if(r.housekeeping_state==="unknown")return {key:"unknown",label:"التجهيز غير محدد"};
+        return {key:"available",label:"شاغرة وجاهزة"};
     }
+    status(r) {
+        const days=this.days.map(d=>this.dayStatus(r,d));
+        return days.find(x=>x.key==="maintenance"||x.key==="blocked")||
+            days.find(x=>x.key==="occupied")||days.find(x=>x.key==="reserved")||
+            days.find(x=>x.key==="cleaning"||x.key==="inspection"||x.key==="unknown")||
+            {key:"available",label:"شاغرة وجاهزة"};
+    }
+    isBookable(r) {
+        return this.days.every(d=>["available","cleaning","inspection","unknown"].includes(this.dayStatus(r,d).key));
+    }
+    openResource(r) {this.action.doAction({type:"ir.actions.act_window",res_model:"yousentech.stay.resource",res_id:r.id,views:[[false,"form"]],target:"current"});}
     nextDate(r) {
         const future=this.roomBookings(r).filter(b=>!b.checkout_date||b.checkout_date>this.state.start).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date));
         if(!future.length)return "لا توجد حجوزات قادمة";
@@ -54,7 +69,7 @@ export class StayReadinessBoard extends Component {
         try {
             const cid=this.company.currentCompany.id;
             const [resources,bookings]=await Promise.all([
-                this.orm.searchRead("yousentech.stay.resource",[["company_id","=",cid],["active","=",true]],["name","floor_name","resource_type","capacity","nightly_price"],{order:"sequence,name,id"}),
+                this.orm.searchRead("yousentech.stay.resource",[["company_id","=",cid],["active","=",true]],["name","floor_name","resource_type","capacity","nightly_price","housekeeping_state","out_of_service_type","out_of_service_from","out_of_service_to","out_of_service_reason"],{order:"sequence,name,id"}),
                 this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",this.end],"|",["checkout_date","=",false],["checkout_date",">",this.state.start]],["name","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
             ]);
             this.state.resources=resources;this.state.bookings=bookings;
@@ -69,6 +84,6 @@ export class StayReadinessBoard extends Component {
     onQuery(ev){this.state.query=ev.target.value;}
     select(r){this.state.selected=this.state.selected===r.id?null:r.id;}
     get selectedRoom(){return this.state.resources.find(r=>r.id===this.state.selected);}
-    newBooking(r){this.action.doAction({type:"ir.actions.act_window",res_model:"yousentech.stay.booking",views:[[false,"form"]],target:"current",context:{default_resource_id:r.id,default_checkin_date:this.state.start,default_checkout_date:this.end}});}
+    newBooking(r){if(!this.isBookable(r))return;this.action.doAction({type:"ir.actions.act_window",res_model:"yousentech.stay.booking",views:[[false,"form"]],target:"current",context:{default_resource_id:r.id,default_checkin_date:this.state.start,default_checkout_date:this.end}});}
 }
 registry.category("actions").add("yousentech_booking.StayReadinessBoard",StayReadinessBoard);
