@@ -78,6 +78,7 @@ export class StayReadinessBoard extends Component {
     }
     async changeStart(ev){if(ev.target.value){this.state.start=ev.target.value;await this.load();}}
     async setMode(mode){this.state.mode=mode;this.state.nights=mode==="week"?7:mode==="month"?30:1;await this.load();}
+    async changeNights(ev){const n=Number(ev.target.value);if(Number.isInteger(n)&&n>=1&&n<=31){this.state.nights=n;await this.load();}}
     onFloor(ev){this.state.floor=ev.target.value;}
     onType(ev){this.state.type=ev.target.value;}
     onStatus(ev){this.state.status=ev.target.value;}
