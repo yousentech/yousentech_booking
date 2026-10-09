@@ -37,10 +37,10 @@
             <article t-foreach="group.rooms" t-as="r" t-key="r.id" t-att-class="'yb-ready-card is-'+status(r).key+(state.selected===r.id?' is-selected':'')">
               <button class="yb-ready-card-main" t-on-click="()=>this.select(r)">
                 <span class="yb-ready-card-top"><span class="yb-ready-room"><i class="fa fa-bed"/> <t t-esc="r.name"/></span><i t-att-class="'fa '+statusIcon(status(r).key)"/></span>
-                <span class="yb-ready-type"><t t-esc="typeLabel(r.resource_type)"/> · <t t-esc="r.capacity"/> نزلاء</span>
+                <span class="yb-ready-type"><t t-esc="typeLabel(r.resource_type)"/></span><span class="yb-ready-capacity"><i class="fa fa-users"/> <strong t-esc="r.capacity"/> <span>نزلاء</span></span>
                 <strong class="yb-ready-state"><i t-att-class="'fa '+statusIcon(status(r).key)"/> <t t-esc="status(r).label"/></strong>
-                <small class="yb-ready-next" t-esc="nextDate(r)"/>
-                <small t-if="r.out_of_service_type &amp;&amp; status(r).key===r.out_of_service_type" t-esc="r.out_of_service_reason || 'إيقاف تشغيلي'"/>
+                <small t-if="status(r).key==='occupied' || status(r).key==='reserved'" class="yb-ready-next" t-esc="nextDate(r)"/>
+                
               </button>
               <div class="yb-ready-card-foot"><button class="yb-ready-details-btn" t-on-click="()=>this.select(r)">التفاصيل</button><button t-if="isBookable(r)" class="yb-ready-book-btn" t-on-click="()=>this.newBooking(r)">حجز جديد</button><span t-else="" class="yb-ready-unavailable">عرض الحالة <i class="fa fa-angle-left"/></span></div>
             </article>
