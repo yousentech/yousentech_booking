@@ -18,6 +18,7 @@
   <menuitem id="menu_booking_packages" name="الباقات" parent="menu_booking_event_configuration" action="action_booking_packages" sequence="40"/>
 
   <menuitem id="menu_booking_stay_configuration" name="إعدادات الإقامة" parent="menu_booking_configuration" sequence="20"/>
+  <menuitem id="menu_stay_floors" name="الطوابق" parent="menu_booking_stay_configuration" action="action_stay_floors" sequence="5" groups="yousentech_booking.group_booking_manager"/>
   <menuitem id="menu_stay_resources" name="الغرف وموارد الإقامة" parent="menu_booking_stay_configuration" action="action_stay_resources" sequence="10"/>
   <menuitem id="menu_stay_rate_plans" name="خطط الأسعار" parent="menu_booking_stay_configuration" action="action_stay_rate_plans" sequence="20"/>
   <menuitem id="menu_stay_addons" name="الإضافات" parent="menu_booking_stay_configuration" action="action_stay_addons" sequence="30"/>
