@@ -21,10 +21,11 @@ export class StayReadinessBoard extends Component {
     }
     get days() { return Array.from({length:this.state.nights},(_,i)=>iso(add(date(this.state.start),i))); }
     get end() { return iso(add(date(this.state.start),this.state.nights)); }
-    get floors() { return [...new Set(this.state.resources.map(r=>r.floor_name||"غير محدد"))].sort((a,b)=>a.localeCompare(b,"ar",{numeric:true})); }
+    floorLabel(r) { return r.floor_id ? r.floor_id[1] : (r.floor_name || "غير محدد"); }
+    get floors() { return [...new Set(this.state.resources.map(r=>this.floorLabel(r)))].sort((a,b)=>a.localeCompare(b,"ar",{numeric:true})); }
     get filtered() {
         const q=this.state.query.trim().toLocaleLowerCase();
-        return this.state.resources.filter(r=>(this.state.floor==="all"||(r.floor_name||"غير محدد")===this.state.floor)&&
+        return this.state.resources.filter(r=>(this.state.floor==="all"||this.floorLabel(r)===this.state.floor)&&
             (this.state.type==="all"||r.resource_type===this.state.type)&&(!q||r.name.toLocaleLowerCase().includes(q))&&
             (this.state.status==="all"||this.status(r).key===this.state.status));
     }
@@ -78,7 +79,7 @@ export class StayReadinessBoard extends Component {
         try {
             const cid=this.company.currentCompany.id;
             const [resources,bookings]=await Promise.all([
-                this.orm.searchRead("yousentech.stay.resource",[["company_id","=",cid],["active","=",true]],["name","floor_name","resource_type","capacity","nightly_price","housekeeping_state","out_of_service_type","out_of_service_from","out_of_service_to","out_of_service_reason"],{order:"sequence,name,id"}),
+                this.orm.searchRead("yousentech.stay.resource",[["company_id","=",cid],["active","=",true]],["name","floor_id","floor_name","resource_type","capacity","nightly_price","housekeeping_state","out_of_service_type","out_of_service_from","out_of_service_to","out_of_service_reason"],{order:"sequence,name,id"}),
                 this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",this.end],"|",["checkout_date","=",false],["checkout_date",">",this.state.start]],["name","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
             ]);
             this.state.resources=resources;this.state.bookings=bookings;
