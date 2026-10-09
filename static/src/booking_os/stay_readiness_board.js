@@ -15,7 +15,7 @@ export class StayReadinessBoard extends Component {
         this.orm=useService("orm");
         this.action=useService("action");
         this.company=useService("company");
-        this.state=useState({start:iso(new Date()),nights:1,mode:"day",floor:"all",type:"all",status:"all",query:"",resources:[],bookings:[],holidays:[],loading:true,error:"",selected:null,collapsed:[],detailsTab:'info'});
+        this.state=useState({start:iso(new Date()),nights:1,mode:"day",floor:"all",type:"all",status:"all",query:"",resources:[],bookings:[],holidays:[],loading:true,error:"",selected:null,collapsed:[],detailsTab:'info',filtersOpen:false,assistantOpen:true});
         onWillStart(()=>this.load());
     }
     get holidaysInRange() { return this.state.holidays.filter(h=>h.date>=this.state.start&&h.date<this.end); }
