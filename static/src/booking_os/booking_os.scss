@@ -588,37 +588,79 @@
 .yb-os .yb-month-holiday-summary-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:7px;background:#ffe9ee;font-weight:700}
 .yb-os .yb-month-holiday-summary-tag small{color:#9b6771;font-weight:400}
 
-/* Stay booking only: keep the discount and branch/description cards side by side. */
-.yb-stay-form .yb-extra-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
-.yb-stay-form .yb-stay-branch-card{background:#f1f8ff;border-color:#d2e4f7}
+/* Hotel booking: two tax amounts on one horizontal line, with the
+   before-tax value on the right (RTL) and after-tax on the left. */
+.yb-stay-form .yb-approved-summary .yb-finance-strip-values{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
+.yb-stay-form .yb-stay-amount-pair{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  width:100%;
+  direction:rtl;
+  align-items:start;
+}
+.yb-stay-form .yb-stay-amount-pair>div{
+  min-width:0;
+  text-align:center;
+}
+.yb-stay-form .yb-stay-amount-pair>div:first-child{
+  border-left:1px solid rgba(90,108,139,.16);
+  padding-left:6px;
+}
+.yb-stay-form .yb-stay-amount-pair span{
+  display:block;
+  font-size:10px;
+  color:#75839a;
+  margin-bottom:5px;
+  white-space:nowrap;
+}
+.yb-stay-form .yb-stay-amount-pair .o_field_widget,
+.yb-stay-form .yb-stay-amount-pair .o_field_widget input,
+.yb-stay-form .yb-stay-amount-pair .o_field_widget span{
+  font-size:18px!important;
+  font-weight:800!important;
+  line-height:1.3;
+  color:#17345d;
+  font-variant-numeric:tabular-nums;
+}
+.yb-stay-form .yb-stay-amount-pair .o_field_widget{
+  display:block;
+  overflow-wrap:anywhere;
+}
+/* Three cards in one row: discount, branch+description, calculation. */
+.yb-stay-form .yb-extra-cards{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  align-items:stretch;
+}
+.yb-stay-form .yb-extra-cards>.yb-extra-card{
+  min-width:0;
+  grid-column:auto;
+  min-height:0;
+}
+.yb-stay-form .yb-stay-branch-card{
+  background:#f1f8ff;
+  border-color:#d2e4f7;
+}
 .yb-stay-form .yb-stay-branch-card .yb-extra-card-title i{color:#2b77b9}
-.yb-stay-form .yb-extra-notes{grid-column:1/-1;min-height:0}
 .yb-stay-form .yb-stay-branch-card .o_field_widget{max-width:100%}
-.yb-stay-form .yb-stay-branch-card textarea{min-height:64px!important;resize:vertical}
-.yb-stay-form .yb-approved-summary .yb-finance-strip-values{grid-template-columns:repeat(5,minmax(0,1fr))}
+.yb-stay-form .yb-stay-branch-card textarea{
+  min-height:64px!important;
+  resize:vertical;
+}
+@media(max-width:1050px){
+  .yb-stay-form .yb-extra-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .yb-stay-form .yb-extra-cards>.yb-extra-notes{grid-column:1/-1}
+}
 @media(max-width:900px){
-  .yb-stay-form .yb-approved-summary .yb-finance-strip-values{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .yb-stay-form .yb-approved-summary .yb-finance-strip-values{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
 }
 @media(max-width:760px){
   .yb-stay-form .yb-extra-cards{grid-template-columns:minmax(0,1fr)}
-  .yb-stay-form .yb-extra-notes{grid-column:auto}
-}
-
-/* Stay summary: two readable tax amounts within each existing metric. */
-.yb-stay-form .yb-stay-amount-pair{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
-.yb-stay-form .yb-stay-amount-pair>div{min-width:0;flex:1 1 72px}
-.yb-stay-form .yb-stay-amount-pair span{display:block;font-size:10px;color:#75839a;margin-bottom:3px;white-space:nowrap}
-.yb-stay-form .yb-stay-amount-pair .o_field_widget{font-size:15px!important;font-weight:800!important;white-space:nowrap}
-.yb-stay-form .yb-approved-summary .yb-finance-strip-values{grid-template-columns:repeat(5,minmax(0,1fr))}
-.yb-stay-form .yb-extra-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
-.yb-stay-form .yb-stay-description-card{background:#fffaf2;border-color:#f1dfc4}
-.yb-stay-form .yb-stay-description-card .yb-extra-card-title i{color:#bb832d}
-.yb-stay-form .yb-stay-description-card textarea{min-height:75px!important;resize:vertical}
-@media(max-width:1050px){
- .yb-stay-form .yb-extra-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
- .yb-stay-form .yb-stay-description-card{grid-column:1/-1}
-}
-@media(max-width:760px){
- .yb-stay-form .yb-extra-cards{grid-template-columns:minmax(0,1fr)}
- .yb-stay-form .yb-stay-description-card{grid-column:auto}
+  .yb-stay-form .yb-extra-cards>.yb-extra-notes{grid-column:auto}
 }
