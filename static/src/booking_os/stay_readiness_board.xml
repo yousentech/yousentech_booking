@@ -17,6 +17,8 @@
         <button class="yb-ready-stat stat-maintenance" t-on-click="()=>this.setStatus('maintenance')"><span class="stat-icon"><i class="fa fa-wrench"/></span><strong t-esc="counts.maintenance+counts.blocked"/><small>صيانة / إيقاف</small></button>
       </div>
       <div class="yb-ready-search-panel">
+        <button class="yb-ready-panel-toggle" t-att-aria-expanded="state.filtersOpen" t-on-click="()=>this.state.filtersOpen=!this.state.filtersOpen"><span><i class="fa fa-sliders"/> الفلاتر والبحث <small t-if="!state.filtersOpen">اضغط لعرض خيارات التصفية</small></span><i t-att-class="state.filtersOpen ? 'fa fa-angle-up' : 'fa fa-angle-down'"/></button>
+        <div t-if="state.filtersOpen" class="yb-ready-search-content">
         <div class="yb-ready-search-grid">
           <label>تاريخ الدخول<input type="date" t-att-value="state.start" t-on-change="changeStart"/></label>
           <label>عدد الليالي<input type="number" min="1" max="31" t-att-value="state.nights" t-on-change="changeNights"/></label>
@@ -27,9 +29,11 @@
         </div>
         <div class="yb-ready-search-footer"><span><i class="fa fa-calendar-o"/> تاريخ الخروج: <strong t-esc="end"/></span><button t-on-click="resetFilters"><i class="fa fa-refresh"/> إعادة تعيين الفلاتر</button></div>
         <div class="yb-ready-legend"><span><i class="legend-dot available"/> شاغرة وجاهزة</span><span><i class="legend-dot occupied"/> مشغولة</span><span><i class="legend-dot reserved"/> محجوزة</span><span><i class="legend-dot cleaning"/> تحتاج تجهيزًا</span><span><i class="legend-dot maintenance"/> صيانة</span><span><i class="legend-dot blocked"/> موقوفة</span></div>
+        </div>
       </div>
       <section t-if="!state.loading &amp;&amp; !state.error" class="yb-ready-intelligence">
-        <div class="yb-ready-intelligence-head"><div><h3><i class="fa fa-lightbulb-o"/> مساعد التوفر الذكي</h3><p>توقعات الحجز بحسب تاريخ الخروج والحجوزات والصيانة، وليست تأكيدًا لجاهزية التسليم.</p></div><span>ابتداءً من <t t-esc="state.start"/></span></div>
+        <button class="yb-ready-panel-toggle yb-ready-assistant-toggle" t-att-aria-expanded="state.assistantOpen" t-on-click="()=>this.state.assistantOpen=!this.state.assistantOpen"><span><i class="fa fa-lightbulb-o"/> مساعد التوفر الذكي <small>توقعات الحجز حسب الخروج والحجوزات والصيانة</small></span><span>ابتداءً من <t t-esc="state.start"/> <i t-att-class="state.assistantOpen ? 'fa fa-angle-up' : 'fa fa-angle-down'"/></span></button>
+        <div t-if="state.assistantOpen" class="yb-ready-assistant-content">
         <div class="yb-ready-intelligence-stats">
           <div t-foreach="forecastSummary" t-as="item" t-key="item.day" class="yb-ready-intelligence-stat"><small t-esc="item.title"/><strong t-esc="item.count"/><span>قابلة للحجز · ليلة واحدة</span><small t-esc="item.day"/></div>
         </div>
@@ -42,6 +46,7 @@
             <small t-esc="readinessHint(r)"/>
             <i class="fa fa-angle-left"/>
           </button>
+        </div>
         </div>
       </section>
       <div t-if="state.loading" class="yb-ready-message"><i class="fa fa-spinner fa-spin"/> جارٍ تحميل الغرف...</div>
