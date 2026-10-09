@@ -588,42 +588,6 @@
 .yb-os .yb-month-holiday-summary-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:7px;background:#ffe9ee;font-weight:700}
 .yb-os .yb-month-holiday-summary-tag small{color:#9b6771;font-weight:400}
 
-/* Hotel summary: inclusive amount on the right, exclusive amount on the left.
-   Values only, with no extra labels, to avoid crowding the narrow KPI cards. */
-.yb-stay-form .yb-approved-summary .yb-finance-strip-values{
-  grid-template-columns:repeat(5,minmax(0,1fr));
-}
-.yb-stay-form .yb-stay-amount-pair{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-  width:100%;
-  direction:rtl;
-  align-items:center;
-}
-.yb-stay-form .yb-stay-amount-pair>div{
-  min-width:0;
-  overflow:hidden;
-  text-align:center;
-}
-.yb-stay-form .yb-stay-amount-pair>div:first-child{
-  border-left:1px solid rgba(90,108,139,.16);
-  padding-left:6px;
-}
-.yb-stay-form .yb-stay-amount-pair .o_field_widget,
-.yb-stay-form .yb-stay-amount-pair .o_field_widget input,
-.yb-stay-form .yb-stay-amount-pair .o_field_widget span{
-  font-size:17px!important;
-  font-weight:800!important;
-  line-height:1.4!important;
-  color:#17345d;
-  font-variant-numeric:tabular-nums;
-}
-.yb-stay-form .yb-stay-amount-pair .o_field_widget{
-  display:block;
-  min-width:0;
-  white-space:nowrap;
-}
 /* Three cards in one row: discount, branch+description, calculation. */
 .yb-stay-form .yb-extra-cards{
   display:grid;
