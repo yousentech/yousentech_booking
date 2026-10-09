@@ -15,9 +15,11 @@ export class StayReadinessBoard extends Component {
         this.orm=useService("orm");
         this.action=useService("action");
         this.company=useService("company");
-        this.state=useState({start:iso(new Date()),nights:1,mode:"day",floor:"all",type:"all",status:"all",query:"",resources:[],bookings:[],loading:true,error:"",selected:null,collapsed:[],detailsTab:'info'});
+        this.state=useState({start:iso(new Date()),nights:1,mode:"day",floor:"all",type:"all",status:"all",query:"",resources:[],bookings:[],holidays:[],loading:true,error:"",selected:null,collapsed:[],detailsTab:'info'});
         onWillStart(()=>this.load());
     }
+    get holidaysInRange() { return this.state.holidays.filter(h=>h.date>=this.state.start&&h.date<this.end); }
+    get weekendDays() { return this.days.filter(d=>[5,6].includes(date(d).getUTCDay())); }
     get days() { return Array.from({length:this.state.nights},(_,i)=>iso(add(date(this.state.start),i))); }
     get end() { return iso(add(date(this.state.start),this.state.nights)); }
     floorLabel(r) { return r.floor_id ? r.floor_id[1] : (r.floor_name || "غير محدد"); }
@@ -100,12 +102,13 @@ export class StayReadinessBoard extends Component {
         this.state.loading=true;this.state.error="";
         try {
             const cid=this.company.currentCompany.id;
-            const [resources,bookings]=await Promise.all([
+            const [resources,bookings,holidays]=await Promise.all([
                 this.orm.searchRead("yousentech.stay.resource",[["company_id","=",cid],["active","=",true]],["name","floor_id","floor_name","resource_type","capacity","nightly_price","housekeeping_state","out_of_service_type","out_of_service_from","out_of_service_to","out_of_service_reason"],{order:"sequence,name,id"}),
                 this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",iso(add(date(this.state.start),Math.max(this.state.nights,32)))],"|",["checkout_date","=",false],["checkout_date",">",this.state.start],["state","in",BLOCKING]],["name","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
+                this.orm.searchRead("yousentech.booking.holiday", [["company_id","=",cid],["active","=",true],["date",">=",this.state.start],["date","<",this.end]], ["name","date"], {order:"date,name"}),
             ]);
-            this.state.resources=resources;this.state.bookings=bookings;
-        } catch(e) {this.state.error="تعذر تحميل بيانات الغرف والحجوزات.";this.state.resources=[];this.state.bookings=[];}
+            this.state.resources=resources;this.state.bookings=bookings;this.state.holidays=holidays;
+        } catch(e) {this.state.error="تعذر تحميل بيانات الغرف والحجوزات.";this.state.resources=[];this.state.bookings=[];this.state.holidays=[];}
         finally {this.state.loading=false;}
     }
     async changeStart(ev){if(ev.target.value){this.state.start=ev.target.value;await this.load();}}
