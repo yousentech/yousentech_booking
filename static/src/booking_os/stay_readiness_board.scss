@@ -274,7 +274,7 @@
    Keep every floor visible in a bounded, independently scrollable region. */
 .yb-ready .yb-ready-main{min-width:0}
 .yb-ready .yb-ready-rooms-scroll{
-  max-height:clamp(310px,48vh,630px);
+  max-height:48vh;
   min-height:200px;
   overflow-y:auto;
   overflow-x:hidden;
