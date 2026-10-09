@@ -29,11 +29,20 @@ export class StayReadinessBoard extends Component {
             (this.state.status==="all"||this.status(r).key===this.state.status));
     }
     get groups() { return this.floors.map(f=>({name:f,rooms:this.filtered.filter(r=>(r.floor_name||"غير محدد")===f)})).filter(g=>g.rooms.length); }
+    get visibleRooms() { return this.state.resources.filter(r=>(this.state.floor==="all"||(r.floor_name||"غير محدد")===this.state.floor)&&(this.state.type==="all"||r.resource_type===this.state.type)&&(!this.state.query.trim()||r.name.toLocaleLowerCase().includes(this.state.query.trim().toLocaleLowerCase()))); }
     get counts() {
-        const counts={total:this.filtered.length,available:0,occupied:0,reserved:0,maintenance:0,blocked:0,cleaning:0,inspection:0,unknown:0};
-        for(const r of this.filtered) {const key=this.status(r).key;if(key in counts)counts[key]++;}
+        const counts={total:this.visibleRooms.length,available:0,occupied:0,reserved:0,maintenance:0,blocked:0,cleaning:0,inspection:0,unknown:0};
+        for(const r of this.visibleRooms) {const key=this.status(r).key;if(key in counts)counts[key]++;}
         return counts;
     }
+    toggleFloor(f) { this.state.collapsed=this.state.collapsed.includes(f)?this.state.collapsed.filter(x=>x!==f):[...this.state.collapsed,f]; }
+    isCollapsed(f) { return this.state.collapsed.includes(f); }
+    setStatus(key) { this.state.status=key; }
+    resetFilters() { this.state.floor="all";this.state.type="all";this.state.status="all";this.state.query=""; }
+    isReady(r) { return this.days.every(d=>this.dayStatus(r,d).key==="available"); }
+    statusIcon(key) {return ({available:"fa-check-circle",occupied:"fa-bed",reserved:"fa-calendar-check-o",maintenance:"fa-wrench",blocked:"fa-ban",cleaning:"fa-paint-brush",inspection:"fa-search",unknown:"fa-question-circle"})[key]||"fa-info-circle";}
+    get selectedBookings() { const r=this.selectedRoom;return r?this.roomBookings(r).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date)):[]; }
+    get selectedStatus() { return this.selectedRoom?this.status(this.selectedRoom):null; }
     typeLabel(type) { return TYPES[type] || type; }
     roomBookings(r) {return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&BLOCKING.includes(b.state));}
     dayStatus(r,day) {
@@ -83,7 +92,7 @@ export class StayReadinessBoard extends Component {
     onType(ev){this.state.type=ev.target.value;}
     onStatus(ev){this.state.status=ev.target.value;}
     onQuery(ev){this.state.query=ev.target.value;}
-    select(r){this.state.selected=this.state.selected===r.id?null:r.id;}
+    select(r){this.state.selected=this.state.selected===r.id?null:r.id;this.state.detailsTab='info';}
     get selectedRoom(){return this.state.resources.find(r=>r.id===this.state.selected);}
     newBooking(r){if(!this.isBookable(r))return;this.action.doAction({type:"ir.actions.act_window",res_model:"yousentech.stay.booking",views:[[false,"form"]],target:"current",context:{default_resource_id:r.id,default_checkin_date:this.state.start,default_checkout_date:this.end}});}
 }
