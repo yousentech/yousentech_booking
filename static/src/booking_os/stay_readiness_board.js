@@ -97,6 +97,7 @@ export class StayReadinessBoard extends Component {
     isBookable(r) {
         return this.days.every(d=>["available","cleaning","inspection","unknown"].includes(this.dayStatus(r,d).key));
     }
+    openBooking(b) { if(!b?.id)return;this.action.doAction({type:"ir.actions.act_window",res_model:"yousentech.stay.booking",res_id:b.id,views:[[false,"form"]],target:"current"}); }
     openResource(r) {this.action.doAction({type:"ir.actions.act_window",res_model:"yousentech.stay.resource",res_id:r.id,views:[[false,"form"]],target:"current"});}
     nextDate(r) {
         const future=this.roomBookings(r).filter(b=>!b.checkout_date||b.checkout_date>this.state.start).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date));
