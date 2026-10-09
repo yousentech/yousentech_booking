@@ -623,3 +623,12 @@
   .yb-stay-form .yb-extra-cards{grid-template-columns:minmax(0,1fr)}
   .yb-stay-form .yb-extra-cards>.yb-extra-notes{grid-column:auto}
 }
+
+/* Hotel booking: outline the rate-plan field only (not its card or siblings). */
+.yb-stay-form .yb-stay-rate-plan-outline{
+  border:1px solid #d5dfed;
+  border-radius:6px;
+  min-height:32px;
+  padding:3px 8px;
+  box-sizing:border-box;
+}
