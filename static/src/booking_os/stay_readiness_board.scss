@@ -269,3 +269,44 @@
 
 /* Keep narrow screens usable without Sass min() mixed-unit evaluation. */
 @media(max-width:480px){.yb-ready .yb-ready-layout .yb-ready-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Reception board: same scrolling pattern as the hall planner.
+   Keep every floor visible in a bounded, independently scrollable region. */
+.yb-ready .yb-ready-main{min-width:0}
+.yb-ready .yb-ready-rooms-scroll{
+  max-height:clamp(310px,48vh,630px);
+  min-height:200px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  padding:3px 5px 9px;
+  margin:0 0 14px;
+}
+.yb-ready .yb-ready-rooms-scroll .yb-ready-floor{margin-bottom:13px}
+.yb-ready .yb-ready-rooms-scroll .yb-ready-grid{
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:12px;
+}
+.yb-ready .yb-ready-rooms-scroll .yb-ready-card{min-height:192px}
+.yb-ready .yb-ready-bottom-notes{
+  border:1px solid #e0e5f1;
+  border-radius:13px;
+  background:#fff;
+  padding:14px 18px;
+  margin:12px 0 18px;
+  color:#53647d;
+  font-size:12px;
+  line-height:1.8;
+}
+.yb-ready .yb-ready-bottom-notes>strong{display:block;color:#2d3e61;font-size:14px;margin-bottom:7px}
+.yb-ready .yb-ready-bottom-notes p{margin:5px 0;display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.yb-ready .yb-ready-bottom-notes p>.fa{color:#6255d8}
+.yb-ready .yb-ready-holiday-tag{display:inline-flex;padding:2px 9px;background:#f1efff;border:1px solid #dedaf9;border-radius:7px;color:#5549aa;font-size:11px}
+@media(max-width:680px){
+  .yb-ready .yb-ready-rooms-scroll{max-height:58vh;padding-inline:2px}
+  .yb-ready .yb-ready-rooms-scroll .yb-ready-grid{grid-template-columns:repeat(auto-fill,minmax(175px,1fr))}
+}
+@media(max-width:430px){
+  .yb-ready .yb-ready-rooms-scroll .yb-ready-grid{grid-template-columns:minmax(0,1fr)}
+}
