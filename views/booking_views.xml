@@ -279,10 +279,8 @@
                 <div class="yb-extra-field"><label for="discount_type" string="نوع الخصم"/><field name="discount_type" nolabel="1" readonly="state not in ('draft','hold')"/></div>
                 <div class="yb-extra-field" invisible="discount_type == 'none'"><label for="discount_value" string="قيمة الخصم"/><field name="discount_value" nolabel="1" readonly="state not in ('draft','hold')"/></div>
               </section>
-              <section class="yb-extra-card yb-stay-branch-card"><div class="yb-extra-card-title"><i class="fa fa-building-o"/><strong>الشركة / الفرع</strong></div>
+              <section class="yb-extra-card yb-stay-branch-card"><div class="yb-extra-card-title"><i class="fa fa-building-o"/><strong>الشركة / الفرع والوصف</strong></div>
                 <div class="yb-extra-field"><label for="company_id" string="الشركة / الفرع"/><field name="company_id" nolabel="1" readonly="state not in ('draft','hold')"/></div>
-              </section>
-              <section class="yb-extra-card yb-stay-description-card"><div class="yb-extra-card-title"><i class="fa fa-align-right"/><strong>وصف الحجز</strong></div>
                 <div class="yb-extra-field"><label for="description" string="الوصف"/><field name="description" nolabel="1" placeholder="ملاحظات الحجز الفندقي" readonly="state not in ('draft','hold')"/></div>
               </section>
               <section class="yb-extra-card yb-extra-notes"><div class="yb-extra-card-title"><i class="fa fa-info-circle"/><strong>تفاصيل احتساب الإقامة</strong></div><group><field name="nights" readonly="1"/><field name="nightly_price" readonly="1"/><field name="amount_untaxed" readonly="1"/><field name="tax_amount" readonly="1"/></group></section>
