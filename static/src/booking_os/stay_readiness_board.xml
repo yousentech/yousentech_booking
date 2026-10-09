@@ -6,7 +6,7 @@
   <div class="yb-ready-toolbar">
     <label>تاريخ الدخول <input type="date" t-att-value="state.start" t-on-change="changeStart"/></label>
     <div class="yb-ready-modes"><button t-att-class="state.mode==='day'?'active':''" t-on-click="()=>this.setMode('day')">يومي</button><button t-att-class="state.mode==='week'?'active':''" t-on-click="()=>this.setMode('week')">أسبوعي</button><button t-att-class="state.mode==='month'?'active':''" t-on-click="()=>this.setMode('month')">شهري</button></div>
-    <span>الخروج: <strong t-esc="end"/></span>
+    <label>عدد الليالي <input type="number" min="1" max="31" t-att-value="state.nights" t-on-change="changeNights"/></label><span>الخروج: <strong t-esc="end"/></span>
   </div>
   <div class="yb-ready-filters">
     <input type="search" placeholder="رقم الغرفة أو اسمها" t-on-input="onQuery"/>
