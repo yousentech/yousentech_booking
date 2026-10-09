@@ -625,7 +625,7 @@
 }
 
 /* Hotel booking: outline the rate-plan field only (not its card or siblings). */
-.yb-stay-form .yb-stay-rate-plan-outline{
+.yb-stay-form .yb-work-package .yb-stay-rate-plan-outline{
   width:100%;
   min-width:0;
   min-height:36px;
@@ -634,6 +634,19 @@
   border-radius:9px;
   background:#fff;
   padding:5px 10px;
+}
+.yb-stay-form .yb-work-package .yb-stay-rate-plan-outline .o_input,
+.yb-stay-form .yb-work-package .yb-stay-rate-plan-outline input{
+  width:100%;
+  min-width:0;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+.yb-stay-form .yb-work-package .yb-stay-rate-plan-outline:focus-within{
+  border-color:#7368e7;
+  box-shadow:0 0 0 3px rgba(111,99,229,.09);
 }
 
 /* Hotel booking finance tab only: card layout consistent with booking details. */
