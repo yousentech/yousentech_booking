@@ -8,7 +8,26 @@ class StayResource(models.Model):
 
     name = fields.Char(required=True, translate=True)
     sequence = fields.Integer(default=10)
-    floor_name = fields.Char(string="الطابق", default="غير محدد", index=True, help="اسم أو رقم الطابق لتجميع الغرف في مخطط الإشغال.")
+    floor_id = fields.Many2one("yousentech.stay.floor", string="الطابق", index=True, ondelete="restrict", check_company=True)
+    floor_name = fields.Char(string="اسم الطابق السابق", index=True, help="للتوافق مع بيانات الطوابق القديمة.")
+
+    @api.onchange("floor_id")
+    def _onchange_floor_id(self):
+        if self.floor_id:
+            self.floor_name = self.floor_id.name
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("floor_id"):
+                vals["floor_name"] = self.env["yousentech.stay.floor"].browse(vals["floor_id"]).name
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if vals.get("floor_id"):
+            vals = dict(vals, floor_name=self.env["yousentech.stay.floor"].browse(vals["floor_id"]).name)
+        return super().write(vals)
+
     active = fields.Boolean(default=True)
     company_id = fields.Many2one("res.company", string="الشركة / الفرع", required=True, default=lambda self: self.env.company, index=True)
     resource_type = fields.Selection([("room","غرفة"),("suite","جناح"),("apartment","شقة"),("chalet","شاليه")], string="نوع المورد", default="room", required=True)
