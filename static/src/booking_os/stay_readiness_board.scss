@@ -15,3 +15,23 @@
 .yb-ready-details,.yb-ready-message{margin-top:15px;padding:16px;border-radius:10px;background:white;border:1px solid #e3e8f0}.yb-ready-details{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.yb-ready-details button{margin-inline-start:auto}
 @media(max-width:760px){.yb-ready{padding:12px}.yb-ready-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.yb-ready-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:430px){.yb-ready-grid{grid-template-columns:1fr}}
+
+/* Full-card operational colors, including not-ready rooms. */
+.yb-ready-card.is-inspection{background:#fff2dc;border-color:#e4be7b;color:#835a1d}
+.yb-ready-card.is-unknown{background:#f0f1f5;border-color:#c7ccd7;color:#535d71}
+.yb-ready-card .yb-ready-state{font-size:14px;font-weight:850}
+.yb-ready-forecast{margin-top:24px;padding:16px;background:#fff;border:1px solid #e1e7f1;border-radius:14px}
+.yb-ready-forecast h3{font-size:16px;font-weight:800;margin:0 0 12px}
+.yb-ready-forecast-scroll{max-width:100%;overflow-x:auto}
+.yb-ready-forecast table{border-collapse:separate;border-spacing:5px;min-width:max-content;width:100%}
+.yb-ready-forecast th{font-size:11px;white-space:nowrap;padding:5px 7px}
+.yb-ready-forecast td{text-align:center;padding:2px}
+.yb-ready-day{display:flex;align-items:center;justify-content:center;min-width:28px;height:30px;border-radius:7px;font-weight:800;font-size:11px}
+.yb-ready-day.is-available{background:#b8ecd0;color:#11653c}
+.yb-ready-day.is-occupied{background:#b5d8ff;color:#1c5c9d}
+.yb-ready-day.is-reserved{background:#d6c6ff;color:#60439b}
+.yb-ready-day.is-maintenance{background:#ffdaa4;color:#935b13}
+.yb-ready-day.is-blocked{background:#cbd2dc;color:#515d6d}
+.yb-ready-day.is-cleaning,.yb-ready-day.is-inspection{background:#fff0a8;color:#86680c}
+.yb-ready-day.is-unknown{background:#e1e3e9;color:#535d71}
+.yb-ready-card-main:focus-visible,.yb-ready-card-foot button:focus-visible{outline:3px solid #615bdc;outline-offset:-3px}
