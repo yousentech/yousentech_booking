@@ -294,58 +294,19 @@
             </page>
 
             <page string="المالية والفواتير">
-              <div class="yb-stay-finance-layout">
-                <section class="yb-stay-finance-card yb-stay-finance-policy">
-                  <div class="yb-stay-finance-heading"><i class="fa fa-file-text-o"/><strong>إعدادات الفوترة</strong></div>
-                  <div class="yb-stay-finance-field">
-                    <label for="invoice_policy" string="سياسة الفوترة"/>
-                    <field name="invoice_policy" nolabel="1" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/>
-                  </div>
-                  <div class="yb-stay-finance-field" invisible="invoice_policy != 'deposit'">
-                    <label for="deposit_percent" string="نسبة العربون"/>
-                    <field name="deposit_percent" nolabel="1" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/>
-                  </div>
-                  <div class="yb-stay-finance-field">
-                    <label for="finance_state" string="الحالة المالية"/>
-                    <field name="finance_state" nolabel="1" readonly="1"/>
-                  </div>
-                </section>
-                <section class="yb-stay-finance-card yb-stay-finance-totals">
-                  <div class="yb-stay-finance-heading"><i class="fa fa-money"/><strong>ملخص المبالغ والتحصيل</strong></div>
-                  <div class="yb-stay-finance-amounts">
-                    <div class="yb-stay-finance-amount"><span>صافي المفوتر</span><field name="amount_invoiced" nolabel="1" readonly="1"/></div>
-                    <div class="yb-stay-finance-amount"><span>إجمالي المقبوض</span><field name="amount_paid" nolabel="1" readonly="1"/></div>
-                    <div class="yb-stay-finance-amount"><span>المبلغ المسترد</span><field name="amount_refunded" nolabel="1" readonly="1"/></div>
-                    <div class="yb-stay-finance-amount"><span>مطلوب رده للعميل</span><field name="amount_to_refund" nolabel="1" readonly="1"/></div>
-                    <div class="yb-stay-finance-amount yb-stay-finance-due"><span>المطلوب من العميل</span><field name="amount_remaining" nolabel="1" readonly="1"/></div>
-                  </div>
-                </section>
-                <section class="yb-stay-finance-card yb-stay-finance-list" invisible="invoice_policy != 'schedule'">
-                  <div class="yb-stay-finance-heading"><i class="fa fa-calendar-check-o"/><strong>جدول الدفعات</strong></div>
-                  <field name="payment_schedule_ids" nolabel="1" readonly="state not in ('draft','hold') or invoice_count &gt; 0">
-                    <tree editable="bottom">
-                      <field name="name" string="الدفعة"/>
-                      <field name="due_date" string="تاريخ الاستحقاق"/>
-                      <field name="amount" string="المبلغ"/>
-                      <field name="state" string="الحالة" readonly="1"/>
-                      <field name="invoice_id" string="الفاتورة" readonly="1"/>
-                    </tree>
-                  </field>
-                </section>
-                <section class="yb-stay-finance-card yb-stay-finance-list">
-                  <div class="yb-stay-finance-heading"><i class="fa fa-files-o"/><strong>الفواتير والمرتجعات</strong></div>
-                  <field name="invoice_ids" nolabel="1" readonly="1">
-                    <tree>
-                      <field name="name" string="المستند"/>
-                      <field name="move_type" string="النوع"/>
-                      <field name="invoice_date" string="التاريخ"/>
-                      <field name="amount_total" string="الإجمالي"/>
-                      <field name="payment_state" string="حالة الدفع"/>
-                      <field name="state" string="الحالة"/>
-                    </tree>
-                  </field>
-                </section>
+              <div class="yb-finance-summary">
+                <div><small>صافي المفوتر</small><field name="amount_invoiced" nolabel="1" readonly="1"/></div>
+                <div><small>إجمالي المقبوض</small><field name="amount_paid" nolabel="1" readonly="1"/></div>
+                <div><small>المبلغ المسترد</small><field name="amount_refunded" nolabel="1" readonly="1"/></div>
+                <div><small>المطلوب من العميل</small><field name="amount_remaining" nolabel="1" readonly="1"/></div>
               </div>
+              <group class="yb-clean-group">
+                <group><field name="invoice_policy" string="سياسة الفوترة" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/><field name="deposit_percent" string="نسبة العربون" invisible="invoice_policy != 'deposit'" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/></group>
+                <group><field name="finance_state" string="الحالة المالية" readonly="1"/><field name="amount_to_refund" string="مطلوب رده للعميل" readonly="1"/></group>
+              </group>
+              <field name="payment_schedule_ids" string="جدول الدفعات" invisible="invoice_policy != 'schedule'" readonly="state not in ('draft','hold') or invoice_count &gt; 0"><tree editable="bottom"><field name="name" string="الدفعة"/><field name="due_date" string="تاريخ الاستحقاق"/><field name="amount" string="المبلغ"/><field name="state" string="الحالة" readonly="1"/><field name="invoice_id" string="الفاتورة" readonly="1"/></tree></field>
+              <separator string="الفواتير والمرتجعات"/>
+              <field name="invoice_ids" string="الفواتير" nolabel="1" readonly="1"><tree><field name="name" string="المستند"/><field name="move_type" string="النوع"/><field name="invoice_date" string="التاريخ"/><field name="amount_total" string="الإجمالي"/><field name="payment_state" string="حالة الدفع"/><field name="state" string="الحالة"/></tree></field>
             </page>
 
                         <page string="السجل التجاري">
