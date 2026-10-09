@@ -244,3 +244,25 @@
   .yb-ready .yb-ready-card-main{padding:14px}
   .yb-ready .yb-ready-card-foot{padding:9px}
 }
+
+/* Smart availability: compact decision surface, not another room grid. */
+.yb-ready .yb-ready-intelligence{background:#fff;border:1px solid #e1e5f3;border-radius:15px;padding:17px 20px;margin-bottom:16px;box-shadow:0 4px 14px #27334d09}
+.yb-ready .yb-ready-intelligence-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}
+.yb-ready .yb-ready-intelligence-head h3{font-size:16px;font-weight:850;color:#263658;margin:0 0 5px}
+.yb-ready .yb-ready-intelligence-head h3 .fa{color:#6255d5;margin-inline-end:5px}
+.yb-ready .yb-ready-intelligence-head p{font-size:11px;color:#7e8aa2;margin:0}
+.yb-ready .yb-ready-intelligence-head>span{font-size:11px;color:#8290a7;white-space:nowrap}
+.yb-ready .yb-ready-intelligence-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.yb-ready .yb-ready-intelligence-stat{background:#f5f6ff;border:1px solid #e4e5fa;border-radius:12px;padding:12px 15px;display:flex;flex-direction:column;gap:3px}
+.yb-ready .yb-ready-intelligence-stat:nth-child(2){background:#eaf8f0;border-color:#cfeedd}
+.yb-ready .yb-ready-intelligence-stat:nth-child(3){background:#f1f6ff;border-color:#dce8fc}
+.yb-ready .yb-ready-intelligence-stat strong{font-size:26px;font-weight:900;color:#334668;line-height:1.2}
+.yb-ready .yb-ready-intelligence-stat small{font-size:12px;color:#586988;font-weight:700}
+.yb-ready .yb-ready-intelligence-stat span{font-size:11px;color:#75849e}
+.yb-ready .yb-ready-intelligence-results{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:13px}
+.yb-ready .yb-ready-intelligence-results>strong{font-size:12px;color:#394b6c;margin-inline-end:8px}
+.yb-ready .yb-ready-intelligence-empty{font-size:12px;color:#7d8ba2}
+.yb-ready .yb-ready-intelligence-room{display:flex;align-items:center;gap:10px;border:1px solid #dbe5f5;background:#f8faff;border-radius:10px;padding:9px 11px;color:#344665;font-size:12px}
+.yb-ready .yb-ready-intelligence-room small{color:#8a6819}
+.yb-ready .yb-ready-intelligence-room:hover{border-color:#7062dd;background:#f1efff}
+@media(max-width:700px){.yb-ready .yb-ready-intelligence-head{align-items:flex-start;flex-direction:column}.yb-ready .yb-ready-intelligence-stats{gap:6px}.yb-ready .yb-ready-intelligence-stat{padding:10px 8px}.yb-ready .yb-ready-intelligence-room{flex-wrap:wrap}}
