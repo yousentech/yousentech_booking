@@ -77,7 +77,7 @@ class StayBooking(models.Model):
     @api.depends("checkin_date", "checkout_date", "resource_id.nightly_price", "rate_plan_id.pricing_type", "rate_plan_id.fixed_price", "rate_plan_id.percent_adjustment", "rate_plan_id.tax_id", "addon_line_ids.subtotal", "partner_id")
     def _compute_stay_components(self):
         for rec in self:
-            nights = (rec.checkout_date - rec.checkin_date).days if rec.checkin_date and rec.checkout_date > rec.checkin_date else 0
+            nights = (rec.checkout_date - rec.checkin_date).days if rec.checkin_date and rec.checkout_date and rec.checkout_date > rec.checkin_date else 0
             price = rec.resource_id.nightly_price or 0.0
             if rec.rate_plan_id.pricing_type == "fixed":
                 price = rec.rate_plan_id.fixed_price or 0.0
