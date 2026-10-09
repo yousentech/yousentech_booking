@@ -25,7 +25,7 @@
         <article t-foreach="group.rooms" t-as="r" t-key="r.id" t-att-class="'yb-ready-card is-'+status(r).key">
           <button class="yb-ready-card-main" t-on-click="()=>this.select(r)">
             <span class="yb-ready-room"><i class="fa fa-bed"/> <t t-esc="r.name"/></span>
-            <span class="yb-ready-type" t-esc="TYPES[r.resource_type] || r.resource_type"/>
+            <span class="yb-ready-type" t-esc="typeLabel(r.resource_type)"/>
             <strong class="yb-ready-state" t-esc="status(r).label"/>
             <small t-esc="nextDate(r)"/>
           </button>
