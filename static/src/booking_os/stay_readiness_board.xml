@@ -58,7 +58,7 @@
       <div class="yb-ready-side-tabs"><button t-att-class="state.detailsTab==='info'?'active':''" t-on-click="()=>this.state.detailsTab='info'">معلومات</button><button t-att-class="state.detailsTab==='future'?'active':''" t-on-click="()=>this.state.detailsTab='future'">التوفر القادم</button></div>
       <div t-if="state.detailsTab==='info'" class="yb-ready-side-info">
         <div><span>نوع الوحدة</span><strong t-esc="typeLabel(selectedRoom.resource_type)"/></div>
-        <div><span>الطابق</span><strong t-esc="selectedRoom.floor_name || 'غير محدد'"/></div>
+        <div><span>الطابق</span><strong t-esc="floorLabel(selectedRoom)"/></div>
         <div><span>السعة</span><strong><t t-esc="selectedRoom.capacity"/> نزلاء</strong></div>
         <div><span>سعر الليلة</span><strong><t t-esc="selectedRoom.nightly_price"/> </strong></div>
         <div><span>حالة التجهيز</span><strong t-esc="selectedRoom.housekeeping_state==='clean'?'نظيفة وجاهزة':selectedRoom.housekeeping_state==='dirty'?'تحتاج تنظيفًا':selectedRoom.housekeeping_state==='inspection'?'بانتظار الفحص':'غير محددة'"/></div>
