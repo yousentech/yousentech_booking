@@ -16,6 +16,7 @@
         <button class="yb-ready-stat stat-cleaning" t-on-click="()=>this.setStatus('cleaning')"><span class="stat-icon"><i class="fa fa-paint-brush"/></span><strong t-esc="counts.cleaning+counts.inspection+counts.unknown"/><small>تحتاج تجهيزًا</small></button>
         <button class="yb-ready-stat stat-maintenance" t-on-click="()=>this.setStatus('maintenance')"><span class="stat-icon"><i class="fa fa-wrench"/></span><strong t-esc="counts.maintenance+counts.blocked"/><small>صيانة / إيقاف</small></button>
       </div>
+      <div t-if="draftTotal" class="yb-ready-drafts-overview"><i class="fa fa-file-text-o"/> <strong><t t-esc="draftTotal"/> مسودة حجز</strong> ضمن الفترة المحددة — تظهر للتنبيه فقط، ولا تمنع حجز الغرفة حتى تأكيدها.</div>
       <div class="yb-ready-search-panel">
         <button class="yb-ready-panel-toggle" t-att-aria-expanded="state.filtersOpen" t-on-click="()=>this.state.filtersOpen=!this.state.filtersOpen"><span><i class="fa fa-sliders"/> الفلاتر والبحث <small t-if="!state.filtersOpen">اضغط لعرض خيارات التصفية</small></span><i t-att-class="state.filtersOpen ? 'fa fa-angle-up' : 'fa fa-angle-down'"/></button>
         <div t-if="state.filtersOpen" class="yb-ready-search-content">
@@ -60,6 +61,7 @@
               <button class="yb-ready-card-main" t-on-click="()=>this.select(r)">
                 <span class="yb-ready-card-top"><span class="yb-ready-room"><i class="fa fa-bed"/> <t t-esc="r.name"/></span><i t-att-class="'fa '+statusIcon(status(r).key)"/></span>
                 <span class="yb-ready-type"><t t-esc="typeLabel(r.resource_type)"/></span><span class="yb-ready-capacity"><i class="fa fa-users"/> <strong t-esc="r.capacity"/> <span>نزلاء</span></span>
+                <span t-if="draftCount(r)" class="yb-ready-draft-pill"><i class="fa fa-file-text-o"/> <t t-esc="draftCount(r)"/> مسودة حجز</span>
                 <strong class="yb-ready-state"><i t-att-class="'fa '+statusIcon(status(r).key)"/> <t t-esc="status(r).label"/></strong>
                 <small t-if="status(r).key==='occupied' || status(r).key==='reserved'" class="yb-ready-next" t-esc="nextDate(r)"/>
                 
@@ -93,7 +95,7 @@
         <div><span>حالة التجهيز</span><strong t-esc="selectedRoom.housekeeping_state==='clean'?'نظيفة وجاهزة':selectedRoom.housekeeping_state==='dirty'?'تحتاج تنظيفًا':selectedRoom.housekeeping_state==='inspection'?'بانتظار الفحص':'غير محددة'"/></div>
         <div t-if="selectedRoom.out_of_service_reason"><span>سبب الإيقاف</span><strong t-esc="selectedRoom.out_of_service_reason"/></div>
       </div>
-      <div t-else="" class="yb-ready-side-future"><p>توقع حالة الغرفة خلال 7 أيام من تاريخ الدخول</p><div t-foreach="futureDays" t-as="d" t-key="d" class="yb-ready-future-row"><span t-esc="d"/><span t-att-class="'is-'+dayStatus(selectedRoom,d).key" t-esc="dayStatus(selectedRoom,d).label"/></div><h4>الحجوزات ضمن الفترة</h4><div t-foreach="selectedBookings" t-as="b" t-key="b.id" class="yb-ready-booking-row"><strong t-esc="b.name"/><small><t t-esc="b.checkin_date"/> — <t t-esc="b.checkout_date || 'مفتوحة'"/></small></div><p t-if="!selectedBookings.length">لا توجد حجوزات مسجلة في الفترة.</p></div>
+      <div t-else="" class="yb-ready-side-future"><p>توقع حالة الغرفة خلال 7 أيام من تاريخ الدخول</p><div t-foreach="futureDays" t-as="d" t-key="d" class="yb-ready-future-row"><span t-esc="d"/><span t-att-class="'is-'+dayStatus(selectedRoom,d).key" t-esc="dayStatus(selectedRoom,d).label"/></div><h4>الحجوزات ضمن الفترة</h4><div t-foreach="selectedBookings" t-as="b" t-key="b.id" class="yb-ready-booking-row"><strong><t t-esc="b.name"/> <span t-if="b.state==='draft'" class="yb-ready-draft-pill">مسودة · لا تمنع الحجز</span></strong><small><t t-esc="b.checkin_date"/> — <t t-esc="b.checkout_date || 'مفتوحة'"/></small></div><p t-if="!selectedBookings.length">لا توجد حجوزات مسجلة في الفترة.</p></div>
       <div class="yb-ready-side-actions"><button t-if="isBookable(selectedRoom)" class="yb-ready-primary" t-on-click="()=>this.newBooking(selectedRoom)"><i class="fa fa-calendar-plus-o"/> حجز جديد لهذه الغرفة</button><button class="yb-ready-secondary" t-on-click="()=>this.openResource(selectedRoom)"><i class="fa fa-cog"/> إدارة حالة الغرفة</button></div>
     </aside>
   </div>
