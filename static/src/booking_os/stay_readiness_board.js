@@ -29,8 +29,8 @@ export class StayReadinessBoard extends Component {
             (this.state.type==="all"||r.resource_type===this.state.type)&&(!q||r.name.toLocaleLowerCase().includes(q))&&
             (this.state.status==="all"||this.status(r).key===this.state.status));
     }
-    get groups() { return this.floors.map(f=>({name:f,rooms:this.filtered.filter(r=>(r.floor_name||"غير محدد")===f)})).filter(g=>g.rooms.length); }
-    get visibleRooms() { return this.state.resources.filter(r=>(this.state.floor==="all"||(r.floor_name||"غير محدد")===this.state.floor)&&(this.state.type==="all"||r.resource_type===this.state.type)&&(!this.state.query.trim()||r.name.toLocaleLowerCase().includes(this.state.query.trim().toLocaleLowerCase()))); }
+    get groups() { return this.floors.map(f=>({name:f,rooms:this.filtered.filter(r=>this.floorLabel(r)===f)})).filter(g=>g.rooms.length); }
+    get visibleRooms() { return this.state.resources.filter(r=>(this.state.floor==="all"||this.floorLabel(r)===this.state.floor)&&(this.state.type==="all"||r.resource_type===this.state.type)&&(!this.state.query.trim()||r.name.toLocaleLowerCase().includes(this.state.query.trim().toLocaleLowerCase()))); }
     get counts() {
         const counts={total:this.visibleRooms.length,available:0,occupied:0,reserved:0,maintenance:0,blocked:0,cleaning:0,inspection:0,unknown:0};
         for(const r of this.visibleRooms) {const key=this.status(r).key;if(key in counts)counts[key]++;}
