@@ -38,6 +38,27 @@ class StayResource(models.Model):
     out_of_service_to = fields.Date(string="نهاية الإيقاف (غير شاملة)")
     out_of_service_reason = fields.Char(string="سبب الإيقاف")
 
+    def action_mark_dirty(self):
+        self.check_access_rights("write")
+        self.check_access_rule("write")
+        self.write({"housekeeping_state": "dirty"})
+
+    def action_mark_inspection(self):
+        self.check_access_rights("write")
+        self.check_access_rule("write")
+        self.write({"housekeeping_state": "inspection"})
+
+    def action_mark_clean(self):
+        self.check_access_rights("write")
+        self.check_access_rule("write")
+        self.write({"housekeeping_state": "clean"})
+
+    def action_clear_out_of_service(self):
+        self.check_access_rights("write")
+        self.check_access_rule("write")
+        self.write({"out_of_service_type": False, "out_of_service_from": False,
+                    "out_of_service_to": False, "out_of_service_reason": False})
+
     @api.constrains("out_of_service_type","out_of_service_from","out_of_service_to")
     def _check_closure(self):
         for rec in self:
