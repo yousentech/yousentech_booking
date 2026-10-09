@@ -626,9 +626,12 @@
 
 /* Hotel booking: outline the rate-plan field only (not its card or siblings). */
 .yb-stay-form .yb-stay-rate-plan-outline{
-  border:1px solid #d5dfed;
-  border-radius:6px;
-  min-height:32px;
-  padding:3px 8px;
+  width:100%;
+  min-width:0;
+  min-height:36px;
   box-sizing:border-box;
+  border:1px solid #cfd7e6;
+  border-radius:9px;
+  background:#fff;
+  padding:5px 10px;
 }
