@@ -19,7 +19,7 @@ export class StayReadinessBoard extends Component {
         onWillStart(()=>this.load());
     }
     get holidaysInRange() { return this.state.holidays.filter(h=>h.date>=this.state.start&&h.date<this.end); }
-    get weekendDays() { return this.days.filter(d=>[5,6].includes(date(d).getUTCDay())); }
+    get weekendDays() { return this.days.filter(d=>[5,6].includes(date(d).getDay())); }
     get days() { return Array.from({length:this.state.nights},(_,i)=>iso(add(date(this.state.start),i))); }
     get end() { return iso(add(date(this.state.start),this.state.nights)); }
     floorLabel(r) { return r.floor_id ? r.floor_id[1] : (r.floor_name || "غير محدد"); }
