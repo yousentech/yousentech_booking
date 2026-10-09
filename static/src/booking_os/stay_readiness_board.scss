@@ -169,7 +169,7 @@
    Scoped overrides intentionally supersede the old fixed 2/3/4-column rules. */
 .yb-ready .yb-ready-layout .yb-ready-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:14px;
   align-items:stretch;
 }
@@ -234,13 +234,13 @@
 .yb-ready .yb-ready-side-actions button{padding:13px 12px;font-size:13px}
 @media(max-width:1050px){
   .yb-ready .yb-ready-side{width:330px;flex-basis:330px}
-  .yb-ready .yb-ready-layout .yb-ready-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}
+  .yb-ready .yb-ready-layout .yb-ready-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 }
 @media(max-width:950px){
   .yb-ready .yb-ready-side{width:100%;flex-basis:auto;max-height:none;position:static}
 }
 @media(max-width:540px){
-  .yb-ready .yb-ready-layout .yb-ready-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,175px),1fr))}
+  .yb-ready .yb-ready-layout .yb-ready-grid{grid-template-columns:repeat(auto-fit,minmax(175px,1fr))}
   .yb-ready .yb-ready-card-main{padding:14px}
   .yb-ready .yb-ready-card-foot{padding:9px}
 }
@@ -266,3 +266,6 @@
 .yb-ready .yb-ready-intelligence-room small{color:#8a6819}
 .yb-ready .yb-ready-intelligence-room:hover{border-color:#7062dd;background:#f1efff}
 @media(max-width:700px){.yb-ready .yb-ready-intelligence-head{align-items:flex-start;flex-direction:column}.yb-ready .yb-ready-intelligence-stats{gap:6px}.yb-ready .yb-ready-intelligence-stat{padding:10px 8px}.yb-ready .yb-ready-intelligence-room{flex-wrap:wrap}}
+
+/* Keep narrow screens usable without Sass min() mixed-unit evaluation. */
+@media(max-width:480px){.yb-ready .yb-ready-layout .yb-ready-grid{grid-template-columns:minmax(0,1fr)}}
