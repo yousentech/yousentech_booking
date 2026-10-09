@@ -47,6 +47,7 @@
       <div t-if="state.loading" class="yb-ready-message"><i class="fa fa-spinner fa-spin"/> جارٍ تحميل الغرف...</div>
       <div t-elif="state.error" class="yb-ready-message" t-esc="state.error"/>
       <div t-else="">
+        <div class="yb-ready-rooms-scroll" aria-label="الغرف حسب الطابق">
         <section t-foreach="groups" t-as="group" t-key="group.name" class="yb-ready-floor">
           <button class="yb-ready-floor-heading" t-on-click="()=>this.toggleFloor(group.name)"><span><i class="fa fa-building-o"/> <strong t-esc="group.name"/></span><span class="yb-ready-floor-count"><i class="fa fa-circle"/> <t t-esc="group.rooms.filter(r=>isReady(r)).length"/> شاغرة من <t t-esc="group.rooms.length"/> غرف <i t-att-class="isCollapsed(group.name)?'fa fa-angle-down':'fa fa-angle-up'"/></span></button>
           <div t-if="!isCollapsed(group.name)" class="yb-ready-grid">
@@ -63,9 +64,16 @@
           </div>
         </section>
         <div t-if="!groups.length" class="yb-ready-message">لا توجد غرف مطابقة. غيّر الفلاتر لعرض المزيد.</div>
+        </div>
         <div t-if="state.mode!=='day'" class="yb-ready-forecast"><h3><i class="fa fa-calendar"/> خريطة التوفر للأيام القادمة</h3><div class="yb-ready-forecast-scroll"><table><thead><tr><th>الغرفة</th><th t-foreach="days" t-as="d" t-key="d" t-esc="d.slice(5)"/></tr></thead><tbody><tr t-foreach="filtered" t-as="r" t-key="r.id"><th t-esc="r.name"/><td t-foreach="days" t-as="d" t-key="d"><span t-att-class="'yb-ready-day is-'+dayStatus(r,d).key" t-att-title="d+' — '+dayStatus(r,d).label" t-esc="dayStatus(r,d).label.slice(0,1)"/></td></tr></tbody></table></div></div>
       </div>
-      <p class="yb-ready-footnote"><i class="fa fa-info-circle"/> التوفر حسب الحجوزات المسجلة. الجاهزية للتسليم تعتمد على النظافة والفحص، ويتم إعادة التحقق من التعارض عند تأكيد الحجز.</p>
+      <section class="yb-ready-bottom-notes">
+        <strong><i class="fa fa-sticky-note-o"/> ملاحظات التشغيل وأيام الإجازات</strong>
+        <p><i class="fa fa-info-circle"/> التوفر حسب الحجوزات المسجلة؛ التسليم يتطلب التحقق من التنظيف والفحص، ويُعاد التحقق من التعارض عند تأكيد الحجز.</p>
+        <p><i class="fa fa-calendar-o"/> <b>نهاية الأسبوع:</b> <t t-if="weekendDays.length"><span t-foreach="weekendDays" t-as="d" t-key="d" class="yb-ready-holiday-tag" t-esc="d"/></t><t t-else="">لا توجد جمعة أو سبت في الفترة المحددة.</t></p>
+        <p><i class="fa fa-calendar-check-o"/> <b>الإجازات والمناسبات المسجلة:</b> <t t-if="holidaysInRange.length"><span t-foreach="holidaysInRange" t-as="h" t-key="h.id" class="yb-ready-holiday-tag"><t t-esc="h.name"/> · <t t-esc="h.date"/></span></t><t t-else="">لا توجد مناسبات مسجلة ضمن الفترة.</t></p>
+      </section>
+
     </main>
     <aside t-if="selectedRoom" class="yb-ready-side">
       <div class="yb-ready-side-heading"><strong>تفاصيل الغرفة</strong><button aria-label="إغلاق التفاصيل" t-on-click="()=>this.select(selectedRoom)"><i class="fa fa-times"/></button></div>
