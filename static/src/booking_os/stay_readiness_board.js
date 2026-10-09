@@ -3,7 +3,6 @@ import { Component, onWillStart, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 
-const DAY = 86400000;
 const TYPES = {room:"غرفة",suite:"جناح",apartment:"شقة",chalet:"شاليه"};
 const iso = d => [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
 const date = s => new Date(s+"T12:00:00");
@@ -42,7 +41,29 @@ export class StayReadinessBoard extends Component {
     resetFilters() { this.state.floor="all";this.state.type="all";this.state.status="all";this.state.query=""; }
     isReady(r) { return this.days.every(d=>this.dayStatus(r,d).key==="available"); }
     statusIcon(key) {return ({available:"fa-check-circle",occupied:"fa-bed",reserved:"fa-calendar-check-o",maintenance:"fa-wrench",blocked:"fa-ban",cleaning:"fa-paint-brush",inspection:"fa-search",unknown:"fa-question-circle"})[key]||"fa-info-circle";}
-    get selectedBookings() { const r=this.selectedRoom;return r?this.roomBookings(r).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date)):[]; }
+    get tomorrow() { return iso(add(date(this.state.start),1)); }
+    get afterTomorrow() { return iso(add(date(this.state.start),2)); }
+    canReserveOn(r,day) { return ["available","cleaning","inspection","unknown"].includes(this.dayStatus(r,day).key); }
+    get forecastSummary() {
+        const rooms=this.visibleRooms;
+        const count=day=>rooms.filter(r=>this.canReserveOn(r,day)).length;
+        return [{day:this.state.start,title:"اليوم",count:count(this.state.start)},
+            {day:this.tomorrow,title:"غدًا",count:count(this.tomorrow)},
+            {day:this.afterTomorrow,title:"بعد غد",count:count(this.afterTomorrow)}];
+    }
+    get forecastRooms() { return this.visibleRooms.filter(r=>!this.canReserveOn(r,this.state.start)&&this.canReserveOn(r,this.tomorrow)); }
+    readinessHint(r) {
+        if(r.housekeeping_state==="clean")return "يلزم التأكد من التجهيز بعد الخروج";
+        if(r.housekeeping_state==="dirty")return "تحتاج تنظيفًا قبل التسليم";
+        if(r.housekeeping_state==="inspection")return "تحتاج فحصًا قبل التسليم";
+        return "يلزم تأكيد التجهيز قبل التسليم";
+    }
+    checkoutHint(r) {
+        const departing=this.roomBookings(r).some(b=>b.checkout_date===this.tomorrow&&b.checkin_date<=this.state.start);
+        return departing?"خروج مسجل غدًا":"متاحة للحجز غدًا حسب السجل";
+    }
+    selectForecast(r) { this.state.selected=r.id;this.state.detailsTab="future"; }
+    get selectedBookings() { const r=this.selectedRoom;return r?this.roomBookings(r).filter(b=>b.checkin_date<this.end&&(!b.checkout_date||b.checkout_date>this.state.start)).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date)):[]; }
     get selectedStatus() { return this.selectedRoom?this.status(this.selectedRoom):null; }
     typeLabel(type) { return TYPES[type] || type; }
     roomBookings(r) {return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&BLOCKING.includes(b.state));}
@@ -80,7 +101,7 @@ export class StayReadinessBoard extends Component {
             const cid=this.company.currentCompany.id;
             const [resources,bookings]=await Promise.all([
                 this.orm.searchRead("yousentech.stay.resource",[["company_id","=",cid],["active","=",true]],["name","floor_id","floor_name","resource_type","capacity","nightly_price","housekeeping_state","out_of_service_type","out_of_service_from","out_of_service_to","out_of_service_reason"],{order:"sequence,name,id"}),
-                this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",this.end],"|",["checkout_date","=",false],["checkout_date",">",this.state.start]],["name","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
+                this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",iso(add(date(this.state.start),Math.max(this.state.nights,32)))],"|",["checkout_date","=",false],["checkout_date",">",this.state.start],["state","in",BLOCKING]],["name","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
             ]);
             this.state.resources=resources;this.state.bookings=bookings;
         } catch(e) {this.state.error="تعذر تحميل بيانات الغرف والحجوزات.";this.state.resources=[];this.state.bookings=[];}
