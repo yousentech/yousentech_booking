@@ -33,6 +33,7 @@ export class StayReadinessBoard extends Component {
         for(const r of this.filtered) {const key=this.status(r).key;if(key in counts)counts[key]++;}
         return counts;
     }
+    typeLabel(type) { return TYPES[type] || type; }
     roomBookings(r) {return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&BLOCKING.includes(b.state));}
     status(r) {
         const matches=this.roomBookings(r).filter(b=>b.checkin_date<this.end&&(!b.checkout_date||b.checkout_date>this.state.start));
