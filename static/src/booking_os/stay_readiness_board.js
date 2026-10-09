@@ -60,7 +60,7 @@ export class StayReadinessBoard extends Component {
     openResource(r) {this.action.doAction({type:"ir.actions.act_window",res_model:"yousentech.stay.resource",res_id:r.id,views:[[false,"form"]],target:"current"});}
     nextDate(r) {
         const future=this.roomBookings(r).filter(b=>!b.checkout_date||b.checkout_date>this.state.start).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date));
-        if(!future.length)return "لا توجد حجوزات قادمة";
+        if(!future.length)return "لا يوجد حجز خلال الفترة المعروضة";
         const b=future[0];
         return b.checkout_date?"أقرب خروج: "+b.checkout_date:"إقامة مفتوحة";
     }
