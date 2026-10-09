@@ -28,6 +28,22 @@
         <div class="yb-ready-search-footer"><span><i class="fa fa-calendar-o"/> تاريخ الخروج: <strong t-esc="end"/></span><button t-on-click="resetFilters"><i class="fa fa-refresh"/> إعادة تعيين الفلاتر</button></div>
         <div class="yb-ready-legend"><span><i class="legend-dot available"/> شاغرة وجاهزة</span><span><i class="legend-dot occupied"/> مشغولة</span><span><i class="legend-dot reserved"/> محجوزة</span><span><i class="legend-dot cleaning"/> تحتاج تجهيزًا</span><span><i class="legend-dot maintenance"/> صيانة</span><span><i class="legend-dot blocked"/> موقوفة</span></div>
       </div>
+      <section t-if="!state.loading &amp;&amp; !state.error" class="yb-ready-intelligence">
+        <div class="yb-ready-intelligence-head"><div><h3><i class="fa fa-lightbulb-o"/> مساعد التوفر الذكي</h3><p>توقعات الحجز بحسب تاريخ الخروج والحجوزات والصيانة، وليست تأكيدًا لجاهزية التسليم.</p></div><span>ابتداءً من <t t-esc="state.start"/></span></div>
+        <div class="yb-ready-intelligence-stats">
+          <div t-foreach="forecastSummary" t-as="item" t-key="item.day" class="yb-ready-intelligence-stat"><small t-esc="item.title"/><strong t-esc="item.count"/><span>قابلة للحجز · ليلة واحدة</span><small t-esc="item.day"/></div>
+        </div>
+        <div class="yb-ready-intelligence-results">
+          <strong><i class="fa fa-calendar-check-o"/> غرف غير متاحة اليوم وقد تتاح غدًا</strong>
+          <span t-if="!forecastRooms.length" class="yb-ready-intelligence-empty">لا توجد غرف تنتقل من غير متاحة اليوم إلى قابلة للحجز غدًا حسب السجلات الحالية.</span>
+          <button t-foreach="forecastRooms" t-as="r" t-key="r.id" class="yb-ready-intelligence-room" t-on-click="()=>this.selectForecast(r)">
+            <span><b t-esc="r.name"/> · <t t-esc="floorLabel(r)"/></span>
+            <span t-esc="checkoutHint(r)"/>
+            <small t-esc="readinessHint(r)"/>
+            <i class="fa fa-angle-left"/>
+          </button>
+        </div>
+      </section>
       <div t-if="state.loading" class="yb-ready-message"><i class="fa fa-spinner fa-spin"/> جارٍ تحميل الغرف...</div>
       <div t-elif="state.error" class="yb-ready-message" t-esc="state.error"/>
       <div t-else="">
