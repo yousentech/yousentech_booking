@@ -164,3 +164,83 @@
 .yb-ready .yb-ready-stat strong{grid-column:1;grid-row:1;font-size:30px;line-height:1.2;white-space:nowrap;font-variant-numeric:tabular-nums}
 .yb-ready .yb-ready-stat small{grid-column:1;grid-row:2;line-height:1.4;white-space:normal}
 @media(max-width:600px){.yb-ready .yb-ready-stat{grid-template-columns:minmax(0,1fr) 34px;column-gap:8px}.yb-ready .yb-ready-stat .stat-icon{width:34px;height:34px;font-size:17px}}
+
+/* Reception refinement: responsive cards, persistent card actions and airy details.
+   Scoped overrides intentionally supersede the old fixed 2/3/4-column rules. */
+.yb-ready .yb-ready-layout .yb-ready-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));
+  gap:14px;
+  align-items:stretch;
+}
+.yb-ready .yb-ready-floor{min-width:0}
+.yb-ready .yb-ready-card{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  min-height:198px;
+  height:100%;
+}
+.yb-ready .yb-ready-card-main{
+  display:flex;
+  flex-direction:column;
+  flex:1 1 auto;
+  width:100%;
+  min-height:0;
+  gap:9px;
+  padding:16px 15px 14px;
+}
+.yb-ready .yb-ready-card-foot{
+  display:flex;
+  flex:0 0 auto;
+  margin-top:auto;
+  min-height:54px;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  padding:10px 13px;
+  border-top:1px solid #ffffffa6;
+}
+.yb-ready .yb-ready-room{font-size:clamp(18px,1.35vw,24px);overflow-wrap:anywhere}
+.yb-ready .yb-ready-type{font-size:12px;line-height:1.4}
+.yb-ready .yb-ready-capacity{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:15px;
+  font-weight:750;
+  line-height:1.4;
+}
+.yb-ready .yb-ready-capacity .fa{font-size:15px;opacity:.8}
+.yb-ready .yb-ready-capacity strong{font-size:24px;font-weight:900;line-height:1}
+.yb-ready .yb-ready-state{margin-top:3px;font-size:13px!important;line-height:1.4}
+.yb-ready .yb-ready-next{font-size:11px;line-height:1.4}
+.yb-ready .yb-ready-side{
+  width:380px;
+  flex:0 0 380px;
+  min-width:0;
+  max-height:calc(100vh - 50px);
+}
+.yb-ready .yb-ready-side-heading{padding:22px 23px;font-size:16px}
+.yb-ready .yb-ready-side-hero{gap:12px;padding:30px 22px}
+.yb-ready .yb-ready-side-icon{width:82px;height:82px}
+.yb-ready .yb-ready-side-hero strong{font-size:29px}
+.yb-ready .yb-ready-side-status{margin:19px 0;padding:10px 17px;font-size:13px}
+.yb-ready .yb-ready-side-tabs button{padding:15px 10px;font-size:13px}
+.yb-ready .yb-ready-side-info{padding:17px 23px}
+.yb-ready .yb-ready-side-info>div{padding:15px 0;gap:18px;font-size:13px;line-height:1.6}
+.yb-ready .yb-ready-side-future{padding:20px 23px}
+.yb-ready .yb-ready-side-actions{padding:20px 23px;gap:11px}
+.yb-ready .yb-ready-side-actions button{padding:13px 12px;font-size:13px}
+@media(max-width:1050px){
+  .yb-ready .yb-ready-side{width:330px;flex-basis:330px}
+  .yb-ready .yb-ready-layout .yb-ready-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}
+}
+@media(max-width:950px){
+  .yb-ready .yb-ready-side{width:100%;flex-basis:auto;max-height:none;position:static}
+}
+@media(max-width:540px){
+  .yb-ready .yb-ready-layout .yb-ready-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,175px),1fr))}
+  .yb-ready .yb-ready-card-main{padding:14px}
+  .yb-ready .yb-ready-card-foot{padding:9px}
+}
