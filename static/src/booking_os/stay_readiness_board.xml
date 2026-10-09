@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
 <t t-name="yousentech_booking.StayReadinessBoard">
 <div class="yb-ready" dir="rtl">
-  <header class="yb-ready-header"><div><small>الاستقبال / الحجوزات الفندقية</small><h1>لوحة جاهزية الغرف</h1><p>التوفر حسب فترة الإقامة — الجاهزية التشغيلية قيد الإضافة</p></div></header>
+  <header class="yb-ready-header"><div><small>الاستقبال / الحجوزات الفندقية</small><h1>لوحة جاهزية الغرف</h1><p>حالة كل غرفة حسب الإشغال والتجهيز والصيانة، لاتخاذ قرار سريع</p></div></header>
   <div class="yb-ready-toolbar">
     <label>تاريخ الدخول <input type="date" t-att-value="state.start" t-on-change="changeStart"/></label>
     <div class="yb-ready-modes"><button t-att-class="state.mode==='day'?'active':''" t-on-click="()=>this.setMode('day')">يومي</button><button t-att-class="state.mode==='week'?'active':''" t-on-click="()=>this.setMode('week')">أسبوعي</button><button t-att-class="state.mode==='month'?'active':''" t-on-click="()=>this.setMode('month')">شهري</button></div>
@@ -12,10 +12,10 @@
     <input type="search" placeholder="رقم الغرفة أو اسمها" t-on-input="onQuery"/>
     <select t-on-change="onFloor"><option value="all">كل الطوابق</option><option t-foreach="floors" t-as="f" t-key="f" t-att-value="f" t-esc="f"/></select>
     <select t-on-change="onType"><option value="all">كل الأنواع</option><option value="room">غرف</option><option value="suite">أجنحة</option><option value="apartment">شقق</option><option value="chalet">شاليهات</option></select>
-    <select t-on-change="onStatus"><option value="all">كل الحالات</option><option value="available">متاحة للحجز</option><option value="occupied">مشغولة</option><option value="reserved">محجوزة</option></select>
+    <select t-on-change="onStatus"><option value="all">كل الحالات</option><option value="available">متاحة للحجز</option><option value="occupied">مشغولة</option><option value="reserved">محجوزة</option><option value="maintenance">صيانة</option><option value="blocked">موقوفة</option><option value="cleaning">تنظيف</option><option value="inspection">فحص</option><option value="unknown">غير محددة</option></select>
   </div>
   <div class="yb-ready-stats"><article><small>إجمالي الوحدات</small><strong t-esc="counts.total"/></article><article><small>متاحة للحجز</small><strong t-esc="counts.available"/></article><article><small>مشغولة</small><strong t-esc="counts.occupied"/></article><article><small>محجوزة</small><strong t-esc="counts.reserved"/></article></div>
-  <p class="yb-ready-note">التوفر محسوب من الحجوزات المسجلة. لا يعني أن الغرفة نظيفة أو جاهزة للتسليم. الصيانة والإيقاف المؤقت سيضافان بعد بناء حالاتهما التشغيلية.</p>
+  <p class="yb-ready-note">الأخضر: شاغرة وجاهزة. الأزرق: مشغولة. البنفسجي: محجوزة. البرتقالي: صيانة. الرمادي: موقوفة. الأصفر: تحتاج تجهيزًا. الإقامة المفتوحة والصيانة تمنع الحجز للفترات المتعارضة.</p>
   <div t-if="state.loading" class="yb-ready-message">جارٍ تحميل الغرف...</div>
   <div t-elif="state.error" class="yb-ready-message" t-esc="state.error"/>
   <div t-else="">
@@ -27,14 +27,15 @@
             <span class="yb-ready-room"><i class="fa fa-bed"/> <t t-esc="r.name"/></span>
             <span class="yb-ready-type" t-esc="typeLabel(r.resource_type)"/>
             <strong class="yb-ready-state" t-esc="status(r).label"/>
-            <small t-esc="nextDate(r)"/>
+            <small t-esc="nextDate(r)"/><small t-if="r.out_of_service_type &amp;&amp; status(r).key===r.out_of_service_type" t-esc="r.out_of_service_reason || 'إيقاف تشغيلي'"/>
           </button>
-          <div class="yb-ready-card-foot"><span><t t-esc="r.capacity"/> نزلاء</span><button t-if="status(r).key==='available'" t-on-click="()=>this.newBooking(r)">حجز جديد</button></div>
+          <div class="yb-ready-card-foot"><span><t t-esc="r.capacity"/> نزلاء</span><button t-if="isBookable(r)" t-on-click="()=>this.newBooking(r)">حجز جديد</button></div>
         </article>
       </div>
     </section>
+    <div t-if="state.mode!=='day'" class="yb-ready-forecast"><h3>خريطة التوفر اليومي</h3><div class="yb-ready-forecast-scroll"><table><thead><tr><th>الغرفة</th><th t-foreach="days" t-as="d" t-key="d" t-esc="d.slice(5)"/></tr></thead><tbody><tr t-foreach="filtered" t-as="r" t-key="r.id"><th t-esc="r.name"/><td t-foreach="days" t-as="d" t-key="d"><span t-att-class="'yb-ready-day is-'+dayStatus(r,d).key" t-att-title="dayStatus(r,d).label" t-esc="dayStatus(r,d).label.slice(0,1)"/></td></tr></tbody></table></div></div>
     <div t-if="!groups.length" class="yb-ready-message">لا توجد غرف مطابقة للفلاتر.</div>
-    <div t-if="selectedRoom" class="yb-ready-details"><strong>تفاصيل: <t t-esc="selectedRoom.name"/></strong><span t-esc="nextDate(selectedRoom)"/><button t-on-click="()=>this.select(selectedRoom)">إغلاق</button></div>
+    <div t-if="selectedRoom" class="yb-ready-details"><strong>تفاصيل: <t t-esc="selectedRoom.name"/></strong><span t-esc="nextDate(selectedRoom)"/><button t-on-click="()=>this.openResource(selectedRoom)">إدارة حالة الغرفة</button><button t-on-click="()=>this.select(selectedRoom)">إغلاق</button></div>
   </div>
 </div>
 </t>
