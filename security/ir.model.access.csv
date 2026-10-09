@@ -38,3 +38,5 @@ access_hall_period_price_user,hall.period.price user,model_yousentech_booking_ha
 access_hall_period_price_manager,hall.period.price manager,model_yousentech_booking_hall_period_price,yousentech_booking.group_booking_manager,1,1,1,1
 access_booking_holiday_user,booking.holiday user,model_yousentech_booking_holiday,yousentech_booking.group_booking_user,1,0,0,0
 access_booking_holiday_manager,booking.holiday manager,model_yousentech_booking_holiday,yousentech_booking.group_booking_manager,1,1,1,1
+access_stay_floor_user,stay.floor user,model_yousentech_stay_floor,yousentech_booking.group_booking_user,1,0,0,0
+access_stay_floor_manager,stay.floor manager,model_yousentech_stay_floor,yousentech_booking.group_booking_manager,1,1,1,1
