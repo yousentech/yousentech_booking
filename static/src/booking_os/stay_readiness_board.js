@@ -42,6 +42,7 @@ export class StayReadinessBoard extends Component {
     isReady(r) { return this.days.every(d=>this.dayStatus(r,d).key==="available"); }
     statusIcon(key) {return ({available:"fa-check-circle",occupied:"fa-bed",reserved:"fa-calendar-check-o",maintenance:"fa-wrench",blocked:"fa-ban",cleaning:"fa-paint-brush",inspection:"fa-search",unknown:"fa-question-circle"})[key]||"fa-info-circle";}
     get tomorrow() { return iso(add(date(this.state.start),1)); }
+    get futureDays() { return Array.from({length:7},(_,i)=>iso(add(date(this.state.start),i))); }
     get afterTomorrow() { return iso(add(date(this.state.start),2)); }
     canReserveOn(r,day) { return ["available","cleaning","inspection","unknown"].includes(this.dayStatus(r,day).key); }
     get forecastSummary() {
@@ -91,7 +92,7 @@ export class StayReadinessBoard extends Component {
     openResource(r) {this.action.doAction({type:"ir.actions.act_window",res_model:"yousentech.stay.resource",res_id:r.id,views:[[false,"form"]],target:"current"});}
     nextDate(r) {
         const future=this.roomBookings(r).filter(b=>!b.checkout_date||b.checkout_date>this.state.start).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date));
-        if(!future.length)return "لا يوجد حجز خلال الفترة المعروضة";
+        if(!future.length)return "لا يوجد حجز قادم ضمن أفق البحث";
         const b=future[0];
         return b.checkout_date?"أقرب خروج: "+b.checkout_date:"إقامة مفتوحة";
     }
