@@ -484,3 +484,17 @@
 .yb-ready .yb-ready-timeline-booking.is-checked_out{background:#e8e3fb;border-color:#a38cdb;color:#604b94}
 .yb-ready .yb-ready-timeline-booking.is-draft{background:#f1f2f5;border:1px dashed #aab1be;color:#626a78}
 .yb-ready .yb-ready-timeline-booking:hover{filter:brightness(.97);box-shadow:0 1px 5px #0002}
+
+/* Keep notes and the bottom of the timeline reachable inside Odoo's action viewport. */
+.yb-ready{height:calc(100vh - 50px);height:calc(100dvh - 50px);min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain}
+.yb-ready .yb-ready-layout{min-height:100%;height:auto;align-items:flex-start}
+.yb-ready .yb-ready-main{min-height:0;padding-bottom:32px}
+.yb-ready .yb-ready-period-planner .yb-ready-forecast-scroll{max-height:min(48vh,440px);max-height:min(48dvh,440px);overflow-x:auto;overflow-y:auto}
+.yb-ready .yb-ready-bottom-notes{margin-bottom:14px}
+@media(max-height:720px){
+  .yb-ready .yb-ready-period-planner .yb-ready-forecast-scroll{max-height:35vh;max-height:35dvh}
+}
+@media(max-width:950px){
+  .yb-ready{height:calc(100vh - 50px);height:calc(100dvh - 50px)}
+  .yb-ready .yb-ready-layout{align-items:stretch}
+}
