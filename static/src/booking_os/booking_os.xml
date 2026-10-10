@@ -50,9 +50,6 @@
                   <strong t-esc="monthDayNumber(day)"/>
                   <span class="yb-month-today" t-if="isToday(day)">اليوم</span>
                 </div>
-                <div class="yb-month-holidays" t-if="isHoliday(day)">
-                  <span t-foreach="holidaysFor(day)" t-as="holiday" t-key="holiday.id" class="yb-month-holiday"><i class="fa fa-umbrella"/> <t t-esc="holiday.name"/></span>
-                </div>
                 <div class="yb-month-bookings">
                   <button t-foreach="monthEvents(day).slice(0, 1)" t-as="event" t-key="event.id"
                           t-att-class="'yb-month-booking ' + eventClass(event)"
@@ -97,6 +94,13 @@
           <div class="yb-empty" t-if="state.viewMode === 'week' &amp;&amp; !visibleHalls.length">لا توجد قاعات مطابقة للبحث.</div>
         </t>
       </section>
+
+      <div class="yb-month-holiday-summary" t-if="state.viewMode === 'month' &amp;&amp; monthHolidayEntries.length">
+        <strong><i class="fa fa-calendar"/> الإجازات والمناسبات:</strong>
+        <span t-foreach="monthHolidayEntries" t-as="holiday" t-key="holiday.id" class="yb-month-holiday-summary-tag">
+          <span t-esc="holiday.name"/><small t-esc="holiday.date"/>
+        </span>
+      </div>
 
       <div t-if="state.selectedDay" class="yb-day-overlay" t-on-click="() => this.closeDayBookings()">
         <aside class="yb-day-panel" t-on-click.stop="() => {}">

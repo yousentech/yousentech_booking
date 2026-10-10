@@ -1,0 +1,312 @@
+.yb-stay{padding:22px;min-width:0;background:#f7f9fe;color:#182743;font-family:inherit}
+.yb-stay *{box-sizing:border-box}
+.yb-stay-top,.yb-stay-toolbar,.yb-stay-period,.yb-stay-controls,.yb-stay-workspace,.yb-stay-detail-head{display:flex;align-items:center;gap:12px}
+.yb-stay-top,.yb-stay-toolbar{justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+.yb-stay-top h1{font-size:26px;font-weight:850;margin:4px 0}.yb-stay-top p,.yb-stay-top small{color:#8491a7;margin:0}
+.yb-stay-primary{border:0;border-radius:10px;padding:11px 18px;background:#08a76a;color:#fff;font-weight:800}
+.yb-stay-toolbar,.yb-stay-stats,.yb-stay-board,.yb-stay-details{background:white;border:1px solid #e6ebf5;border-radius:14px;box-shadow:0 5px 18px #26344b08}
+.yb-stay-toolbar{padding:12px}
+.yb-stay-toolbar button,.yb-stay-toolbar select,.yb-stay-toolbar input{background:#fff;border:1px solid #e3e8f2;border-radius:8px;padding:8px 12px;color:inherit}
+.yb-stay-toolbar button.active{background:#edf3ff;border-color:#9ebdff;color:#2466d6;font-weight:800}
+.yb-stay-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-bottom:16px;padding:14px}
+.yb-stay-stats article{padding:6px 14px;border-inline-end:1px solid #eef0f5}.yb-stay-stats small{display:block;color:#8591a7}.yb-stay-stats strong{font-size:23px}
+.yb-stay-workspace{align-items:flex-start}.yb-stay-board{flex:1;min-width:0;overflow:auto;max-height:calc(100dvh - 330px);scrollbar-width:thin}
+.yb-stay-table{display:grid;grid-template-columns:176px minmax(720px,1fr);min-width:896px}
+.yb-stay-room-head,.yb-stay-days{position:sticky;top:0;z-index:5;background:#f5f8fd;border-bottom:1px solid #e3e9f2}
+.yb-stay-room-head{padding:18px;font-weight:800;inset-inline-start:0;z-index:7}
+.yb-stay-days,.yb-stay-track{display:grid;grid-template-columns:repeat(var(--yb-stay-days),minmax(0,1fr))}
+.yb-stay-date{min-height:68px;text-align:center;padding:10px 3px;border-inline-start:1px solid #e9edf4}
+.yb-stay-date strong,.yb-stay-date small{display:block}.yb-stay-date small{color:#8998b2;font-size:10px}.yb-stay-date.today{background:#eaf4ff;color:#2465c8}
+.yb-stay-room{position:sticky;inset-inline-start:0;z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:78px;padding:13px;border:0;border-bottom:1px solid #e9edf4;background:#fff;text-align:start;color:inherit}
+.yb-stay-room strong{font-size:14px}.yb-stay-room small,.yb-stay-room span{font-size:11px;color:#8491a7}
+.yb-stay-track{position:relative;min-height:78px;border-bottom:1px solid #e9edf4;align-items:center}
+.yb-stay-cell{height:100%;border-inline-start:1px solid #eef1f6;grid-row:1}.yb-stay-cell.today{background:#eff7ff}
+.yb-stay-bar{grid-row:1;z-index:2;min-width:0;margin:6px 3px;border-radius:8px;border:1px solid transparent;border-inline-start-width:4px;padding:9px 12px;text-align:start;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.yb-stay-bar strong,.yb-stay-bar small{display:block;overflow:hidden;text-overflow:ellipsis}.yb-stay-bar small{font-size:10px;opacity:.8}
+.yb-stay-bar.confirmed,.yb-stay-status.confirmed{background:#dcf8ec;color:#08794b;border-color:#24b47e}
+.yb-stay-bar.hold,.yb-stay-status.hold{background:#fff2d7;color:#9a6300;border-color:#f1b64b}
+.yb-stay-bar.checked_in,.yb-stay-status.checked_in{background:#deedff;color:#1760b5;border-color:#5b9cec}
+.yb-stay-bar.checked_out,.yb-stay-status.checked_out{background:#ede8ff;color:#6749ac;border-color:#9d80e8}
+.yb-stay-bar.draft,.yb-stay-status.draft{background:#f0f2f6;color:#596779;border-color:#9ba7b7}
+.yb-stay-details{width:300px;flex:0 0 300px;padding:16px;max-height:calc(100dvh - 330px);overflow:auto}
+.yb-stay-detail-head{justify-content:space-between}.yb-stay-detail-head h3{font-size:17px;font-weight:800;margin:0}.yb-stay-detail-head button{border:0;background:#f2f4f9;border-radius:7px;font-size:22px}
+.yb-stay-detail-body{padding-top:15px}.yb-stay-detail-body h2{font-size:21px;margin:10px 0}.yb-stay-detail-body p{color:#71819b}
+.yb-stay-status{display:inline-block;padding:5px 12px;border-radius:8px;font-weight:750}
+.yb-stay-detail-body dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid #e8edf5;padding-top:15px}.yb-stay-detail-body dt{color:#8491a7}.yb-stay-detail-body dd{font-weight:750;margin:0;text-align:end}
+.yb-stay-detail-body .yb-stay-primary{width:100%}
+.yb-stay-legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px;color:#64748b;font-size:12px}
+.yb-stay-legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px;background:#9ba7b7}
+.yb-stay-legend .confirmed:before{background:#24b47e}.yb-stay-legend .hold:before{background:#f1b64b}.yb-stay-legend .checked_in:before{background:#5b9cec}.yb-stay-legend .checked_out:before{background:#9d80e8}
+.yb-stay-notice{padding:24px;color:#74829c}.yb-stay-error{color:#b42339}
+@media(max-width:1100px){.yb-stay{padding:12px}.yb-stay-workspace{flex-direction:column}.yb-stay-board{width:100%;max-height:calc(100dvh - 350px)}.yb-stay-details{width:100%;flex-basis:auto;max-height:none}.yb-stay-stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.yb-stay-top h1{font-size:21px}.yb-stay-toolbar{align-items:stretch}.yb-stay-period,.yb-stay-controls{flex-wrap:wrap}.yb-stay-controls input{width:100%}.yb-stay-stats{grid-template-columns:repeat(2,1fr)}.yb-stay-board{max-height:calc(100dvh - 390px)}.yb-stay-table{grid-template-columns:115px minmax(700px,1fr);min-width:815px}.yb-stay-room{padding:9px}.yb-stay-date{min-height:58px}}
+
+
+/* PMS reference layout: contained in the Odoo client action, without global overrides. */
+.yb-pms{--pms-navy:#172c49;--pms-border:#e4eaf3;--pms-muted:#8493ac;background:#f5f8fd;min-height:100%;padding:20px;direction:inherit}
+.yb-pms-heading,.yb-pms-toolbar,.yb-pms-filters,.yb-pms-date-nav,.yb-pms-view,.yb-pms-layout,.yb-pms-board-title,.yb-pms-panel-head{display:flex;align-items:center;gap:12px}
+.yb-pms-heading,.yb-pms-toolbar,.yb-pms-board-title,.yb-pms-panel-head{justify-content:space-between}
+.yb-pms-heading{margin-bottom:18px;flex-wrap:wrap}
+.yb-pms-heading-copy small{color:#8295b4;font-size:12px}
+.yb-pms-heading h1{font-size:25px;line-height:1.3;font-weight:850;color:var(--pms-navy);margin:5px 0}
+.yb-pms-heading p{color:var(--pms-muted);font-size:13px;margin:0}
+.yb-pms-toolbar,.yb-pms-filters{padding:12px 16px;background:#fff;border:1px solid var(--pms-border);border-radius:13px;margin-bottom:12px;flex-wrap:wrap}
+.yb-pms-toolbar button,.yb-pms-filters select,.yb-pms-filters input{border:1px solid #e2e9f3;background:#fff;color:#294260;border-radius:9px;padding:9px 12px;min-height:37px}
+.yb-pms-toolbar button.active{background:#e8efff;border-color:#b2c6ff;color:#345ce4;font-weight:800}
+.yb-pms-range{text-align:center;min-width:225px}.yb-pms-range strong,.yb-pms-range small{display:block}.yb-pms-range strong{font-size:14px}.yb-pms-range small{font-size:11px;color:#8797b0}
+.yb-pms-filters{gap:10px}.yb-pms-search{display:flex;align-items:center;gap:8px;flex:1 1 210px;border:1px solid #e2e9f3;border-radius:9px;padding-inline:12px;color:#8a99b2}
+.yb-pms-search input{border:0;outline:0;flex:1;min-width:80px;padding:8px 0}
+.yb-pms-filters select{flex:0 1 185px;min-width:125px}
+.yb-pms-layout{align-items:stretch;gap:16px;min-width:0}
+.yb-pms-main{flex:1;min-width:0;background:#fff;border:1px solid var(--pms-border);border-radius:14px;overflow:hidden;box-shadow:0 5px 22px #19325208}
+.yb-pms-board-title{padding:16px 18px;border-bottom:1px solid var(--pms-border)}
+.yb-pms-board-title h2{font-size:16px;font-weight:850;margin:0 0 4px;color:var(--pms-navy)}
+.yb-pms-board-title small{color:var(--pms-muted)}
+.yb-pms-live{font-size:11px;color:#13a46f;white-space:nowrap}
+.yb-pms-board-scroll{max-height:63vh;overflow:auto;scrollbar-width:thin;overscroll-behavior:contain}
+.yb-pms-grid{display:grid;grid-template-columns:190px minmax(770px,1fr);min-width:960px;align-content:start}
+.yb-pms-room-head,.yb-pms-days{position:sticky;top:0;z-index:7;background:#f0f5fc;border-bottom:1px solid #dde6f2}
+.yb-pms-room-head{padding:20px 15px;font-weight:800;inset-inline-start:0;z-index:9}
+.yb-pms-days,.yb-pms-track{display:grid;grid-template-columns:repeat(var(--yb-stay-days),minmax(0,1fr))}
+.yb-pms-date{text-align:center;min-height:65px;padding:12px 2px;border-inline-start:1px solid #e1e8f2}
+.yb-pms-date strong,.yb-pms-date small{display:block}.yb-pms-date strong{font-size:12px;font-weight:800}.yb-pms-date small{font-size:10px;color:#96a4b9;margin-top:4px}
+.yb-pms-date.today{background:#e5f1ff;color:#2064c5}
+.yb-pms-floor{grid-column:1/-1;position:sticky;inset-inline-start:0;z-index:4;display:flex;align-items:center;gap:9px;padding:10px 14px;background:#eaf0f8;border:0;border-bottom:1px solid #dbe5f1;text-align:start;color:#365272;font-weight:800}
+.yb-pms-floor small{color:#8b9ab0;font-weight:500}
+.yb-pms-room{position:sticky;inset-inline-start:0;z-index:3;display:flex;align-items:center;gap:10px;min-height:80px;padding:10px;border:0;border-bottom:1px solid #e9edf4;background:#fff;text-align:start;color:#263c59}
+.yb-pms-room-icon{display:grid;place-items:center;flex:0 0 35px;height:35px;border-radius:9px;background:#edf3fc;color:#597cad}
+.yb-pms-room-copy{min-width:0}.yb-pms-room-copy strong,.yb-pms-room-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.yb-pms-room-copy small{font-size:11px;color:#8c9bb0;margin-top:5px}
+.yb-pms-track{position:relative;min-height:80px;align-items:center;border-bottom:1px solid #e9edf4}
+.yb-pms-cell{grid-row:1;height:100%;border-inline-start:1px solid #e9edf4}.yb-pms-cell.today{background:#eaf5ff}
+.yb-pms-booking{grid-row:1;z-index:2;margin:8px 3px;min-width:0;min-height:53px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:8px 11px;border-radius:9px;border:1px solid transparent;border-inline-start-width:4px;text-align:start;box-shadow:0 2px 5px #26344b0c}
+.yb-pms-booking strong,.yb-pms-booking small{display:block;overflow:hidden;text-overflow:ellipsis}.yb-pms-booking strong{font-size:12px}.yb-pms-booking small{font-size:10px;margin-top:4px}
+.yb-pms-booking.confirmed{background:#e1f7e9;border-color:#2bb47c;color:#087b4d}
+.yb-pms-booking.hold{background:#fff4d9;border-color:#e9ae39;color:#946400}
+.yb-pms-booking.checked_in{background:#e3efff;border-color:#5d9dea;color:#2163ad}
+.yb-pms-booking.checked_out{background:#eee7ff;border-color:#a082e4;color:#6a48ae}
+.yb-pms-booking.draft{background:#f0f1f6;border-color:#a8b2c2;color:#526179}
+.yb-pms-side{flex:0 0 270px;width:270px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.yb-pms-calendar,.yb-pms-booking-details{border:1px solid var(--pms-border);border-radius:14px;background:#fff;padding:16px;box-shadow:0 5px 22px #19325208}
+.yb-pms-calendar h3,.yb-pms-panel-head h3{font-size:15px;font-weight:850;color:var(--pms-navy);margin:0 0 13px}
+.yb-pms-calendar h3 i{color:#6a85b5;margin-inline-end:7px}
+.yb-pms-mini-days,.yb-pms-mini-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;text-align:center}
+.yb-pms-mini-days{color:#8d9bb1;font-size:10px;margin-bottom:6px}
+.yb-pms-mini-grid button{border:0;border-radius:6px;background:transparent;padding:7px 0;color:#33465f;font-size:11px}
+.yb-pms-mini-grid button.outside{color:#c4cedd}.yb-pms-mini-grid button.in-range{background:#eaf2ff;color:#356ac1}.yb-pms-mini-grid button.today{background:#386ce2;color:white;font-weight:800}
+.yb-pms-panel-head{margin-bottom:16px}.yb-pms-panel-head h3{margin:0}.yb-pms-panel-head button{border:0;border-radius:7px;background:#f1f4f9;font-size:20px}
+.yb-pms-guest-avatar{display:grid;place-items:center;margin:0 auto 10px;width:54px;height:54px;border-radius:50%;background:#edf3fd;color:#7b96bc;font-size:31px}
+.yb-pms-booking-details{text-align:center}.yb-pms-booking-details h3{font-size:15px;margin:10px 0 4px;font-weight:850}.yb-pms-booking-details p{font-size:12px;color:#8695ac}
+.yb-pms-booking-details dl{display:grid;grid-template-columns:1fr 1fr;gap:11px;border-top:1px solid #edf0f6;margin:14px 0;padding-top:15px;font-size:12px;text-align:start}
+.yb-pms-booking-details dt{color:#8a99b0}.yb-pms-booking-details dd{margin:0;text-align:end;font-weight:750}
+.yb-pms-open{width:100%;border:0;border-radius:9px;padding:11px;background:#e8f0ff;color:#325fd0;font-weight:800}
+.yb-pms-empty-detail{display:flex;flex-direction:column;align-items:center;gap:8px;padding:23px 6px;color:#8695ab}
+.yb-pms-empty-detail i{font-size:29px;color:#afbed3}.yb-pms-empty-detail strong{color:#526a88;font-size:13px}.yb-pms-empty-detail small{font-size:11px}
+.yb-pms-legend{display:flex;flex-wrap:wrap;gap:15px;padding:13px 17px;color:#73839a;font-size:11px}
+.yb-pms-legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#a8b2c2;margin-inline-end:5px}
+.yb-pms-legend .confirmed:before{background:#2bb47c}.yb-pms-legend .hold:before{background:#e9ae39}.yb-pms-legend .checked_in:before{background:#5d9dea}.yb-pms-legend .checked_out:before{background:#a082e4}
+.yb-pms-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:15px}
+.yb-pms-kpis article{display:flex;align-items:center;gap:12px;border:1px solid var(--pms-border);border-radius:12px;padding:15px;background:#fff}
+.yb-pms-kpis article>i{display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:10px;background:#edf4ff;color:#6285bb;font-size:18px}
+.yb-pms-kpis small,.yb-pms-kpis strong{display:block}.yb-pms-kpis small{font-size:11px;color:#8997ac}.yb-pms-kpis strong{font-size:22px;color:#203858}
+@media(max-width:1400px){.yb-pms-side{width:235px;flex-basis:235px}.yb-pms-grid{grid-template-columns:165px minmax(735px,1fr);min-width:900px}.yb-pms-kpis{gap:8px}.yb-pms-kpis article{padding:11px}}
+@media(max-width:1050px){.yb-pms-layout{flex-direction:column}.yb-pms-side{width:100%;flex:0 0 auto;display:grid;grid-template-columns:minmax(240px,1fr) minmax(270px,1.3fr)}.yb-pms-board-scroll{max-height:56vh}.yb-pms-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.yb-pms{padding:10px}.yb-pms-heading h1{font-size:21px}.yb-pms-heading{align-items:flex-start}.yb-pms-toolbar,.yb-pms-filters{padding:10px}.yb-pms-date-nav{width:100%;justify-content:space-between}.yb-pms-range{min-width:0;flex:1}.yb-pms-view{width:100%;justify-content:flex-end}.yb-pms-filters select{flex:1 1 130px}.yb-pms-board-title{padding:12px}.yb-pms-live{display:none}.yb-pms-grid{grid-template-columns:125px minmax(700px,1fr);min-width:825px}.yb-pms-board-scroll{max-height:53vh}.yb-pms-side{display:flex}.yb-pms-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.yb-pms-kpis article{padding:10px}.yb-pms-kpis strong{font-size:19px}.yb-pms-booking-details{max-height:420px;overflow:auto}}
+
+/* Match the hall planner's short-viewport scroll policy while preserving the
+   approved wide-desktop PMS composition. Only the room grid scrolls. */
+@media (min-width:1051px) and (max-width:1499px){
+  .yb-pms{padding:14px}
+  .yb-pms-heading{margin-bottom:12px}
+  .yb-pms-toolbar,.yb-pms-filters{margin-bottom:10px}
+  .yb-pms-board-scroll{max-height:calc(100dvh - 385px);min-height:220px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .yb-pms-date{min-height:55px;padding:8px 2px}
+  .yb-pms-room,.yb-pms-track{min-height:67px}
+  .yb-pms-booking{min-height:44px;padding:6px 8px}
+}
+@media (max-height:950px){
+  .yb-pms-board-scroll{max-height:calc(100dvh - 365px);min-height:190px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .yb-pms-room-head,.yb-pms-days{position:sticky;top:0}
+}
+@media (max-width:1050px){
+  .yb-pms-layout{min-width:0}
+  .yb-pms-main{width:100%;min-width:0}
+  .yb-pms-board-scroll{max-height:calc(100dvh - 345px);min-height:200px;overflow:auto;overscroll-behavior:contain}
+  .yb-pms-grid{min-width:0;grid-template-columns:150px minmax(630px,1fr);width:max-content}
+  .yb-pms-room-head,.yb-pms-room{position:sticky;inset-inline-start:0}
+}
+@media (max-width:650px){
+  .yb-pms-board-scroll{max-height:calc(100dvh - 320px);min-height:200px;overflow:auto}
+  .yb-pms-grid{grid-template-columns:112px minmax(560px,1fr)}
+  .yb-pms-room{padding:7px;gap:5px}
+  .yb-pms-room-icon{flex-basis:25px;height:25px}
+  .yb-pms-room-copy strong{font-size:11px}
+  .yb-pms-date{min-height:52px;padding:7px 2px}
+  .yb-pms-date strong{font-size:10px}
+  .yb-pms-room,.yb-pms-track{min-height:65px}
+  .yb-pms-booking{min-height:42px;padding:5px 6px}
+}
+
+/* Room planner: colored KPI icons and configured holiday presentation. */
+.yb-pms-kpis{margin:0 0 14px}
+.yb-pms-kpis article{box-shadow:0 4px 14px #1e36530a;min-width:0}
+.yb-pms-kpis article:nth-child(1)>i{background:#e9edff;color:#6959e8}
+.yb-pms-kpis article:nth-child(2)>i{background:#e2f8ed;color:#159c69}
+.yb-pms-kpis article:nth-child(3)>i{background:#e7f0ff;color:#367ad6}
+.yb-pms-kpis article:nth-child(4)>i{background:#fff1dc;color:#db9125}
+.yb-pms-kpis article:nth-child(5)>i{background:#f7e9ff;color:#9d58c9}
+.yb-pms-date{position:relative}
+.yb-pms-date.holiday{background:#fff4f5}
+.yb-pms-date.holiday.today{background:#fcecf4}
+.yb-pms-holiday-marker{position:absolute;top:4px;inset-inline-end:5px;color:#e14f65;font-size:12px}
+.yb-pms-holidays{display:flex;align-items:center;flex-wrap:wrap;gap:7px;padding:10px 16px;border-top:1px solid #f3dfe3;background:#fffafb;font-size:11px;color:#c54459}
+.yb-pms-holidays>strong{display:inline-flex;align-items:center;gap:5px}
+.yb-pms-holiday-tag{display:inline-flex;align-items:center;gap:7px;background:#ffeaee;color:#c3344d;border-radius:7px;padding:5px 9px;font-weight:700}
+.yb-pms-holiday-tag small{font-weight:400;color:#a65a68}
+@media(max-width:650px){.yb-pms-kpis{gap:7px}.yb-pms-kpis article{gap:7px}.yb-pms-kpis article>i{flex-basis:31px;height:31px}}
+
+/* Keep booking details reachable on short desktop viewports: the side rail
+   scrolls independently instead of being clipped below the mini calendar. */
+@media (min-width:1051px){
+  .yb-pms-side{
+    max-height:calc(100dvh - 535px);
+    min-height:260px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+    align-self:flex-start;
+  }
+  .yb-pms-side > *{flex-shrink:0}
+}
+
+/* Occupancy planner: holiday column shading through every displayed room. */
+.yb-pms .yb-pms-cell.holiday{background:#fff0f2}
+.yb-pms .yb-pms-cell.holiday.today{background:#f9e7f2}
+.yb-pms .yb-pms-booking{position:relative;z-index:2}
+
+/* Keep the entire room list scrollable independently of the Odoo action. */
+.yb-pms .yb-pms-layout{min-height:0;align-items:flex-start}
+.yb-pms .yb-pms-main{min-width:0;min-height:0}
+.yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 375px),720px);max-height:none;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.yb-pms .yb-pms-room-head,.yb-pms .yb-pms-days{position:sticky;top:0}
+
+/* The booking detail panel stays in its original left-side rail; only the mini calendar hides when a booking is selected. */
+.yb-pms .yb-pms-layout.has-selection .yb-pms-side{height:clamp(260px,calc(100dvh - 375px),720px);max-height:none;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;flex:0 0 280px;width:280px}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:none;overflow:visible;flex-shrink:0}
+@media(max-width:1050px){
+  .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 340px),650px)}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-side{width:100%;height:auto;max-height:360px;flex:0 0 auto;display:block;overflow-y:auto}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{max-height:none}
+}
+@media(max-width:650px){
+  .yb-pms .yb-pms-board-scroll{height:clamp(260px,calc(100dvh - 315px),600px)}
+}
+
+/* Explicit day columns prevent bookings spanning several dates from shifting
+   holiday background cells into neighboring columns. */
+.yb-pms .yb-pms-track>.yb-pms-cell{grid-row:1;min-width:0;align-self:stretch}
+.yb-pms .yb-pms-track>.yb-pms-cell.holiday{background-color:#fff0f2}
+.yb-pms .yb-pms-track>.yb-pms-cell.holiday.today{background-color:#f9e7f2}
+
+/* Room occupancy: keep the holiday strip and status legend outside the scrolling
+   grid, as in the hall planner. Do not constrain the entire action or details
+   panel to a height that hides their lower controls. */
+.yb-pms .yb-pms-main{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.yb-pms .yb-pms-board-scroll{
+  flex:0 1 auto;
+  height:clamp(220px,calc(100dvh - 525px),560px);
+  max-height:none;
+  min-height:0;
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+}
+.yb-pms .yb-pms-holidays,
+.yb-pms .yb-pms-legend{flex:0 0 auto;min-height:0}
+.yb-pms .yb-pms-layout{align-items:flex-start}
+.yb-pms .yb-pms-side{min-height:0}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-side{
+  height:clamp(220px,calc(100dvh - 525px),560px);
+  min-height:0;
+  max-height:none;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  overscroll-behavior:contain;
+}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{
+  flex:0 0 auto;
+  max-height:none;
+  overflow:visible;
+}
+@media(max-width:1050px){
+  .yb-pms .yb-pms-board-scroll{height:clamp(220px,calc(100dvh - 475px),500px)}
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-side{
+    width:100%;
+    flex:0 0 auto;
+    height:auto;
+    max-height:none;
+    overflow:visible;
+  }
+  .yb-pms .yb-pms-layout.has-selection .yb-pms-booking-details{
+    max-height:none;
+    overflow:visible;
+  }
+}
+@media(max-width:650px){
+  .yb-pms .yb-pms-board-scroll{height:clamp(200px,calc(100dvh - 425px),450px)}
+  .yb-pms .yb-pms-holidays{flex-wrap:wrap}
+}
+
+/* Selected booking opens as a centered dialog instead of a narrow sidebar. */
+.yb-pms .yb-pms-modal-backdrop{
+  position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(22,36,58,.48);box-sizing:border-box;
+}
+.yb-pms .yb-pms-modal{
+  display:flex;flex-direction:column;width:540px;max-width:100%;max-height:calc(100dvh - 40px);
+  min-height:0;overflow:hidden;background:#fff;border:1px solid var(--pms-border);
+  border-radius:16px;box-shadow:0 24px 70px rgba(19,35,65,.25);
+}
+.yb-pms .yb-pms-modal>.yb-pms-panel-head{
+  flex:0 0 auto;margin:0;padding:16px 20px;border-bottom:1px solid var(--pms-border);
+}
+.yb-pms .yb-pms-modal-content{min-height:0;overflow-y:auto;padding:20px;text-align:center;scrollbar-width:thin}
+.yb-pms .yb-pms-modal-content h3{font-size:18px;font-weight:800;margin:12px 0 4px;color:var(--pms-navy)}
+.yb-pms .yb-pms-modal-content p{font-size:12px;color:#8695ac}
+.yb-pms .yb-pms-modal-content dl{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 0;
+  padding-top:16px;border-top:1px solid #edf0f6;font-size:13px;text-align:start;
+}
+.yb-pms .yb-pms-modal-content dt{color:#8a99b0}
+.yb-pms .yb-pms-modal-content dd{margin:0;text-align:end;font-weight:750;overflow-wrap:anywhere}
+.yb-pms .yb-pms-modal-footer{flex:0 0 auto;padding:14px 20px 18px;border-top:1px solid var(--pms-border);background:#fff}
+.yb-pms .yb-pms-modal-footer .yb-pms-open{display:block;width:100%;min-height:44px}
+@media(max-width:650px){
+  .yb-pms .yb-pms-modal-backdrop{padding:10px}
+  .yb-pms .yb-pms-modal{max-height:calc(100dvh - 20px)}
+  .yb-pms .yb-pms-modal-content{padding:14px}
+}
+
+/* Show the complete mini calendar after moving booking details to a modal.
+   The old side-rail height limit was clipping the calendar's lower weeks. */
+.yb-pms .yb-pms-side{
+  height:auto;
+  max-height:none;
+  min-height:0;
+  overflow:visible;
+  align-self:flex-start;
+}
+.yb-pms .yb-pms-calendar{
+  width:100%;
+  height:auto;
+  max-height:none;
+  overflow:visible;
+  flex-shrink:0;
+}
+.yb-pms .yb-pms-mini-grid button{min-height:29px;padding:5px 0}
+.yb-pms .yb-pms-layout.has-selection .yb-pms-side{
+  height:auto;
+  max-height:none;
+  overflow:visible;
+}

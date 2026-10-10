@@ -118,6 +118,15 @@ export class BookingOS extends Component {
 
     isHoliday(day) { return this.holidaysFor(day).length > 0; }
 
+    get monthHolidayEntries() {
+        return this.monthCalendarDays.filter((day) => this.isCurrentMonth(day))
+            .flatMap((day) => this.holidaysFor(day).map((holiday) => ({
+                id: holiday.id,
+                date: this.iso(day),
+                name: holiday.name,
+            })));
+    }
+
     async setViewMode(mode) {
         if (mode !== "week" && mode !== "month") return;
         this.state.viewMode = mode;

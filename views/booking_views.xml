@@ -209,7 +209,7 @@
     <field name="name">yousentech.stay.booking.form</field>
     <field name="model">yousentech.stay.booking</field>
     <field name="arch" type="xml">
-      <form string="حجز فندقي">
+      <form string="حجز فندقي" class="yb-event-form yb-stay-form">
         <header>
           <button name="action_hold" type="object" string="حجز مؤقت" class="btn-primary" invisible="state != 'draft'"/>
           <button name="action_confirm" type="object" string="تأكيد الحجز" class="btn-primary" invisible="state not in ('draft','hold')"/>
@@ -236,44 +236,55 @@
             <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-money" invisible="payment_count == 0"><field name="payment_count" widget="statinfo" string="المدفوعات"/></button>
           </div>
 
-          <group string="بيانات الحجز الأساسية">
-            <group>
-              <field name="name" string="رقم الحجز" readonly="1"/>
-              <field name="partner_id" string="العميل" readonly="state not in ('draft','hold')"/>
-              <field name="company_id" string="الشركة / الفرع" readonly="state not in ('draft','hold')"/>
-            </group>
-            <group>
-              <field name="resource_id" string="الغرفة / مورد الإقامة" readonly="state not in ('draft','hold')"/>
-              <field name="checkin_date" string="تاريخ الدخول" readonly="state not in ('draft','hold')"/>
-              <field name="checkout_date" string="تاريخ الخروج" readonly="state not in ('draft','hold')"/>
-            </group>
-          </group>
-
-          <notebook>
-            <page string="الإقامة والإضافات">
-              <group>
-                <group>
-                  <field name="discount_type" string="نوع الخصم" readonly="state not in ('draft','hold')"/><field name="discount_value" string="قيمة الخصم" invisible="discount_type == 'none'" readonly="state not in ('draft','hold')"/><field name="rate_plan_id" string="خطة السعر" readonly="state not in ('draft','hold')"/>
-                  <field name="nights" string="عدد الليالي" readonly="1"/>
-                  <field name="nightly_price" string="سعر الليلة" readonly="1"/>
-                </group>
-                <group>
-                  <field name="amount_untaxed" string="قبل الضريبة" readonly="1"/>
-                  <field name="tax_amount" string="الضريبة" readonly="1"/>
-                  <field name="amount_total" string="الإجمالي" readonly="1"/>
-                </group>
-              </group>
-              <field name="addon_line_ids" string="الإضافات" readonly="state not in ('draft','hold')">
-                <tree editable="bottom">
-                  <field name="company_id" column_invisible="True"/>
-                  <field name="addon_id" string="الإضافة"/>
-                  <field name="quantity" string="الكمية"/>
-                  <field name="price_unit" string="سعر الوحدة"/>
-                  <field name="subtotal" string="الإجمالي" readonly="1"/>
-                </tree>
-              </field>
-            </page>
-
+          <div class="yb-booking-summary-header yb-approved-summary">
+            <div class="yb-booking-summary-identity"><div class="yb-booking-icon"><i class="fa fa-bed"/></div><div><small>ملخص الحجز</small><h1><field name="name" readonly="1"/></h1><span class="yb-summary-type">حجز فندقي / إقامة</span></div></div>
+            <div class="yb-booking-summary-finance"><div class="yb-finance-strip-values">
+              <div class="yb-finance-metric yb-summary-base"><i class="fa fa-bed"/><div class="yb-summary-metric-text"><small>قيمة الإقامة</small><field name="stay_base_amount" nolabel="1" readonly="1"/></div></div>
+              <div class="yb-finance-metric yb-summary-addons"><i class="fa fa-plus"/><div class="yb-summary-metric-text"><small>قيمة الإضافات</small><field name="stay_addons_amount" nolabel="1" readonly="1"/></div></div>
+              <div class="yb-finance-metric yb-summary-discount"><i class="fa fa-percent"/><div class="yb-summary-metric-text"><small>الخصم</small><field name="discount_amount" nolabel="1" readonly="1"/></div></div>
+              <div class="yb-finance-metric yb-summary-tax"><i class="fa fa-file-text-o"/><div class="yb-summary-metric-text"><small>الضريبة</small><field name="tax_amount" nolabel="1" readonly="1"/></div></div>
+              <div class="yb-finance-metric yb-finance-total"><i class="fa fa-credit-card"/><div class="yb-summary-metric-text"><small>الإجمالي النهائي</small><field name="amount_total" nolabel="1" readonly="1"/></div></div>
+            </div></div>
+          </div>
+          <div class="yb-event-overview">
+            <div class="yb-info-card yb-customer-card"><div class="yb-info-icon purple"><i class="fa fa-user"/></div><div class="yb-info-body yb-customer-fields"><small>بيانات النزيل</small>
+              <div class="yb-customer-name"><label for="partner_id" string="النزيل"/><field name="partner_id" nolabel="1" options="{'no_quick_create': True}" readonly="state not in ('draft','hold')"/></div>
+              <div class="yb-customer-detail"><label for="customer_mobile" string="رقم الجوال"/><field name="customer_mobile" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+              <div class="yb-customer-detail"><label for="customer_identity" string="رقم الهوية"/><field name="customer_identity" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+              <div class="yb-customer-detail"><label for="customer_nationality_id" string="الجنسية"/><field name="customer_nationality_id" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+            </div></div>
+            <div class="yb-info-card yb-venue-card"><div class="yb-info-icon blue"><i class="fa fa-bed"/></div><div class="yb-info-body"><small>بيانات الإقامة</small><div class="yb-venue-compact">
+              <div class="yb-venue-hall"><label for="resource_id" string="الغرفة / مورد الإقامة"/><field name="resource_id" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+              <div class="yb-event-date"><label for="checkin_date" string="تاريخ الدخول"/><field name="checkin_date" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+              <div class="yb-event-date"><label for="checkout_date" string="تاريخ الخروج"/><field name="checkout_date" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+            </div></div></div>
+          </div>
+          <div class="yb-event-workspace">
+            <section class="yb-work-card yb-work-package"><div class="yb-work-heading"><i class="fa fa-bed"/><strong>التسعير والإقامة</strong></div>
+              <group><field name="rate_plan_id" string="خطة السعر" class="yb-stay-rate-plan-outline" readonly="state not in ('draft','hold')"/><field name="nights" string="عدد الليالي" readonly="1"/><field name="nightly_price" string="سعر الليلة" readonly="1"/></group>
+              <div class="yb-work-help">تُستدعى خطة السعر والضريبة من التهيئة عند إنشاء الحجز، ويمكن تعديل الخطة قبل التأكيد.</div>
+            </section>
+            <section class="yb-work-card yb-work-addons"><div class="yb-work-heading"><i class="fa fa-plus-circle"/><strong>الإضافات المدفوعة</strong></div>
+              <field name="addon_line_ids" nolabel="1" readonly="state not in ('draft','hold')"><tree editable="bottom"><field name="company_id" column_invisible="True"/><field name="addon_id" string="الإضافة"/><field name="quantity" string="الكمية"/><field name="price_unit" string="سعر الوحدة"/><field name="subtotal" string="الإجمالي" readonly="1"/></tree></field>
+            </section>
+            <section class="yb-work-card yb-work-finance"><div class="yb-work-heading"><i class="fa fa-info-circle"/><strong>تفاصيل التحصيل</strong></div>
+              <div class="yb-work-finance-row"><span>المدفوع</span><field name="amount_paid" nolabel="1" readonly="1"/></div>
+              <div class="yb-work-finance-row"><span>المتبقي</span><field name="amount_remaining" nolabel="1" readonly="1"/></div>
+              <div class="yb-work-finance-row"><span>الحالة المالية</span><field name="finance_state" nolabel="1" readonly="1"/></div>
+            </section>
+          </div>
+          <notebook class="yb-event-tabs">
+            <page string="بيانات إضافية"><div class="yb-extra-cards">
+              <section class="yb-extra-card yb-extra-discount"><div class="yb-extra-card-title"><i class="fa fa-percent"/><strong>إعدادات الخصم</strong></div>
+                <div class="yb-extra-field"><label for="discount_type" string="نوع الخصم"/><field name="discount_type" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+                <div class="yb-extra-field" invisible="discount_type == 'none'"><label for="discount_value" string="قيمة الخصم"/><field name="discount_value" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+              </section>
+              <section class="yb-extra-card yb-stay-branch-card"><div class="yb-extra-card-title"><i class="fa fa-building-o"/><strong>الشركة / الفرع والوصف</strong></div>
+                <div class="yb-extra-field"><label for="company_id" string="الشركة / الفرع"/><field name="company_id" nolabel="1" readonly="state not in ('draft','hold')"/></div>
+                <div class="yb-extra-field"><label for="description" string="الوصف"/><field name="description" nolabel="1" placeholder="ملاحظات الحجز الفندقي" readonly="state not in ('draft','hold')"/></div>
+              </section>
+              <section class="yb-extra-card yb-extra-notes"><div class="yb-extra-card-title"><i class="fa fa-info-circle"/><strong>تفاصيل احتساب الإقامة</strong></div><group><field name="nights" readonly="1"/><field name="nightly_price" readonly="1"/><field name="amount_untaxed" readonly="1"/><field name="tax_amount" readonly="1"/></group></section>
+            </div></page>
             <page string="الإلغاء" invisible="state != 'cancelled'">
               <group>
                 <field name="cancel_reason" string="سبب الإلغاء" readonly="1"/>
@@ -283,42 +294,22 @@
             </page>
 
             <page string="المالية والفواتير">
-              <group>
-                <group>
-                  <field name="invoice_policy" string="سياسة الفوترة" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/>
-                  <field name="deposit_percent" string="نسبة العربون" invisible="invoice_policy != 'deposit'" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/>
-                  <field name="finance_state" string="الحالة المالية" readonly="1"/>
-                </group>
-                <group>
-                  <field name="amount_invoiced" string="صافي المفوتر" readonly="1"/>
-                  <field name="amount_paid" string="إجمالي المقبوض" readonly="1"/>
-                  <field name="amount_refunded" string="المبلغ المسترد" readonly="1"/>
-                  <field name="amount_to_refund" string="مطلوب رده للعميل" readonly="1"/>
-                  <field name="amount_remaining" string="المطلوب من العميل" readonly="1"/>
-                </group>
+              <div class="yb-finance-summary">
+                <div><small>صافي المفوتر</small><field name="amount_invoiced" nolabel="1" readonly="1"/></div>
+                <div><small>إجمالي المقبوض</small><field name="amount_paid" nolabel="1" readonly="1"/></div>
+                <div><small>المبلغ المسترد</small><field name="amount_refunded" nolabel="1" readonly="1"/></div>
+                <div><small>المطلوب من العميل</small><field name="amount_remaining" nolabel="1" readonly="1"/></div>
+              </div>
+              <group class="yb-clean-group">
+                <group><field name="invoice_policy" string="سياسة الفوترة" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/><field name="deposit_percent" string="نسبة العربون" invisible="invoice_policy != 'deposit'" readonly="state not in ('draft','hold') or invoice_count &gt; 0"/></group>
+                <group><field name="finance_state" string="الحالة المالية" readonly="1"/><field name="amount_to_refund" string="مطلوب رده للعميل" readonly="1"/></group>
               </group>
-              <field name="payment_schedule_ids" string="جدول الدفعات" invisible="invoice_policy != 'schedule'" readonly="state not in ('draft','hold') or invoice_count &gt; 0">
-                <tree editable="bottom">
-                  <field name="name" string="الدفعة"/>
-                  <field name="due_date" string="تاريخ الاستحقاق"/>
-                  <field name="amount" string="المبلغ"/>
-                  <field name="state" string="الحالة" readonly="1"/>
-                  <field name="invoice_id" string="الفاتورة" readonly="1"/>
-                </tree>
-              </field>
-              <field name="invoice_ids" string="الفواتير والمرتجعات" readonly="1">
-                <tree>
-                  <field name="name" string="المستند"/>
-                  <field name="move_type" string="النوع"/>
-                  <field name="invoice_date" string="التاريخ"/>
-                  <field name="amount_total" string="الإجمالي"/>
-                  <field name="payment_state" string="حالة الدفع"/>
-                  <field name="state" string="الحالة"/>
-                </tree>
-              </field>
+              <field name="payment_schedule_ids" string="جدول الدفعات" invisible="invoice_policy != 'schedule'" readonly="state not in ('draft','hold') or invoice_count &gt; 0"><tree editable="bottom"><field name="name" string="الدفعة"/><field name="due_date" string="تاريخ الاستحقاق"/><field name="amount" string="المبلغ"/><field name="state" string="الحالة" readonly="1"/><field name="invoice_id" string="الفاتورة" readonly="1"/></tree></field>
+              <separator string="الفواتير والمرتجعات"/>
+              <field name="invoice_ids" string="الفواتير" nolabel="1" readonly="1"><tree><field name="name" string="المستند"/><field name="move_type" string="النوع"/><field name="invoice_date" string="التاريخ"/><field name="amount_total" string="الإجمالي"/><field name="payment_state" string="حالة الدفع"/><field name="state" string="الحالة"/></tree></field>
             </page>
 
-            <page string="السجل التجاري">
+                        <page string="السجل التجاري">
               <field name="commercial_snapshot_ids" string="نسخ الشروط التجارية" readonly="1">
                 <tree>
                   <field name="revision" string="المراجعة"/>
@@ -417,8 +408,19 @@
     </field>
   </record>
 
-  <record id="view_stay_resource_tree" model="ir.ui.view"><field name="name">yousentech.stay.resource.tree</field><field name="model">yousentech.stay.resource</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="resource_type" string="نوع المورد"/><field name="capacity" string="السعة"/><field name="product_id" string="منتج الفوترة"/><field name="nightly_price" string="سعر الليلة"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
-  <record id="view_stay_resource_form" model="ir.ui.view"><field name="name">yousentech.stay.resource.form</field><field name="model">yousentech.stay.resource</field><field name="arch" type="xml"><form string="مورد الإقامة"><sheet><group><field name="name" string="الاسم"/><field name="resource_type" string="نوع المورد"/><field name="capacity" string="السعة"/><field name="product_id" string="منتج الفوترة"/><field name="nightly_price" string="سعر الليلة"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
+  <record id="view_stay_floor_tree" model="ir.ui.view">
+    <field name="name">yousentech.stay.floor.tree</field><field name="model">yousentech.stay.floor</field>
+    <field name="arch" type="xml"><tree string="الطوابق"><field name="sequence" widget="handle"/><field name="name"/><field name="company_id"/><field name="room_count"/><field name="active"/></tree></field>
+  </record>
+  <record id="view_stay_floor_form" model="ir.ui.view">
+    <field name="name">yousentech.stay.floor.form</field><field name="model">yousentech.stay.floor</field>
+    <field name="arch" type="xml"><form string="الطابق"><sheet><group><field name="name"/><field name="company_id"/><field name="sequence"/><field name="active"/></group><notebook><page string="الغرف"><field name="room_ids" readonly="1"><tree><field name="name"/><field name="resource_type"/><field name="capacity"/><field name="housekeeping_state"/></tree></field></page></notebook></sheet></form></field>
+  </record>
+  <record id="action_stay_floors" model="ir.actions.act_window">
+    <field name="name">الطوابق</field><field name="res_model">yousentech.stay.floor</field><field name="view_mode">tree,form</field>
+  </record>
+  <record id="view_stay_resource_tree" model="ir.ui.view"><field name="name">yousentech.stay.resource.tree</field><field name="model">yousentech.stay.resource</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="resource_type" string="نوع المورد"/><field name="floor_id" string="الطابق"/><field name="capacity" string="السعة"/><field name="product_id" string="منتج الفوترة"/><field name="nightly_price" string="سعر الليلة"/><field name="company_id" string="الشركة / الفرع"/><field name="housekeeping_state" string="التجهيز"/><field name="out_of_service_type" string="الإيقاف"/><field name="active" string="نشط"/></tree></field></record>
+  <record id="view_stay_resource_form" model="ir.ui.view"><field name="name">yousentech.stay.resource.form</field><field name="model">yousentech.stay.resource</field><field name="arch" type="xml"><form string="مورد الإقامة"><header><button name="action_mark_dirty" type="object" string="تحتاج تنظيفًا" class="btn-secondary" groups="yousentech_booking.group_booking_manager" invisible="housekeeping_state == 'dirty'"/><button name="action_mark_inspection" type="object" string="بانتظار الفحص" class="btn-secondary" groups="yousentech_booking.group_booking_manager" invisible="housekeeping_state == 'inspection'"/><button name="action_mark_clean" type="object" string="جاهزة" class="btn-primary" groups="yousentech_booking.group_booking_manager" invisible="housekeeping_state == 'clean'"/><button name="action_clear_out_of_service" type="object" string="إنهاء الصيانة / الإيقاف" class="btn-secondary" groups="yousentech_booking.group_booking_manager" invisible="not out_of_service_type"/></header><sheet><group><field name="name" string="الاسم"/><field name="resource_type" string="نوع المورد"/><field name="floor_id" string="الطابق" domain="[('company_id', '=', company_id)]" options="{'no_create': True, 'no_create_edit': True}"/><field name="capacity" string="السعة"/><field name="product_id" string="منتج الفوترة"/><field name="nightly_price" string="سعر الليلة"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group><separator string="التجهيز والصيانة والإيقاف"/><group><field name="housekeeping_state"/><field name="out_of_service_type"/><field name="out_of_service_from" invisible="not out_of_service_type"/><field name="out_of_service_to" invisible="not out_of_service_type"/><field name="out_of_service_reason" invisible="not out_of_service_type"/></group></sheet></form></field></record>
 
   <record id="view_stay_rate_plan_tree" model="ir.ui.view"><field name="name">yousentech.stay.rate.plan.tree</field><field name="model">yousentech.stay.rate.plan</field><field name="arch" type="xml"><tree><field name="sequence" string="الترتيب" widget="handle"/><field name="name" string="الاسم"/><field name="pricing_type" string="طريقة التسعير"/><field name="fixed_price" string="السعر الثابت"/><field name="percent_adjustment" string="نسبة التعديل"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></tree></field></record>
   <record id="view_stay_rate_plan_form" model="ir.ui.view"><field name="name">yousentech.stay.rate.plan.form</field><field name="model">yousentech.stay.rate.plan</field><field name="arch" type="xml"><form string="خطة سعر الإقامة"><sheet><group><field name="name" string="الاسم"/><field name="pricing_type" string="طريقة التسعير"/><field name="fixed_price" string="السعر الثابت" invisible="pricing_type != 'fixed'"/><field name="percent_adjustment" string="نسبة التعديل" invisible="pricing_type != 'percent'"/><field name="tax_id" string="ضريبة الإقامة والإضافات"/><field name="sequence" string="الترتيب"/><field name="company_id" string="الشركة / الفرع"/><field name="active" string="نشط"/></group></sheet></form></field></record>
@@ -468,6 +470,8 @@
   <record id="action_stay_rate_plans" model="ir.actions.act_window"><field name="name">خطط الأسعار</field><field name="res_model">yousentech.stay.rate.plan</field><field name="view_mode">tree,form</field></record>
   <record id="action_stay_addons" model="ir.actions.act_window"><field name="name">إضافات الإقامة</field><field name="res_model">yousentech.stay.addon</field><field name="view_mode">tree,form</field></record>
   <record id="action_booking_os" model="ir.actions.client"><field name="name">نظام الحجوزات</field><field name="tag">yousentech_booking.BookingOS</field></record>
+  <record id="action_stay_room_planner" model="ir.actions.client"><field name="name">مخطط إشغال الغرف</field><field name="tag">yousentech_booking.StayRoomPlanner</field></record>
+  <record id="action_stay_readiness_board" model="ir.actions.client"><field name="name">لوحة جاهزية الغرف</field><field name="tag">yousentech_booking.StayReadinessBoard</field></record>
   <record id="view_booking_demo_setup_form" model="ir.ui.view">
     <field name="name">yousentech.booking.demo.setup.form</field>
     <field name="model">yousentech.booking.demo.setup</field>
@@ -539,6 +543,10 @@
                   <p class="text-muted mb-4">تحكم في سياسات الإقامة والحجز الفندقي.</p>
                   <group>
                     <field name="allow_open_stay" string="السماح بإقامة مفتوحة بدون تاريخ خروج"/>
+                     <field name="stay_default_rate_plan_id" string="خطة سعر الإقامة الافتراضية" options="{'no_create': True, 'no_create_edit': True}"/>
+                     <field name="stay_invoice_policy" string="سياسة الفوترة الافتراضية"/>
+                     <field name="stay_deposit_percent" string="نسبة العربون الافتراضية" invisible="stay_invoice_policy != 'deposit'"/>
+                     <div class="text-muted">الضريبة تُحدد في خطة السعر الافتراضية وتُستخدم في احتساب الحجز والفواتير.</div>
                   </group>
                 </div>
               </div>

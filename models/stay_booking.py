@@ -78,3 +78,5 @@ class StayBooking(models.Model):
             conflict = self.search(domain, limit=1)
             if conflict:
                 raise ValidationError(_("مورد الإقامة غير متاح لهذه الفترة بسبب تعارضه مع الحجز %s.") % conflict.display_name)
+            if rec.resource_id._is_out_of_service(rec.checkin_date, rec.checkout_date):
+                raise ValidationError(_("الغرفة تحت الصيانة أو موقوفة عن البيع خلال فترة الحجز."))

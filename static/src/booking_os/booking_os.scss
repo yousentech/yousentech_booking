@@ -581,3 +581,157 @@
 .yb-os .yb-day-panel-event-head em{font-style:normal;font-size:11px;color:#6c648a}
 .yb-os .yb-day-panel-event small{color:#737f99}
 .yb-os .yb-day-panel-all{border:0;border-radius:10px;background:#efebff;color:#6048cb;font-weight:800;padding:12px;flex:0 0 auto}
+
+/* Holiday names live below (outside) the monthly board, preserving booking card space. */
+.yb-os .yb-month-holiday-summary{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:9px;padding:9px 12px;border:1px solid #f5e0e4;border-radius:9px;background:#fffafb;color:#b9364b;font-size:11px}
+.yb-os .yb-month-holiday-summary>strong{display:inline-flex;align-items:center;gap:5px}
+.yb-os .yb-month-holiday-summary-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:7px;background:#ffe9ee;font-weight:700}
+.yb-os .yb-month-holiday-summary-tag small{color:#9b6771;font-weight:400}
+
+/* Three cards in one row: discount, branch+description, calculation. */
+.yb-stay-form .yb-extra-cards{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  align-items:stretch;
+}
+.yb-stay-form .yb-extra-cards>.yb-extra-card{
+  min-width:0;
+  grid-column:auto;
+  min-height:0;
+}
+.yb-stay-form .yb-stay-branch-card{
+  background:#f1f8ff;
+  border-color:#d2e4f7;
+}
+.yb-stay-form .yb-stay-branch-card .yb-extra-card-title i{color:#2b77b9}
+.yb-stay-form .yb-stay-branch-card .o_field_widget{max-width:100%}
+.yb-stay-form .yb-stay-branch-card textarea{
+  min-height:64px!important;
+  resize:vertical;
+}
+@media(max-width:1050px){
+  .yb-stay-form .yb-extra-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .yb-stay-form .yb-extra-cards>.yb-extra-notes{grid-column:1/-1}
+}
+@media(max-width:900px){
+  .yb-stay-form .yb-approved-summary .yb-finance-strip-values{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:760px){
+  .yb-stay-form .yb-extra-cards{grid-template-columns:minmax(0,1fr)}
+  .yb-stay-form .yb-extra-cards>.yb-extra-notes{grid-column:auto}
+}
+
+/* Hotel booking: outline the rate-plan field only (not its card or siblings). */
+.yb-stay-form .yb-work-package .yb-stay-rate-plan-outline{
+  width:100%;
+  min-width:0;
+  min-height:36px;
+  box-sizing:border-box;
+  border:1px solid #cfd7e6;
+  border-radius:9px;
+  background:#fff;
+  padding:5px 10px;
+}
+.yb-stay-form .yb-work-package .yb-stay-rate-plan-outline .o_input,
+.yb-stay-form .yb-work-package .yb-stay-rate-plan-outline input{
+  width:100%;
+  min-width:0;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+.yb-stay-form .yb-work-package .yb-stay-rate-plan-outline:focus-within{
+  border-color:#7368e7;
+  box-shadow:0 0 0 3px rgba(111,99,229,.09);
+}
+
+/* Hotel booking finance tab only: card layout consistent with booking details. */
+.yb-stay-form .yb-stay-finance-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);
+  gap:14px;
+  align-items:stretch;
+}
+.yb-stay-form .yb-stay-finance-card{
+  min-width:0;
+  padding:18px;
+  border:1px solid #e1e8f2;
+  border-radius:13px;
+  background:#fff;
+}
+.yb-stay-form .yb-stay-finance-policy{background:#f6f4ff;border-color:#e3dcfc}
+.yb-stay-form .yb-stay-finance-totals{background:#f0f7ff;border-color:#d9e7fa}
+.yb-stay-form .yb-stay-finance-heading{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#283753;
+  font-size:14px;
+  font-weight:800;
+  padding-bottom:12px;
+  margin-bottom:13px;
+  border-bottom:1px solid rgba(88,109,146,.14);
+}
+.yb-stay-form .yb-stay-finance-heading i{color:#6557d9}
+.yb-stay-form .yb-stay-finance-totals .yb-stay-finance-heading i{color:#2b7fce}
+.yb-stay-form .yb-stay-finance-field{
+  display:grid;
+  grid-template-columns:minmax(110px,.55fr) minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+  margin-bottom:13px;
+}
+.yb-stay-form .yb-stay-finance-field .o_form_label{font-size:12px;font-weight:700;color:#53627a;margin:0}
+.yb-stay-form .yb-stay-finance-field>.o_field_widget{
+  width:100%;
+  min-width:0;
+  min-height:36px;
+  padding:5px 10px;
+  border:1px solid #cfd7e6;
+  border-radius:9px;
+  background:#fff;
+  box-sizing:border-box;
+}
+.yb-stay-form .yb-stay-finance-amounts{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.yb-stay-form .yb-stay-finance-amount{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  min-width:0;
+  padding:12px 14px;
+  background:#fff;
+  border:1px solid #e1e9f4;
+  border-radius:10px;
+}
+.yb-stay-form .yb-stay-finance-amount span{font-size:11px;color:#6b7890;font-weight:650}
+.yb-stay-form .yb-stay-finance-amount .o_field_widget{
+  font-size:18px!important;
+  font-weight:800!important;
+  color:#203d68;
+  font-variant-numeric:tabular-nums;
+}
+.yb-stay-form .yb-stay-finance-due{background:#e9f8f1;border-color:#ccebdc}
+.yb-stay-form .yb-stay-finance-due .o_field_widget{color:#12845a}
+.yb-stay-form .yb-stay-finance-list{grid-column:1/-1;background:#fff}
+.yb-stay-form .yb-stay-finance-list>.o_field_widget{display:block;min-width:0;width:100%}
+.yb-stay-form .yb-stay-finance-list .o_list_renderer{
+  border:1px solid #e6ebf2;
+  border-radius:9px;
+  overflow:auto;
+}
+@media(max-width:900px){
+  .yb-stay-form .yb-stay-finance-layout{grid-template-columns:minmax(0,1fr)}
+  .yb-stay-form .yb-stay-finance-list{grid-column:auto}
+}
+@media(max-width:560px){
+  .yb-stay-form .yb-stay-finance-amounts{grid-template-columns:minmax(0,1fr)}
+  .yb-stay-form .yb-stay-finance-field{grid-template-columns:minmax(0,1fr);gap:5px}
+}

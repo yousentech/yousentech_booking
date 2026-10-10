@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+<t t-name="yousentech_booking.StayRoomPlanner">
+<div class="yb-stay yb-pms">
+  <header class="yb-pms-heading">
+    <div class="yb-pms-heading-copy"><small>إدارة الحجوزات الفندقية / العمليات</small><h1>مخطط إشغال الغرف</h1><p>لوحة الاستقبال وإدارة الإشغال والحجوزات</p></div>
+    <button class="yb-stay-primary" t-on-click="() => this.newBooking()">+ حجز جديد</button>
+  </header>
+  <div class="yb-pms-toolbar">
+    <div class="yb-pms-date-nav">
+      <button t-on-click="() => this.move(-1)" aria-label="الفترة السابقة">‹</button>
+      <div class="yb-pms-range"><strong t-esc="dateTitle"/><small t-esc="hijriRange"/></div>
+      <button t-on-click="() => this.move(1)" aria-label="الفترة التالية">›</button>
+      <button t-on-click="() => this.today()">اليوم</button>
+    </div>
+    <div class="yb-pms-view"><button t-att-class="state.span === 7 ? 'active' : ''" t-on-click="() => this.setSpan(7)">أسبوعي</button><button t-att-class="state.span === 14 ? 'active' : ''" t-on-click="() => this.setSpan(14)">أسبوعان</button></div>
+  </div>
+  <div class="yb-pms-filters">
+    <label class="yb-pms-search"><i class="fa fa-search"/><input placeholder="البحث عن غرفة أو رقم..." t-on-input="onSearch" aria-label="بحث عن غرفة"/></label>
+    <select t-on-change="onType" aria-label="نوع الغرفة"><option value="all">جميع أنواع الغرف</option><option value="room">الغرف</option><option value="suite">الأجنحة</option><option value="apartment">الشقق</option><option value="chalet">الشاليهات</option></select>
+    <select t-on-change="onFloor" aria-label="الطابق"><option value="all">جميع الطوابق</option><option t-foreach="floors" t-as="floor" t-key="floor" t-att-value="floor" t-esc="floor"/></select>
+    <select t-on-change="onStatus" aria-label="حالة الحجز"><option value="all">جميع الحالات</option><option value="draft">مسودة</option><option value="hold">مؤقت</option><option value="confirmed">مؤكد</option><option value="checked_in">تم الدخول</option><option value="checked_out">تم الخروج</option></select>
+  </div>
+  <section class="yb-pms-kpis">
+    <article><i class="fa fa-bed"/><div><small>إجمالي الغرف</small><strong t-esc="stats.total"/></div></article>
+    <article><i class="fa fa-check-circle"/><div><small>الغرف المتاحة</small><strong t-esc="stats.available"/></div></article>
+    <article><i class="fa fa-key"/><div><small>المشغولة اليوم</small><strong t-esc="stats.occupied"/></div></article>
+    <article><i class="fa fa-sign-in"/><div><small>وصول اليوم</small><strong t-esc="stats.arrivals"/></div></article>
+    <article><i class="fa fa-sign-out"/><div><small>مغادرة اليوم</small><strong t-esc="stats.departures"/></div></article>
+  </section>
+
+  <div t-att-class="selectedBooking ? 'yb-pms-layout has-selection' : 'yb-pms-layout'">
+    <section class="yb-pms-main">
+      <div class="yb-pms-board-scroll">
+        <div class="yb-stay-notice" t-if="state.loading">جاري تحميل مخطط الغرف...</div>
+        <div class="yb-stay-notice yb-stay-error" t-if="state.error" t-esc="state.error"/>
+        <div class="yb-pms-grid" t-if="!state.loading &amp;&amp; !state.error" t-att-style="'--yb-stay-days:' + state.span">
+          <div class="yb-pms-room-head">الغرفة / النوع</div>
+          <div class="yb-pms-days">
+            <div t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="(isToday(day) ? 'yb-pms-date today' : 'yb-pms-date') + (isHoliday(day) ? ' holiday' : '')">
+              <strong t-esc="gregorian(day)"/><small t-esc="hijri(day)"/><span t-if="isHoliday(day)" class="yb-pms-holiday-marker" t-att-title="holidaysFor(day).map(h => h.name).join('، ')"><i class="fa fa-calendar-check-o"/></span></div>
+          </div>
+          <t t-foreach="roomGroups" t-as="group" t-key="group.name">
+            <button class="yb-pms-floor" t-on-click="() => this.toggleFloor(group.name)">
+              <i t-att-class="group.collapsed ? 'fa fa-chevron-left' : 'fa fa-chevron-down'"/>
+              <i class="fa fa-building-o"/> <t t-esc="group.name"/> <small>(<t t-esc="group.rooms.length"/> غرف)</small>
+            </button>
+            <t t-if="!group.collapsed">
+              <t t-foreach="group.rooms" t-as="room" t-key="room.id">
+                <button class="yb-pms-room" t-on-click="() => this.newBooking(room)">
+                  <span class="yb-pms-room-icon"><i class="fa fa-bed"/></span>
+                  <span class="yb-pms-room-copy"><strong t-esc="room.name"/><small><t t-esc="typeLabel(room.resource_type)"/> · <t t-esc="room.capacity"/> أشخاص</small></span>
+                </button>
+                <div class="yb-pms-track">
+                  <span t-foreach="days" t-as="day" t-key="day.toISOString()" t-att-class="(isToday(day) ? 'yb-pms-cell today' : 'yb-pms-cell') + (isHoliday(day) ? ' holiday' : '')" t-att-style="'grid-column:' + (day_index + 1)"/>
+                  <button t-foreach="bookingsFor(room)" t-as="booking" t-key="booking.id"
+                    t-att-class="'yb-pms-booking ' + stateClass(booking.state)"
+                    t-att-style="barStyle(booking)" t-on-click="() => this.selectBooking(booking)"
+                    t-att-title="booking.name + ' — ' + (booking.partner_id ? booking.partner_id[1] : '')">
+                    <strong t-esc="booking.partner_id ? booking.partner_id[1] : booking.name"/>
+                    <small><t t-esc="booking.name"/> · <t t-esc="label(booking.state)"/></small>
+                  </button>
+                </div>
+              </t>
+            </t>
+          </t>
+        </div>
+        <div class="yb-stay-notice" t-if="!state.loading &amp;&amp; !state.error &amp;&amp; !visibleResources.length">لا توجد غرف مطابقة للفلاتر.</div>
+      </div>
+      <div class="yb-pms-holidays" t-if="hasVisibleHolidays"><strong><i class="fa fa-calendar-check-o"/> الإجازات والمناسبات:</strong><t t-foreach="days" t-as="day" t-key="day.toISOString()"><span t-foreach="holidaysFor(day)" t-as="holiday" t-key="holiday.id" class="yb-pms-holiday-tag"><t t-esc="holiday.name"/> <small t-esc="gregorian(day)"/></span></t></div>
+      <div class="yb-pms-legend"><span class="confirmed">مؤكد</span><span class="hold">مؤقت</span><span class="checked_in">تم الدخول</span><span class="checked_out">تم الخروج</span><span class="draft">مسودة</span></div>
+    </section>
+    <aside class="yb-pms-side">
+      <section class="yb-pms-calendar">
+        <h3><i class="fa fa-calendar"/> <t t-esc="monthLabel"/></h3>
+        <div class="yb-pms-mini-days"><span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span></div>
+        <div class="yb-pms-mini-grid">
+          <button t-foreach="monthDays" t-as="day" t-key="day.toISOString()"
+             t-att-class="{'outside': day.getMonth() !== start.getMonth(), 'today': isToday(day), 'in-range': day >= start &amp;&amp; day &lt; end}"
+             t-on-click="() => { this.state.anchor = day; this.load(); }" t-esc="day.getDate()"/>
+        </div>
+      </section>
+    </aside>
+  </div>
+  <div class="yb-pms-modal-backdrop" t-if="selectedBooking" t-on-click="closeDetails">
+    <section class="yb-pms-modal" role="dialog" aria-modal="true" aria-label="تفاصيل الحجز" t-on-click.stop="">
+      <div class="yb-pms-panel-head">
+        <h3>تفاصيل الحجز</h3>
+        <button type="button" t-on-click="closeDetails" aria-label="إغلاق تفاصيل الحجز">×</button>
+      </div>
+      <div class="yb-pms-modal-content">
+        <div class="yb-pms-guest-avatar"><i class="fa fa-user-circle-o"/></div>
+        <span t-att-class="'yb-stay-status ' + stateClass(selectedBooking.state)" t-esc="label(selectedBooking.state)"/>
+        <h3 t-esc="selectedBooking.partner_id ? selectedBooking.partner_id[1] : selectedBooking.name"/>
+        <p t-esc="selectedBooking.name"/>
+        <dl>
+          <dt>الغرفة</dt><dd t-esc="selectedBooking.resource_id ? selectedBooking.resource_id[1] : ''"/>
+          <dt>تاريخ الوصول</dt><dd t-esc="selectedBooking.checkin_date"/>
+          <dt>تاريخ المغادرة</dt><dd t-esc="selectedBooking.checkout_date || 'إقامة مفتوحة'"/>
+          <dt>الإجمالي</dt><dd t-esc="selectedBooking.amount_total"/>
+        </dl>
+      </div>
+      <div class="yb-pms-modal-footer">
+        <button type="button" class="yb-pms-open" t-on-click="() => this.openBooking(selectedBooking)">
+          فتح الحجز وإدارته <i class="fa fa-external-link"/>
+        </button>
+      </div>
+    </section>
+  </div>
+
+</div>
+</t>
+</templates>
