@@ -22,7 +22,7 @@
         <div t-if="state.filtersOpen" class="yb-ready-search-content">
         <div class="yb-ready-search-grid">
           <label>تاريخ الدخول<input type="date" t-att-value="state.start" t-on-change="changeStart"/></label>
-          <label>عدد الليالي<input type="number" min="1" max="31" t-att-value="state.nights" t-on-change="changeNights"/></label>
+          <label t-if="state.mode==='day'">عدد الليالي<input type="number" min="1" max="31" t-att-value="state.nights" t-on-change="changeNights"/></label>
           <label>الطابق<select t-att-value="state.floor" t-on-change="onFloor"><option value="all">كل الطوابق</option><option t-foreach="floors" t-as="f" t-key="f" t-att-value="f" t-esc="f"/></select></label>
           <label>نوع الغرفة<select t-att-value="state.type" t-on-change="onType"><option value="all">كل الأنواع</option><option value="room">غرفة</option><option value="suite">جناح</option><option value="apartment">شقة</option><option value="chalet">شاليه</option></select></label>
           <label>الحالة<select t-att-value="state.status" t-on-change="onStatus"><option value="all">كل الحالات</option><option value="available">شاغرة وجاهزة</option><option value="occupied">مشغولة</option><option value="reserved">محجوزة</option><option value="cleaning">تحتاج تنظيفًا</option><option value="inspection">بانتظار الفحص</option><option value="unknown">التجهيز غير محدد</option><option value="maintenance">صيانة</option><option value="blocked">موقوفة</option></select></label>
@@ -53,7 +53,8 @@
       <div t-if="state.loading" class="yb-ready-message"><i class="fa fa-spinner fa-spin"/> جارٍ تحميل الغرف...</div>
       <div t-elif="state.error" class="yb-ready-message" t-esc="state.error"/>
       <div t-else="">
-        <div class="yb-ready-rooms-scroll" aria-label="الغرف حسب الطابق">
+        <div class="yb-ready-period-heading"><strong t-esc="periodLabel"/><small t-esc="periodHint"/></div>
+        <div t-if="state.mode==='day'" class="yb-ready-rooms-scroll" aria-label="الغرف حسب الطابق">
         <section t-foreach="groups" t-as="group" t-key="group.name" class="yb-ready-floor">
           <button class="yb-ready-floor-heading" t-on-click="()=>this.toggleFloor(group.name)"><span><i class="fa fa-building-o"/> <strong t-esc="group.name"/></span><span class="yb-ready-floor-count"><i class="fa fa-circle"/> <t t-esc="group.rooms.filter(r=>isReady(r)).length"/> شاغرة من <t t-esc="group.rooms.length"/> غرف <i t-att-class="isCollapsed(group.name)?'fa fa-angle-down':'fa fa-angle-up'"/></span></button>
           <div t-if="!isCollapsed(group.name)" class="yb-ready-grid">
@@ -72,7 +73,21 @@
         </section>
         <div t-if="!groups.length" class="yb-ready-message">لا توجد غرف مطابقة. غيّر الفلاتر لعرض المزيد.</div>
         </div>
-        <div t-if="state.mode!=='day'" class="yb-ready-forecast"><h3><i class="fa fa-calendar"/> خريطة التوفر للأيام القادمة</h3><div class="yb-ready-forecast-scroll"><table><thead><tr><th>الغرفة</th><th t-foreach="days" t-as="d" t-key="d" t-esc="d.slice(5)"/></tr></thead><tbody><tr t-foreach="filtered" t-as="r" t-key="r.id"><th t-esc="r.name"/><td t-foreach="days" t-as="d" t-key="d"><span t-att-class="'yb-ready-day is-'+dayStatus(r,d).key" t-att-title="d+' — '+dayStatus(r,d).label" t-esc="dayStatus(r,d).label.slice(0,1)"/></td></tr></tbody></table></div></div>
+        <div t-if="state.mode!=='day'" class="yb-ready-forecast yb-ready-period-planner">
+          <div class="yb-ready-forecast-scroll" role="region" aria-label="مخطط توفر الغرف حسب اليوم" tabindex="0">
+            <table><thead><tr><th class="yb-ready-sticky-room">الغرفة / الطابق</th><th t-foreach="days" t-as="d" t-key="d" t-esc="d.slice(5)"/></tr></thead>
+            <tbody>
+              <t t-foreach="groups" t-as="group" t-key="group.name">
+                <tr class="yb-ready-planner-floor"><th t-att-colspan="days.length+1"><button t-on-click="()=>this.toggleFloor(group.name)"><i t-att-class="isCollapsed(group.name)?'fa fa-angle-down':'fa fa-angle-up'"/> <t t-esc="group.name"/> · <t t-esc="group.rooms.length"/> غرف</button></th></tr>
+                <tr t-if="!isCollapsed(group.name)" t-foreach="group.rooms" t-as="r" t-key="r.id">
+                  <th class="yb-ready-sticky-room"><button t-on-click="()=>this.select(r)" t-esc="r.name"/></th>
+                  <td t-foreach="days" t-as="d" t-key="d"><button type="button" t-att-class="'yb-ready-day is-'+dayStatus(r,d).key" t-att-title="r.name+' · '+d+' — '+dayStatus(r,d).label" t-att-aria-label="r.name+' · '+d+' — '+dayStatus(r,d).label" t-on-click="()=>this.select(r)" t-esc="dayStatus(r,d).label.slice(0,1)"/></td>
+                </tr>
+              </t>
+            </tbody></table>
+          </div>
+          <div t-if="!groups.length" class="yb-ready-message">لا توجد غرف مطابقة للفلاتر.</div>
+        </div>
       </div>
       <section class="yb-ready-bottom-notes">
         <strong><i class="fa fa-sticky-note-o"/> ملاحظات التشغيل وأيام الإجازات</strong>
