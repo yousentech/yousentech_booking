@@ -468,3 +468,19 @@
 .yb-ready .yb-ready-period-planner .yb-ready-planner-floor th{position:static;background:#edf1fa;text-align:start;padding:5px 9px}
 .yb-ready .yb-ready-period-planner .yb-ready-planner-floor button,.yb-ready .yb-ready-period-planner .yb-ready-sticky-room button{background:transparent;border:0;color:#334668;font-weight:750;cursor:pointer;text-align:start}
 @media(max-width:700px){.yb-ready .yb-ready-period-heading{align-items:flex-start;flex-direction:column;gap:3px}.yb-ready .yb-ready-period-planner th.yb-ready-sticky-room{min-width:105px}}
+
+/* Continuous reservation lanes in weekly/monthly readiness views. */
+.yb-ready .yb-ready-period-planner .yb-ready-timeline-cell{padding:2px 0;min-width:0}
+.yb-ready .yb-ready-timeline-track{display:grid;grid-template-columns:repeat(var(--yb-timeline-days),minmax(42px,1fr));grid-template-rows:minmax(44px,auto);position:relative;min-width:calc(var(--yb-timeline-days) * 45px);align-items:center}
+.yb-ready .yb-ready-timeline-day{grid-row:1;height:100%;min-height:44px;border-inline-start:1px solid #e4eaf4;background:#fff}
+.yb-ready .yb-ready-timeline-day.is-maintenance,.yb-ready .yb-ready-timeline-day.is-blocked{background:#fce8dc}
+.yb-ready .yb-ready-timeline-day.is-cleaning,.yb-ready .yb-ready-timeline-day.is-inspection,.yb-ready .yb-ready-timeline-day.is-unknown{background:#fff4d6}
+.yb-ready .yb-ready-timeline-booking{grid-row:1;z-index:1;min-width:0;margin:3px 2px;border:1px solid #87a9e8;background:#dce9ff;border-radius:7px;padding:4px 8px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;overflow:hidden;cursor:pointer;color:#21457e;text-align:start;min-height:36px}
+.yb-ready .yb-ready-timeline-booking strong,.yb-ready .yb-ready-timeline-booking small{display:block;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px}
+.yb-ready .yb-ready-timeline-booking small{font-size:9px;opacity:.8}
+.yb-ready .yb-ready-timeline-booking.is-confirmed{background:#d7f6e7;border-color:#42bf91;color:#176548}
+.yb-ready .yb-ready-timeline-booking.is-checked_in{background:#d9e9ff;border-color:#6498e7}
+.yb-ready .yb-ready-timeline-booking.is-hold{background:#fff0c8;border-color:#e8b84e;color:#855e0b}
+.yb-ready .yb-ready-timeline-booking.is-checked_out{background:#e8e3fb;border-color:#a38cdb;color:#604b94}
+.yb-ready .yb-ready-timeline-booking.is-draft{background:#f1f2f5;border:1px dashed #aab1be;color:#626a78}
+.yb-ready .yb-ready-timeline-booking:hover{filter:brightness(.97);box-shadow:0 1px 5px #0002}
