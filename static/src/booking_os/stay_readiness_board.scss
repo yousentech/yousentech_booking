@@ -451,3 +451,20 @@
 @media(max-width:360px){
  .yb-ready .yb-ready-layout .yb-ready-rooms-scroll .yb-ready-grid{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Period planner: one primary view at a time, with stable room names and day headers. */
+.yb-ready .yb-ready-period-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 3px;color:#334668}
+.yb-ready .yb-ready-period-heading strong{font-size:14px}
+.yb-ready .yb-ready-period-heading small{font-size:11px;color:#7c8aa1}
+.yb-ready .yb-ready-period-planner{margin-top:4px;padding:9px;min-width:0}
+.yb-ready .yb-ready-period-planner .yb-ready-forecast-scroll{max-height:62vh;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.yb-ready .yb-ready-period-planner table{border-spacing:3px;width:max-content;min-width:100%;table-layout:fixed}
+.yb-ready .yb-ready-period-planner thead th{position:sticky;top:0;z-index:3;background:#e4edfa;min-width:42px;white-space:nowrap}
+.yb-ready .yb-ready-period-planner th.yb-ready-sticky-room{position:sticky;inset-inline-start:0;z-index:2;min-width:135px;max-width:180px;background:#f5f7fd;text-align:start}
+.yb-ready .yb-ready-period-planner thead th.yb-ready-sticky-room{z-index:4;background:#dce7f7}
+.yb-ready .yb-ready-period-planner td{padding:1px;text-align:center}
+.yb-ready .yb-ready-period-planner .yb-ready-day{display:block;width:100%;min-width:34px;min-height:29px;border:0;border-radius:5px;cursor:pointer;font-size:11px}
+.yb-ready .yb-ready-period-planner .yb-ready-day:focus-visible,.yb-ready .yb-ready-period-planner button:focus-visible{outline:2px solid #5549ca;outline-offset:2px}
+.yb-ready .yb-ready-period-planner .yb-ready-planner-floor th{position:static;background:#edf1fa;text-align:start;padding:5px 9px}
+.yb-ready .yb-ready-period-planner .yb-ready-planner-floor button,.yb-ready .yb-ready-period-planner .yb-ready-sticky-room button{background:transparent;border:0;color:#334668;font-weight:750;cursor:pointer;text-align:start}
+@media(max-width:700px){.yb-ready .yb-ready-period-heading{align-items:flex-start;flex-direction:column;gap:3px}.yb-ready .yb-ready-period-planner th.yb-ready-sticky-room{min-width:105px}}
