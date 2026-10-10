@@ -498,3 +498,9 @@
   .yb-ready{height:calc(100vh - 50px);height:calc(100dvh - 50px)}
   .yb-ready .yb-ready-layout{align-items:stretch}
 }
+
+/* Compact dual Gregorian / Umm al-Qura Hijri timeline headings. */
+.yb-ready .yb-ready-period-planner thead th.yb-ready-dual-date{vertical-align:middle;text-align:center;padding:6px 3px;min-width:54px}
+.yb-ready .yb-ready-dual-date strong,.yb-ready .yb-ready-dual-date small{display:block;white-space:nowrap;line-height:1.35}
+.yb-ready .yb-ready-dual-date strong{font-size:11px;font-weight:800}
+.yb-ready .yb-ready-dual-date small{font-size:9px;font-weight:500;color:#647795;margin-top:2px}
