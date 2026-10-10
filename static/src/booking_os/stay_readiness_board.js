@@ -21,6 +21,11 @@ export class StayReadinessBoard extends Component {
     get holidaysInRange() { return this.state.holidays.filter(h=>h.date>=this.state.start&&h.date<this.end); }
     get weekendDays() { return this.days.filter(d=>[5,6].includes(date(d).getDay())); }
     get days() { return Array.from({length:this.state.nights},(_,i)=>iso(add(date(this.state.start),i))); }
+    hijri(day) {
+        try { return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {day:"numeric",month:"short"}).format(date(day)); }
+        catch { return ""; }
+    }
+    dualDate(day) { const h=this.hijri(day);return day+(h?" · "+h:""); }
     get periodLabel() { return this.state.mode==="day"?"تشغيل الغرف اليوم":this.state.mode==="week"?"تخطيط التوفر خلال 7 أيام":"تخطيط التوفر خلال الشهر"; }
     get periodHint() { return this.state.mode==="day"?"اختر غرفة لعرض تفاصيلها وحجوزاتها.": "اضغط على حالة أي يوم لعرض الغرفة وحجوزاتها؛ مرّر الجدول أفقيًا لمشاهدة بقية الأيام."; }
     get end() { return iso(add(date(this.state.start),this.state.nights)); }
