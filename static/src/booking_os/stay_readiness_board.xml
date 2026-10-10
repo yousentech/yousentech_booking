@@ -79,9 +79,19 @@
             <tbody>
               <t t-foreach="groups" t-as="group" t-key="group.name">
                 <tr class="yb-ready-planner-floor"><th t-att-colspan="days.length+1"><button t-on-click="()=>this.toggleFloor(group.name)"><i t-att-class="isCollapsed(group.name)?'fa fa-angle-down':'fa fa-angle-up'"/> <t t-esc="group.name"/> · <t t-esc="group.rooms.length"/> غرف</button></th></tr>
-                <tr t-if="!isCollapsed(group.name)" t-foreach="group.rooms" t-as="r" t-key="r.id">
+                <tr t-if="!isCollapsed(group.name)" t-foreach="group.rooms" t-as="r" t-key="r.id" class="yb-ready-timeline-row">
                   <th class="yb-ready-sticky-room"><button t-on-click="()=>this.select(r)" t-esc="r.name"/></th>
-                  <td t-foreach="days" t-as="d" t-key="d"><button type="button" t-att-class="'yb-ready-day is-'+dayStatus(r,d).key" t-att-title="r.name+' · '+d+' — '+dayStatus(r,d).label" t-att-aria-label="r.name+' · '+d+' — '+dayStatus(r,d).label" t-on-click="()=>this.select(r)" t-esc="dayStatus(r,d).label.slice(0,1)"/></td>
+                  <td t-att-colspan="days.length" class="yb-ready-timeline-cell">
+                    <div class="yb-ready-timeline-track" t-att-style="'--yb-timeline-days:'+days.length">
+                      <span t-foreach="days" t-as="d" t-key="d" t-att-class="'yb-ready-timeline-day is-'+dayStatus(r,d).key" t-att-title="d+' — '+dayStatus(r,d).label"/>
+                      <button t-foreach="timelineBookings(r)" t-as="b" t-key="b.id" type="button"
+                        t-att-class="'yb-ready-timeline-booking is-'+b.state"
+                        t-att-style="timelineStyle(b)" t-att-title="timelineLabel(b)+' · '+b.name+' · '+timelineState(b)"
+                        t-on-click="()=>this.timelineOpen(b)">
+                        <strong t-esc="timelineLabel(b)"/><small><t t-esc="b.name"/> · <t t-esc="timelineState(b)"/></small>
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               </t>
             </tbody></table>
