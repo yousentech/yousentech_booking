@@ -28,15 +28,15 @@
           <label>الحالة<select t-att-value="state.status" t-on-change="onStatus"><option value="all">كل الحالات</option><option value="available">شاغرة وجاهزة</option><option value="occupied">مشغولة</option><option value="reserved">محجوزة</option><option value="cleaning">تحتاج تنظيفًا</option><option value="inspection">بانتظار الفحص</option><option value="unknown">التجهيز غير محدد</option><option value="maintenance">صيانة</option><option value="blocked">موقوفة</option></select></label>
           <label>البحث عن غرفة<input type="search" placeholder="رقم الغرفة أو اسمها" t-att-value="state.query" t-on-input="onQuery"/></label>
         </div>
-        <div class="yb-ready-search-footer"><span><i class="fa fa-calendar-o"/> تاريخ الخروج: <strong t-esc="end"/></span><button t-on-click="resetFilters"><i class="fa fa-refresh"/> إعادة تعيين الفلاتر</button></div>
+        <div class="yb-ready-search-footer"><span><i class="fa fa-calendar-o"/> تاريخ الخروج: <strong t-esc="dualDate(end)"/></span><button t-on-click="resetFilters"><i class="fa fa-refresh"/> إعادة تعيين الفلاتر</button></div>
         <div class="yb-ready-legend"><span><i class="legend-dot available"/> شاغرة وجاهزة</span><span><i class="legend-dot occupied"/> مشغولة</span><span><i class="legend-dot reserved"/> محجوزة</span><span><i class="legend-dot cleaning"/> تحتاج تجهيزًا</span><span><i class="legend-dot maintenance"/> صيانة</span><span><i class="legend-dot blocked"/> موقوفة</span></div>
         </div>
       </div>
       <section t-if="!state.loading &amp;&amp; !state.error" class="yb-ready-intelligence">
-        <button class="yb-ready-panel-toggle yb-ready-assistant-toggle" t-att-aria-expanded="state.assistantOpen" t-on-click="()=>this.state.assistantOpen=!this.state.assistantOpen"><span><i class="fa fa-lightbulb-o"/> مساعد التوفر الذكي <small>توقعات الحجز حسب الخروج والحجوزات والصيانة</small></span><span>ابتداءً من <t t-esc="state.start"/> <i t-att-class="state.assistantOpen ? 'fa fa-angle-up' : 'fa fa-angle-down'"/></span></button>
+        <button class="yb-ready-panel-toggle yb-ready-assistant-toggle" t-att-aria-expanded="state.assistantOpen" t-on-click="()=>this.state.assistantOpen=!this.state.assistantOpen"><span><i class="fa fa-lightbulb-o"/> مساعد التوفر الذكي <small>توقعات الحجز حسب الخروج والحجوزات والصيانة</small></span><span>ابتداءً من <t t-esc="dualDate(state.start)"/> <i t-att-class="state.assistantOpen ? 'fa fa-angle-up' : 'fa fa-angle-down'"/></span></button>
         <div t-if="state.assistantOpen" class="yb-ready-assistant-content">
         <div class="yb-ready-intelligence-stats">
-          <div t-foreach="forecastSummary" t-as="item" t-key="item.day" class="yb-ready-intelligence-stat"><small t-esc="item.title"/><strong t-esc="item.count"/><span>قابلة للحجز · ليلة واحدة</span><small t-esc="item.day"/></div>
+          <div t-foreach="forecastSummary" t-as="item" t-key="item.day" class="yb-ready-intelligence-stat"><small t-esc="item.title"/><strong t-esc="item.count"/><span>قابلة للحجز · ليلة واحدة</span><small t-esc="dualDate(item.day)"/></div>
         </div>
         <div class="yb-ready-intelligence-results">
           <strong><i class="fa fa-calendar-check-o"/> غرف غير متاحة اليوم وقد تتاح غدًا</strong>
@@ -75,7 +75,7 @@
         </div>
         <div t-if="state.mode!=='day'" class="yb-ready-forecast yb-ready-period-planner">
           <div class="yb-ready-forecast-scroll" role="region" aria-label="مخطط توفر الغرف حسب اليوم" tabindex="0">
-            <table><thead><tr><th class="yb-ready-sticky-room">الغرفة / الطابق</th><th t-foreach="days" t-as="d" t-key="d" t-esc="d.slice(5)"/></tr></thead>
+            <table><thead><tr><th class="yb-ready-sticky-room">الغرفة / الطابق</th><th t-foreach="days" t-as="d" t-key="d" class="yb-ready-dual-date"><strong t-esc="d.slice(5)"/><small t-esc="hijri(d)"/></th></tr></thead>
             <tbody>
               <t t-foreach="groups" t-as="group" t-key="group.name">
                 <tr class="yb-ready-planner-floor"><th t-att-colspan="days.length+1"><button t-on-click="()=>this.toggleFloor(group.name)"><i t-att-class="isCollapsed(group.name)?'fa fa-angle-down':'fa fa-angle-up'"/> <t t-esc="group.name"/> · <t t-esc="group.rooms.length"/> غرف</button></th></tr>
@@ -120,7 +120,7 @@
         <div><span>حالة التجهيز</span><strong t-esc="selectedRoom.housekeeping_state==='clean'?'نظيفة وجاهزة':selectedRoom.housekeeping_state==='dirty'?'تحتاج تنظيفًا':selectedRoom.housekeeping_state==='inspection'?'بانتظار الفحص':'غير محددة'"/></div>
         <div t-if="selectedRoom.out_of_service_reason"><span>سبب الإيقاف</span><strong t-esc="selectedRoom.out_of_service_reason"/></div>
       </div>
-      <div t-else="" class="yb-ready-side-future"><p>توقع حالة الغرفة خلال 7 أيام من تاريخ الدخول</p><div t-foreach="futureDays" t-as="d" t-key="d" class="yb-ready-future-row"><span t-esc="d"/><span t-att-class="'is-'+dayStatus(selectedRoom,d).key" t-esc="dayStatus(selectedRoom,d).label"/></div><h4>الحجوزات ضمن الفترة</h4><div t-foreach="selectedBookings" t-as="b" t-key="b.id" class="yb-ready-booking-row"><strong><t t-esc="b.name"/> <span t-if="b.state==='draft'" class="yb-ready-draft-pill">مسودة · لا تمنع الحجز</span></strong><small><t t-esc="b.checkin_date"/> — <t t-esc="b.checkout_date || 'مفتوحة'"/></small><button type="button" class="yb-ready-open-booking" t-on-click="()=>this.openBooking(b)"><i class="fa fa-external-link"/> فتح وتعديل الحجز</button></div><p t-if="!selectedBookings.length">لا توجد حجوزات مسجلة في الفترة.</p></div>
+      <div t-else="" class="yb-ready-side-future"><p>توقع حالة الغرفة خلال 7 أيام من تاريخ الدخول</p><div t-foreach="futureDays" t-as="d" t-key="d" class="yb-ready-future-row"><span t-esc="dualDate(d)"/><span t-att-class="'is-'+dayStatus(selectedRoom,d).key" t-esc="dayStatus(selectedRoom,d).label"/></div><h4>الحجوزات ضمن الفترة</h4><div t-foreach="selectedBookings" t-as="b" t-key="b.id" class="yb-ready-booking-row"><strong><t t-esc="b.name"/> <span t-if="b.state==='draft'" class="yb-ready-draft-pill">مسودة · لا تمنع الحجز</span></strong><small><t t-esc="b.checkin_date"/> — <t t-esc="b.checkout_date || 'مفتوحة'"/></small><button type="button" class="yb-ready-open-booking" t-on-click="()=>this.openBooking(b)"><i class="fa fa-external-link"/> فتح وتعديل الحجز</button></div><p t-if="!selectedBookings.length">لا توجد حجوزات مسجلة في الفترة.</p></div>
       <div class="yb-ready-side-actions"><button t-if="isBookable(selectedRoom)" class="yb-ready-primary" t-on-click="()=>this.newBooking(selectedRoom)"><i class="fa fa-calendar-plus-o"/> حجز جديد لهذه الغرفة</button><button class="yb-ready-secondary" t-on-click="()=>this.openResource(selectedRoom)"><i class="fa fa-cog"/> إدارة حالة الغرفة</button></div>
     </aside>
   </div>
