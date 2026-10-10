@@ -72,6 +72,10 @@ export class StayReadinessBoard extends Component {
     get selectedStatus() { return this.selectedRoom?this.status(this.selectedRoom):null; }
     typeLabel(type) { return TYPES[type] || type; }
     roomBookings(r) {return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&BLOCKING.includes(b.state));}
+    timelineBookings(r) { return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&b.state!=="cancelled"&&b.checkin_date<this.end&&(!b.checkout_date||b.checkout_date>this.state.start)).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date)||a.id-b.id); }
+    timelineStyle(b) { const start=Math.max(0,Math.round((date(b.checkin_date)-date(this.state.start))/86400000)); const finish=b.checkout_date?Math.min(this.days.length,Math.round((date(b.checkout_date)-date(this.state.start))/86400000)):this.days.length;return "grid-column:"+(start+1)+" / "+(Math.max(start+1,finish)+1)+";"; }
+    timelineLabel(b) { return b.partner_id?.[1] || b.name; }
+    timelineState(b) { return ({draft:"مسودة",hold:"مؤقت",confirmed:"مؤكد",checked_in:"دخول",checked_out:"خروج"})[b.state]||b.state; }
     draftBookings(r) {
         return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&b.state==="draft"&&
             b.checkin_date<this.end&&(!b.checkout_date||b.checkout_date>this.state.start));
@@ -113,7 +117,7 @@ export class StayReadinessBoard extends Component {
             const cid=this.company.currentCompany.id;
             const [resources,bookings,holidays]=await Promise.all([
                 this.orm.searchRead("yousentech.stay.resource",[["company_id","=",cid],["active","=",true]],["name","floor_id","floor_name","resource_type","capacity","nightly_price","housekeeping_state","out_of_service_type","out_of_service_from","out_of_service_to","out_of_service_reason"],{order:"sequence,name,id"}),
-                this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",iso(add(date(this.state.start),Math.max(this.state.nights,32)))],"|",["checkout_date","=",false],["checkout_date",">",this.state.start],["state","in",[...BLOCKING,"draft"]]],["name","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
+                this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",iso(add(date(this.state.start),Math.max(this.state.nights,32)))],"|",["checkout_date","=",false],["checkout_date",">",this.state.start],["state","in",[...BLOCKING,"draft"]]],["name","partner_id","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
                 this.orm.searchRead("yousentech.booking.holiday", [["company_id","=",cid],["active","=",true],["date",">=",this.state.start],["date","<",this.end]], ["name","date"], {order:"date,name"}),
             ]);
             this.state.resources=resources;this.state.bookings=bookings;this.state.holidays=holidays;
