@@ -21,6 +21,13 @@ export class StayReadinessBoard extends Component {
     get holidaysInRange() { return this.state.holidays.filter(h=>h.date>=this.state.start&&h.date<this.end); }
     get weekendDays() { return this.days.filter(d=>[5,6].includes(date(d).getDay())); }
     get days() { return Array.from({length:this.state.nights},(_,i)=>iso(add(date(this.state.start),i))); }
+    hijri(day) {
+        try { return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {day:"numeric",month:"short"}).format(date(day)); }
+        catch { return ""; }
+    }
+    dualDate(day) { const h=this.hijri(day);return day+(h?" · "+h:""); }
+    get periodLabel() { return this.state.mode==="day"?"تشغيل الغرف اليوم":this.state.mode==="week"?"تخطيط التوفر خلال 7 أيام":"تخطيط التوفر خلال الشهر"; }
+    get periodHint() { return this.state.mode==="day"?"اختر غرفة لعرض تفاصيلها وحجوزاتها.": "اضغط على حالة أي يوم لعرض الغرفة وحجوزاتها؛ مرّر الجدول أفقيًا لمشاهدة بقية الأيام."; }
     get end() { return iso(add(date(this.state.start),this.state.nights)); }
     floorLabel(r) { return r.floor_id ? r.floor_id[1] : (r.floor_name || "غير محدد"); }
     get floors() { return [...new Set(this.state.resources.map(r=>this.floorLabel(r)))].sort((a,b)=>a.localeCompare(b,"ar",{numeric:true})); }
@@ -70,6 +77,10 @@ export class StayReadinessBoard extends Component {
     get selectedStatus() { return this.selectedRoom?this.status(this.selectedRoom):null; }
     typeLabel(type) { return TYPES[type] || type; }
     roomBookings(r) {return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&BLOCKING.includes(b.state));}
+    timelineBookings(r) { return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&b.state!=="cancelled"&&b.checkin_date<this.end&&(!b.checkout_date||b.checkout_date>this.state.start)).sort((a,b)=>a.checkin_date.localeCompare(b.checkin_date)||a.id-b.id); }
+    timelineStyle(b) { const start=Math.max(0,Math.round((date(b.checkin_date)-date(this.state.start))/86400000)); const finish=b.checkout_date?Math.min(this.days.length,Math.round((date(b.checkout_date)-date(this.state.start))/86400000)):this.days.length;return "grid-column:"+(start+1)+" / "+(Math.max(start+1,finish)+1)+";"; }
+    timelineLabel(b) { return b.partner_id?.[1] || b.name; }
+    timelineState(b) { return ({draft:"مسودة",hold:"مؤقت",confirmed:"مؤكد",checked_in:"دخول",checked_out:"خروج"})[b.state]||b.state; }
     draftBookings(r) {
         return this.state.bookings.filter(b=>b.resource_id&&b.resource_id[0]===r.id&&b.state==="draft"&&
             b.checkin_date<this.end&&(!b.checkout_date||b.checkout_date>this.state.start));
@@ -111,16 +122,16 @@ export class StayReadinessBoard extends Component {
             const cid=this.company.currentCompany.id;
             const [resources,bookings,holidays]=await Promise.all([
                 this.orm.searchRead("yousentech.stay.resource",[["company_id","=",cid],["active","=",true]],["name","floor_id","floor_name","resource_type","capacity","nightly_price","housekeeping_state","out_of_service_type","out_of_service_from","out_of_service_to","out_of_service_reason"],{order:"sequence,name,id"}),
-                this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",iso(add(date(this.state.start),Math.max(this.state.nights,32)))],"|",["checkout_date","=",false],["checkout_date",">",this.state.start],["state","in",[...BLOCKING,"draft"]]],["name","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
+                this.orm.searchRead("yousentech.stay.booking",[["company_id","=",cid],["checkin_date","<",iso(add(date(this.state.start),Math.max(this.state.nights,32)))],"|",["checkout_date","=",false],["checkout_date",">",this.state.start],["state","in",[...BLOCKING,"draft"]]],["name","partner_id","resource_id","checkin_date","checkout_date","state"],{order:"checkin_date,id"}),
                 this.orm.searchRead("yousentech.booking.holiday", [["company_id","=",cid],["active","=",true],["date",">=",this.state.start],["date","<",this.end]], ["name","date"], {order:"date,name"}),
             ]);
             this.state.resources=resources;this.state.bookings=bookings;this.state.holidays=holidays;
         } catch(e) {this.state.error="تعذر تحميل بيانات الغرف والحجوزات.";this.state.resources=[];this.state.bookings=[];this.state.holidays=[];}
         finally {this.state.loading=false;}
     }
-    async changeStart(ev){if(ev.target.value){this.state.start=ev.target.value;await this.load();}}
-    async setMode(mode){this.state.mode=mode;this.state.nights=mode==="week"?7:mode==="month"?30:1;await this.load();}
-    async changeNights(ev){const n=Number(ev.target.value);if(Number.isInteger(n)&&n>=1&&n<=31){this.state.nights=n;await this.load();}}
+    async changeStart(ev){if(ev.target.value){this.state.start=this.state.mode==="month"?ev.target.value.slice(0,7)+"-01":ev.target.value;if(this.state.mode==="month")this.state.nights=new Date(date(this.state.start).getFullYear(),date(this.state.start).getMonth()+1,0).getDate();await this.load();}}
+    async setMode(mode){if(!["day","week","month"].includes(mode))return;this.state.mode=mode;this.state.nights=mode==="week"?7:mode==="month"?new Date(date(this.state.start).getFullYear(),date(this.state.start).getMonth()+1,0).getDate():1;if(mode==="month")this.state.start=iso(new Date(date(this.state.start).getFullYear(),date(this.state.start).getMonth(),1,12));await this.load();}
+    async changeNights(ev){if(this.state.mode!=="day")return;const n=Number(ev.target.value);if(Number.isInteger(n)&&n>=1&&n<=31){this.state.nights=n;await this.load();}}
     onFloor(ev){this.state.floor=ev.target.value;}
     onType(ev){this.state.type=ev.target.value;}
     onStatus(ev){this.state.status=ev.target.value;}

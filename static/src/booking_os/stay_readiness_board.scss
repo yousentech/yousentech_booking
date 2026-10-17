@@ -451,3 +451,56 @@
 @media(max-width:360px){
  .yb-ready .yb-ready-layout .yb-ready-rooms-scroll .yb-ready-grid{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Period planner: one primary view at a time, with stable room names and day headers. */
+.yb-ready .yb-ready-period-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 3px;color:#334668}
+.yb-ready .yb-ready-period-heading strong{font-size:14px}
+.yb-ready .yb-ready-period-heading small{font-size:11px;color:#7c8aa1}
+.yb-ready .yb-ready-period-planner{margin-top:4px;padding:9px;min-width:0}
+.yb-ready .yb-ready-period-planner .yb-ready-forecast-scroll{max-height:62vh;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.yb-ready .yb-ready-period-planner table{border-spacing:3px;width:max-content;min-width:100%;table-layout:fixed}
+.yb-ready .yb-ready-period-planner thead th{position:sticky;top:0;z-index:3;background:#e4edfa;min-width:42px;white-space:nowrap}
+.yb-ready .yb-ready-period-planner th.yb-ready-sticky-room{position:sticky;inset-inline-start:0;z-index:2;min-width:135px;max-width:180px;background:#f5f7fd;text-align:start}
+.yb-ready .yb-ready-period-planner thead th.yb-ready-sticky-room{z-index:4;background:#dce7f7}
+.yb-ready .yb-ready-period-planner td{padding:1px;text-align:center}
+.yb-ready .yb-ready-period-planner .yb-ready-day{display:block;width:100%;min-width:34px;min-height:29px;border:0;border-radius:5px;cursor:pointer;font-size:11px}
+.yb-ready .yb-ready-period-planner .yb-ready-day:focus-visible,.yb-ready .yb-ready-period-planner button:focus-visible{outline:2px solid #5549ca;outline-offset:2px}
+.yb-ready .yb-ready-period-planner .yb-ready-planner-floor th{position:static;background:#edf1fa;text-align:start;padding:5px 9px}
+.yb-ready .yb-ready-period-planner .yb-ready-planner-floor button,.yb-ready .yb-ready-period-planner .yb-ready-sticky-room button{background:transparent;border:0;color:#334668;font-weight:750;cursor:pointer;text-align:start}
+@media(max-width:700px){.yb-ready .yb-ready-period-heading{align-items:flex-start;flex-direction:column;gap:3px}.yb-ready .yb-ready-period-planner th.yb-ready-sticky-room{min-width:105px}}
+
+/* Continuous reservation lanes in weekly/monthly readiness views. */
+.yb-ready .yb-ready-period-planner .yb-ready-timeline-cell{padding:2px 0;min-width:0}
+.yb-ready .yb-ready-timeline-track{display:grid;grid-template-columns:repeat(var(--yb-timeline-days),minmax(42px,1fr));grid-template-rows:minmax(44px,auto);position:relative;min-width:calc(var(--yb-timeline-days) * 45px);align-items:center}
+.yb-ready .yb-ready-timeline-day{grid-row:1;height:100%;min-height:44px;border-inline-start:1px solid #e4eaf4;background:#fff}
+.yb-ready .yb-ready-timeline-day.is-maintenance,.yb-ready .yb-ready-timeline-day.is-blocked{background:#fce8dc}
+.yb-ready .yb-ready-timeline-day.is-cleaning,.yb-ready .yb-ready-timeline-day.is-inspection,.yb-ready .yb-ready-timeline-day.is-unknown{background:#fff4d6}
+.yb-ready .yb-ready-timeline-booking{grid-row:1;z-index:1;min-width:0;margin:3px 2px;border:1px solid #87a9e8;background:#dce9ff;border-radius:7px;padding:4px 8px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;overflow:hidden;cursor:pointer;color:#21457e;text-align:start;min-height:36px}
+.yb-ready .yb-ready-timeline-booking strong,.yb-ready .yb-ready-timeline-booking small{display:block;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px}
+.yb-ready .yb-ready-timeline-booking small{font-size:9px;opacity:.8}
+.yb-ready .yb-ready-timeline-booking.is-confirmed{background:#d7f6e7;border-color:#42bf91;color:#176548}
+.yb-ready .yb-ready-timeline-booking.is-checked_in{background:#d9e9ff;border-color:#6498e7}
+.yb-ready .yb-ready-timeline-booking.is-hold{background:#fff0c8;border-color:#e8b84e;color:#855e0b}
+.yb-ready .yb-ready-timeline-booking.is-checked_out{background:#e8e3fb;border-color:#a38cdb;color:#604b94}
+.yb-ready .yb-ready-timeline-booking.is-draft{background:#f1f2f5;border:1px dashed #aab1be;color:#626a78}
+.yb-ready .yb-ready-timeline-booking:hover{filter:brightness(.97);box-shadow:0 1px 5px #0002}
+
+/* Keep notes and the bottom of the timeline reachable inside Odoo's action viewport. */
+.yb-ready{height:calc(100vh - 50px);height:calc(100dvh - 50px);min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain}
+.yb-ready .yb-ready-layout{min-height:100%;height:auto;align-items:flex-start}
+.yb-ready .yb-ready-main{min-height:0;padding-bottom:32px}
+.yb-ready .yb-ready-period-planner .yb-ready-forecast-scroll{max-height:48vh;max-height:48dvh;overflow-x:auto;overflow-y:auto}
+.yb-ready .yb-ready-bottom-notes{margin-bottom:14px}
+@media(max-height:720px){
+  .yb-ready .yb-ready-period-planner .yb-ready-forecast-scroll{max-height:35vh;max-height:35dvh}
+}
+@media(max-width:950px){
+  .yb-ready{height:calc(100vh - 50px);height:calc(100dvh - 50px)}
+  .yb-ready .yb-ready-layout{align-items:stretch}
+}
+
+/* Compact dual Gregorian / Umm al-Qura Hijri timeline headings. */
+.yb-ready .yb-ready-period-planner thead th.yb-ready-dual-date{vertical-align:middle;text-align:center;padding:6px 3px;min-width:54px}
+.yb-ready .yb-ready-dual-date strong,.yb-ready .yb-ready-dual-date small{display:block;white-space:nowrap;line-height:1.35}
+.yb-ready .yb-ready-dual-date strong{font-size:11px;font-weight:800}
+.yb-ready .yb-ready-dual-date small{font-size:9px;font-weight:500;color:#647795;margin-top:2px}
