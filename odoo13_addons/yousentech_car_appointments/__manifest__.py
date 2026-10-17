@@ -5,7 +5,7 @@
     'category': 'Services',
     'author': 'Yousen Tech',
     'license': 'LGPL-3',
-    'depends': ['base', 'web', 'mail'],
+    'depends': ['base', 'web', 'mail', 'qimamhd_wo_v3'],
     'data': [
         'security/ir.model.access.csv',
         'data/sequence.xml',
