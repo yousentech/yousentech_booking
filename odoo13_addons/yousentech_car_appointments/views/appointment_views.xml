@@ -8,7 +8,7 @@
 <record id="action_ycc_branch" model="ir.actions.act_window"><field name="name">تهيئة نظام المواعيد</field><field name="res_model">ycc.branch</field><field name="view_mode">tree,form</field></record>
 <record id="action_ycc_appointment" model="ir.actions.act_window"><field name="name">تسجيل المواعيد</field><field name="res_model">ycc.appointment</field><field name="view_mode">tree,form</field></record>
 <record id="action_ycc_service" model="ir.actions.act_window"><field name="name">خدمات العناية</field><field name="res_model">ycc.service</field><field name="view_mode">tree,form</field></record>
-<menuitem id="menu_ycc_root" name="مواعيد العناية بالسيارات" sequence="20" web_icon="yousentech_car_appointments,static/description/icon.png"/>
+<menuitem id="menu_ycc_root" name="مواعيد العناية بالسيارات" sequence="20"/>
 <menuitem id="menu_ycc_calendar" name="تقويم المواعيد" parent="menu_ycc_root" action="action_ycc_calendar" sequence="10"/>
 <menuitem id="menu_ycc_appointment" name="تسجيل المواعيد" parent="menu_ycc_root" action="action_ycc_appointment" sequence="20"/>
 <menuitem id="menu_ycc_settings" name="تهيئة نظام المواعيد" parent="menu_ycc_root" action="action_ycc_branch" sequence="30"/>
