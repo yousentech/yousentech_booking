@@ -1,0 +1,19 @@
+{
+    'name': 'Yousen Car Care Appointments',
+    'version': '13.0.1.0.0',
+    'summary': 'PPF, tinting and detailing appointments by branch and capacity',
+    'category': 'Services',
+    'author': 'Yousen Tech',
+    'license': 'LGPL-3',
+    'depends': ['base', 'web', 'mail'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/sequence.xml',
+        'data/cron.xml',
+        'views/appointment_views.xml',
+        'views/calendar_action.xml',
+    ],
+    'qweb': ['static/src/xml/calendar.xml'],
+    'application': True,
+    'installable': True,
+}
