@@ -4,7 +4,7 @@ Independent addon for PPF, tinting, detailing and car-care appointments. Do **no
 
 ## Install
 
-Add `odoo13_addons` to Odoo 13 addons_path, update the Apps list and install `yousentech_car_appointments`. Depends on base, web and mail. Do not merge this branch into the Odoo 17 main branch.
+Add `odoo13_addons` to Odoo 13 addons_path, update the Apps list and install `yousentech_car_appointments`. Depends on base, web, mail and the existing Odoo 13 addon qimamhd_wo_v3. Menus are placed under العناية بالسيارات → العمليات / تهيئة النظام. No changes are made to qimamhd_wo_v3 source files. Do not merge this branch into the Odoo 17 main branch.
 
 ## Screens
 
