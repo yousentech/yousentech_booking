@@ -43,7 +43,7 @@ odoo.define('yousentech_car_appointments.calendar', function (require) {
             return rpc.query({route:'/ycc/calendar/data', params:{
                 branch_id: this.branchId, start:iso(range[0]), end:iso(range[1])
             }}).then(function (data) {
-                if (data.error) { self.$el.html('<div class="alert alert-warning">'+_.escape(data.error)+'</div>'); return; }
+                if (data.error) { self.$el.html('<div class="alert alert-warning">'+String(data.error).replace(/[&<>\"]/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c];})+'</div>'); return; }
                 self.payload = data;
                 self.branchId = data.branch_id || null;
                 self._render();
